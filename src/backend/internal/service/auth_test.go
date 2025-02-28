@@ -165,7 +165,7 @@ func TestService_Register(t *testing.T) {
 					Email:    "test",
 					Password: "test",
 					Role:     "test",
-				}, nil)
+				}, storage.ErrNotFound)
 				mock.WhenSingle(
 					s.UserRepo.Create(mock.AnyContext(), mock.Any[*model.User]()),
 				).ThenReturn(fmt.Errorf("failed"))
@@ -192,7 +192,7 @@ func TestService_Register(t *testing.T) {
 					Email:    "test",
 					Password: "test",
 					Role:     "test",
-				}, nil)
+				}, storage.ErrNotFound)
 				mock.WhenSingle(
 					s.UserRepo.Create(mock.AnyContext(), mock.Any[*model.User]()),
 				).ThenReturn(nil)

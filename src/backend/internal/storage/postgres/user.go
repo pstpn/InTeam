@@ -5,6 +5,7 @@ import (
 	"backend/internal/storage"
 	"backend/pkg/storage/postgres"
 	"context"
+	"github.com/go-faster/errors"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
@@ -155,6 +156,9 @@ func (r *UserStorage) rowToModel(row pgx.Row) (*model.User, error) {
 		&user.Role,
 	)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, storage.ErrNotFound
+		}
 		return nil, err
 	}
 

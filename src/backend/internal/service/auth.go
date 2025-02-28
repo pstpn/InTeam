@@ -7,6 +7,7 @@ import (
 	"backend/pkg/logger"
 	"context"
 	"fmt"
+	"github.com/go-faster/errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -42,15 +43,15 @@ func NewAuthService(
 
 func (s *AuthService) Register(ctx context.Context, req *dto.RegisterReq) (string, error) {
 	user, err := s.UserRepo.GetUserByEmail(ctx, req.Email)
-	if err != nil {
-		s.Logger.Errorf("get user by email: %s", err.Error())
-		return "", fmt.Errorf("get user by email: %s", err)
+	if !errors.Is(err, storage.ErrNotFound) {
+		s.Logger.Errorf("get user by email")
+		return "", fmt.Errorf("get user by email")
 	}
 
 	hashed, err := hashAndSalt([]byte(req.Password))
 	if err != nil {
 		s.Logger.Errorf("hash pasword: %s", err.Error())
-		return "", fmt.Errorf("hash password: %s", err)
+		return "", fmt.Errorf("hash password: %w", err)
 	}
 	user = &model.User{
 		Name:     req.Name,
@@ -63,7 +64,7 @@ func (s *AuthService) Register(ctx context.Context, req *dto.RegisterReq) (strin
 	err = s.UserRepo.Create(ctx, user)
 	if err != nil {
 		s.Logger.Errorf("create user: %s", err.Error())
-		return "", fmt.Errorf("create user: %s", err)
+		return "", fmt.Errorf("create user: %w", err)
 	}
 
 	return generateToken(user.ID, string(user.Role), s.signingKey, s.accessTokenTTL)
@@ -73,7 +74,7 @@ func (s *AuthService) Login(ctx context.Context, req *dto.LoginReq) (string, err
 	user, err := s.UserRepo.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		s.Logger.Errorf("get user by email: %s", err.Error())
-		return "", fmt.Errorf("get user by email: %s", err)
+		return "", fmt.Errorf("get user by email: %w", err)
 	}
 
 	err = bcrypt.CompareHashAndPassword(
