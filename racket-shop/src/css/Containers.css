@@ -1,0 +1,41 @@
+.container-menu {
+    padding: 30px 30px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;    
+}
+
+.container-menu-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;  
+    gap: 26px;
+}
+
+.container-icon {
+    width: 40px;  
+    height: 40px;
+    position: relative; 
+    display: inline-block;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.container-icon:hover {
+    transform: scale(1.4);
+    opacity: 0.8;
+}
+
+.tooltip {
+    display: none; 
+    position: absolute;
+    
+    left: 50%; 
+    transform: translateX(-50%); 
+    white-space: nowrap;
+    z-index: 5;
+}
+
+/* Show tooltip on hover */
+.container-icon:hover .tooltip {
+    display: block;
+}
