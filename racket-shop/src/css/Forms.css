@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+.form {
+    background-color: white;
+    padding: 20px 20px; 
+    border-radius: 30px; 
+    width: 500px;
+    height: auto; 
+    border: 2px solid black; 
+    justify-content: center;
+    text-align: center;
+
+    opacity: 0;
+    animation: ani 1.5s forwards;
+}
+
+.form-input {
+    display: flex; 
+    justify-content: space-between; 
+    margin-bottom: 15px;
+
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.form-input:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+.form-in-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    opacity: 0;
+    animation: ani 1.5s forwards;
+}
+
+@keyframes ani {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
