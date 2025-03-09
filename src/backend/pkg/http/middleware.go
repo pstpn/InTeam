@@ -3,6 +3,8 @@ package http
 import (
 	"net/http"
 	"strings"
+
+	"github.com/rs/cors"
 )
 
 type Middleware = func(http.Handler) http.Handler
@@ -19,6 +21,15 @@ func HeartbeatMiddleware(endpoint string) Middleware {
 			h.ServeHTTP(w, r)
 		})
 	}
+}
+
+func CORSMiddleware() Middleware {
+	return cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-XSRF-Token",
+			"Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Origin"},
+	}).Handler
 }
 
 func Wrap(h http.Handler, middlewares ...Middleware) http.Handler {

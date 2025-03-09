@@ -12,6 +12,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/ogen-go/ogen v1.10.0
 	github.com/ovechkin-dm/mockio v1.0.2
+	github.com/rs/cors v1.11.1
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/otel v1.34.0
 	go.opentelemetry.io/otel/metric v1.34.0
