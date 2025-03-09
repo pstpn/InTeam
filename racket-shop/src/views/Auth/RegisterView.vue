@@ -47,13 +47,48 @@
                 <p class="font-form-body">
                     Есть аккаунт? <router-link to="/auth/login" class="submit-button-font">Войти</router-link> 
                 </p>
-                <button class="submit-button-green">Зарегестрироваться</button>
+                <button 
+                    class="submit-button-green"
+                    @click="register">
+                    Зарегестрироваться
+                </button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+import backend_url from "../../../config.js"
+
+export default {
+    data() {
+        return {
+            email: '',
+            password: ''
+        };
+    },
+    methods: {
+        async register() {
+            try {
+                const cur_url = backend_url + 'api/auth/register'
+                const response = await axios.post(cur_url, {
+                    name: this.name,
+                    surname: this.surname,
+                    email: this.email,
+                    password: this.password
+                });
+                // console.log(this.email, this.password)
+                
+                if (response.data) {
+                    console.log('Register successful:', response.data);
+                }
+            } catch (error) {
+                console.error('Error logging in:', error);
+            }
+        }
+    }
+};
 </script>
 
 <style>
