@@ -78,8 +78,7 @@ export default {
                     email: this.email,
                     password: this.password
                 });
-                // console.log(this.email, this.password)
-                
+
                 if (response.data) {
                     console.log('Register successful:', response.data);
                 }
