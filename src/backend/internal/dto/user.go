@@ -25,6 +25,6 @@ type RegisterRes struct {
 }
 
 type UpdateRoleReq struct {
-	ID   int            `json:"id"`
-	Role model.UserRole `json:"role"`
+	ID   int        `json:"id"`
+	Role model.Role `json:"role"`
 }

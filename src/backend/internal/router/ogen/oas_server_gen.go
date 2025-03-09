@@ -20,6 +20,60 @@ type Handler interface {
 	//
 	// POST /api/auth/register
 	AuthRegister(ctx context.Context, req *AuthRegisterReq) (*RegisterResponse, error)
+	// UserAddRacket implements User_addRacket operation.
+	//
+	// Add racket in cart.
+	//
+	// POST /api/cart
+	UserAddRacket(ctx context.Context, req *UserAddRacketReq) (*AddRacketResponse, error)
+	// UserCreateFeedback implements User_createFeedback operation.
+	//
+	// Create feedback.
+	//
+	// POST /api/feedbacks
+	UserCreateFeedback(ctx context.Context, req *UserCreateFeedbackReq) (*CreateFeedbackResponse, error)
+	// UserCreateOrder implements User_createOrder operation.
+	//
+	// Create order.
+	//
+	// POST /api/orders
+	UserCreateOrder(ctx context.Context, req *UserCreateOrderReq) error
+	// UserDeleteFeedback implements User_deleteFeedback operation.
+	//
+	// Delete feedback.
+	//
+	// DELETE /api/feedbacks/{racket_id}
+	UserDeleteFeedback(ctx context.Context, params UserDeleteFeedbackParams) error
+	// UserDeleteRacket implements User_deleteRacket operation.
+	//
+	// Delete racket from cart.
+	//
+	// DELETE /api/cart/rackets/{racket_id}
+	UserDeleteRacket(ctx context.Context, params UserDeleteRacketParams) (*DeleteRacketResponse, error)
+	// UserGetCart implements User_getCart operation.
+	//
+	// Get cart items.
+	//
+	// GET /api/cart
+	UserGetCart(ctx context.Context) (*GetCartResponse, error)
+	// UserGetFeedbacks implements User_getFeedbacks operation.
+	//
+	// Get user feedbacks.
+	//
+	// GET /api/feedbacks
+	UserGetFeedbacks(ctx context.Context) (*GetFeedbacksResponse, error)
+	// UserGetProfile implements User_getProfile operation.
+	//
+	// Get user profile.
+	//
+	// GET /api/profile
+	UserGetProfile(ctx context.Context) (*GetProfileResponse, error)
+	// UserUpdateRacketsCount implements User_updateRacketsCount operation.
+	//
+	// Update rackets count in cart.
+	//
+	// PUT /api/cart/rackets/{racket_id}
+	UserUpdateRacketsCount(ctx context.Context, req *UserUpdateRacketsCountReq, params UserUpdateRacketsCountParams) (*UpdateRacketsCountResponse, error)
 	// NewError creates *ErrorResponseStatusCode from error returned by handler.
 	//
 	// Used for common default response.
@@ -29,18 +83,20 @@ type Handler interface {
 // Server implements http server based on OpenAPI v3 specification and
 // calls Handler to handle requests.
 type Server struct {
-	h Handler
+	h   Handler
+	sec SecurityHandler
 	baseServer
 }
 
 // NewServer creates new Server.
-func NewServer(h Handler, opts ...ServerOption) (*Server, error) {
+func NewServer(h Handler, sec SecurityHandler, opts ...ServerOption) (*Server, error) {
 	s, err := newServerConfig(opts...).baseServer()
 	if err != nil {
 		return nil, err
 	}
 	return &Server{
 		h:          h,
+		sec:        sec,
 		baseServer: s,
 	}, nil
 }

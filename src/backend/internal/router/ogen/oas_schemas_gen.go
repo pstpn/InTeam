@@ -4,12 +4,28 @@ package api
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-faster/errors"
 )
 
 func (s *ErrorResponseStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+}
+
+// Ref: #/components/schemas/AddRacketResponse
+type AddRacketResponse struct {
+	Cart Cart `json:"cart"`
+}
+
+// GetCart returns the value of Cart.
+func (s *AddRacketResponse) GetCart() Cart {
+	return s.Cart
+}
+
+// SetCart sets the value of Cart.
+func (s *AddRacketResponse) SetCart(val Cart) {
+	s.Cart = val
 }
 
 type AuthLoginReq struct {
@@ -84,19 +100,137 @@ func (s *AuthRegisterReq) SetSurname(val string) {
 	s.Surname = val
 }
 
+type BearerAuth struct {
+	Token string
+}
+
+// GetToken returns the value of Token.
+func (s *BearerAuth) GetToken() string {
+	return s.Token
+}
+
+// SetToken sets the value of Token.
+func (s *BearerAuth) SetToken(val string) {
+	s.Token = val
+}
+
+// Ref: #/components/schemas/Cart
+type Cart struct {
+	Lines      []CartLine `json:"lines"`
+	Quantity   int        `json:"quantity"`
+	TotalPrice float32    `json:"total_price"`
+}
+
+// GetLines returns the value of Lines.
+func (s *Cart) GetLines() []CartLine {
+	return s.Lines
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *Cart) GetQuantity() int {
+	return s.Quantity
+}
+
+// GetTotalPrice returns the value of TotalPrice.
+func (s *Cart) GetTotalPrice() float32 {
+	return s.TotalPrice
+}
+
+// SetLines sets the value of Lines.
+func (s *Cart) SetLines(val []CartLine) {
+	s.Lines = val
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *Cart) SetQuantity(val int) {
+	s.Quantity = val
+}
+
+// SetTotalPrice sets the value of TotalPrice.
+func (s *Cart) SetTotalPrice(val float32) {
+	s.TotalPrice = val
+}
+
+// Ref: #/components/schemas/CartLine
+type CartLine struct {
+	RacketID int     `json:"racket_id"`
+	Price    float32 `json:"price"`
+	Quantity int     `json:"quantity"`
+}
+
+// GetRacketID returns the value of RacketID.
+func (s *CartLine) GetRacketID() int {
+	return s.RacketID
+}
+
+// GetPrice returns the value of Price.
+func (s *CartLine) GetPrice() float32 {
+	return s.Price
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *CartLine) GetQuantity() int {
+	return s.Quantity
+}
+
+// SetRacketID sets the value of RacketID.
+func (s *CartLine) SetRacketID(val int) {
+	s.RacketID = val
+}
+
+// SetPrice sets the value of Price.
+func (s *CartLine) SetPrice(val float32) {
+	s.Price = val
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *CartLine) SetQuantity(val int) {
+	s.Quantity = val
+}
+
+// Ref: #/components/schemas/CreateFeedbackResponse
+type CreateFeedbackResponse struct {
+	Feedback Feedback `json:"feedback"`
+}
+
+// GetFeedback returns the value of Feedback.
+func (s *CreateFeedbackResponse) GetFeedback() Feedback {
+	return s.Feedback
+}
+
+// SetFeedback sets the value of Feedback.
+func (s *CreateFeedbackResponse) SetFeedback(val Feedback) {
+	s.Feedback = val
+}
+
+// Ref: #/components/schemas/DeleteRacketResponse
+type DeleteRacketResponse struct {
+	Cart Cart `json:"cart"`
+}
+
+// GetCart returns the value of Cart.
+func (s *DeleteRacketResponse) GetCart() Cart {
+	return s.Cart
+}
+
+// SetCart sets the value of Cart.
+func (s *DeleteRacketResponse) SetCart(val Cart) {
+	s.Cart = val
+}
+
 // Ref: #/components/schemas/ErrorResponse
 type ErrorResponse struct {
-	Type Types `json:"type"`
+	Error Errors `json:"error"`
 }
 
-// GetType returns the value of Type.
-func (s *ErrorResponse) GetType() Types {
-	return s.Type
+// GetError returns the value of Error.
+func (s *ErrorResponse) GetError() Errors {
+	return s.Error
 }
 
-// SetType sets the value of Type.
-func (s *ErrorResponse) SetType(val Types) {
-	s.Type = val
+// SetError sets the value of Error.
+func (s *ErrorResponse) SetError(val Errors) {
+	s.Error = val
 }
 
 // ErrorResponseStatusCode wraps ErrorResponse with StatusCode.
@@ -123,6 +257,176 @@ func (s *ErrorResponseStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *ErrorResponseStatusCode) SetResponse(val ErrorResponse) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/Errors
+type Errors string
+
+const (
+	ErrorsBadRequest       Errors = "BadRequest"
+	ErrorsValidationError  Errors = "ValidationError"
+	ErrorsNotFoundError    Errors = "NotFoundError"
+	ErrorsInternalError    Errors = "InternalError"
+	ErrorsNotModifiedError Errors = "NotModifiedError"
+	ErrorsConflictError    Errors = "ConflictError"
+	ErrorsUnauthorized     Errors = "Unauthorized"
+)
+
+// AllValues returns all Errors values.
+func (Errors) AllValues() []Errors {
+	return []Errors{
+		ErrorsBadRequest,
+		ErrorsValidationError,
+		ErrorsNotFoundError,
+		ErrorsInternalError,
+		ErrorsNotModifiedError,
+		ErrorsConflictError,
+		ErrorsUnauthorized,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s Errors) MarshalText() ([]byte, error) {
+	switch s {
+	case ErrorsBadRequest:
+		return []byte(s), nil
+	case ErrorsValidationError:
+		return []byte(s), nil
+	case ErrorsNotFoundError:
+		return []byte(s), nil
+	case ErrorsInternalError:
+		return []byte(s), nil
+	case ErrorsNotModifiedError:
+		return []byte(s), nil
+	case ErrorsConflictError:
+		return []byte(s), nil
+	case ErrorsUnauthorized:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *Errors) UnmarshalText(data []byte) error {
+	switch Errors(data) {
+	case ErrorsBadRequest:
+		*s = ErrorsBadRequest
+		return nil
+	case ErrorsValidationError:
+		*s = ErrorsValidationError
+		return nil
+	case ErrorsNotFoundError:
+		*s = ErrorsNotFoundError
+		return nil
+	case ErrorsInternalError:
+		*s = ErrorsInternalError
+		return nil
+	case ErrorsNotModifiedError:
+		*s = ErrorsNotModifiedError
+		return nil
+	case ErrorsConflictError:
+		*s = ErrorsConflictError
+		return nil
+	case ErrorsUnauthorized:
+		*s = ErrorsUnauthorized
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+// Ref: #/components/schemas/Feedback
+type Feedback struct {
+	Date     time.Time `json:"date"`
+	Feedback string    `json:"feedback"`
+	RacketID int       `json:"racket_id"`
+	Rating   int       `json:"rating"`
+}
+
+// GetDate returns the value of Date.
+func (s *Feedback) GetDate() time.Time {
+	return s.Date
+}
+
+// GetFeedback returns the value of Feedback.
+func (s *Feedback) GetFeedback() string {
+	return s.Feedback
+}
+
+// GetRacketID returns the value of RacketID.
+func (s *Feedback) GetRacketID() int {
+	return s.RacketID
+}
+
+// GetRating returns the value of Rating.
+func (s *Feedback) GetRating() int {
+	return s.Rating
+}
+
+// SetDate sets the value of Date.
+func (s *Feedback) SetDate(val time.Time) {
+	s.Date = val
+}
+
+// SetFeedback sets the value of Feedback.
+func (s *Feedback) SetFeedback(val string) {
+	s.Feedback = val
+}
+
+// SetRacketID sets the value of RacketID.
+func (s *Feedback) SetRacketID(val int) {
+	s.RacketID = val
+}
+
+// SetRating sets the value of Rating.
+func (s *Feedback) SetRating(val int) {
+	s.Rating = val
+}
+
+// Ref: #/components/schemas/GetCartResponse
+type GetCartResponse struct {
+	Cart Cart `json:"cart"`
+}
+
+// GetCart returns the value of Cart.
+func (s *GetCartResponse) GetCart() Cart {
+	return s.Cart
+}
+
+// SetCart sets the value of Cart.
+func (s *GetCartResponse) SetCart(val Cart) {
+	s.Cart = val
+}
+
+// Ref: #/components/schemas/GetFeedbacksResponse
+type GetFeedbacksResponse struct {
+	Feedbacks []Feedback `json:"feedbacks"`
+}
+
+// GetFeedbacks returns the value of Feedbacks.
+func (s *GetFeedbacksResponse) GetFeedbacks() []Feedback {
+	return s.Feedbacks
+}
+
+// SetFeedbacks sets the value of Feedbacks.
+func (s *GetFeedbacksResponse) SetFeedbacks(val []Feedback) {
+	s.Feedbacks = val
+}
+
+// Ref: #/components/schemas/GetProfileResponse
+type GetProfileResponse struct {
+	User User `json:"user"`
+}
+
+// GetUser returns the value of User.
+func (s *GetProfileResponse) GetUser() User {
+	return s.User
+}
+
+// SetUser sets the value of User.
+func (s *GetProfileResponse) SetUser(val User) {
+	s.User = val
 }
 
 // Ref: #/components/schemas/LoginResponse
@@ -155,72 +459,182 @@ func (s *RegisterResponse) SetAccessToken(val string) {
 	s.AccessToken = val
 }
 
-// Ref: #/components/schemas/Types
-type Types string
-
-const (
-	TypesBadRequest       Types = "BadRequest"
-	TypesValidationError  Types = "ValidationError"
-	TypesNotFoundError    Types = "NotFoundError"
-	TypesInternalError    Types = "InternalError"
-	TypesNotModifiedError Types = "NotModifiedError"
-	TypesConflictError    Types = "ConflictError"
-)
-
-// AllValues returns all Types values.
-func (Types) AllValues() []Types {
-	return []Types{
-		TypesBadRequest,
-		TypesValidationError,
-		TypesNotFoundError,
-		TypesInternalError,
-		TypesNotModifiedError,
-		TypesConflictError,
-	}
+// Ref: #/components/schemas/UpdateRacketsCountResponse
+type UpdateRacketsCountResponse struct {
+	Cart Cart `json:"cart"`
 }
 
-// MarshalText implements encoding.TextMarshaler.
-func (s Types) MarshalText() ([]byte, error) {
-	switch s {
-	case TypesBadRequest:
-		return []byte(s), nil
-	case TypesValidationError:
-		return []byte(s), nil
-	case TypesNotFoundError:
-		return []byte(s), nil
-	case TypesInternalError:
-		return []byte(s), nil
-	case TypesNotModifiedError:
-		return []byte(s), nil
-	case TypesConflictError:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
+// GetCart returns the value of Cart.
+func (s *UpdateRacketsCountResponse) GetCart() Cart {
+	return s.Cart
 }
 
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *Types) UnmarshalText(data []byte) error {
-	switch Types(data) {
-	case TypesBadRequest:
-		*s = TypesBadRequest
-		return nil
-	case TypesValidationError:
-		*s = TypesValidationError
-		return nil
-	case TypesNotFoundError:
-		*s = TypesNotFoundError
-		return nil
-	case TypesInternalError:
-		*s = TypesInternalError
-		return nil
-	case TypesNotModifiedError:
-		*s = TypesNotModifiedError
-		return nil
-	case TypesConflictError:
-		*s = TypesConflictError
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
-	}
+// SetCart sets the value of Cart.
+func (s *UpdateRacketsCountResponse) SetCart(val Cart) {
+	s.Cart = val
+}
+
+// Ref: #/components/schemas/User
+type User struct {
+	Email   string `json:"email"`
+	Name    string `json:"name"`
+	Role    string `json:"role"`
+	Surname string `json:"surname"`
+}
+
+// GetEmail returns the value of Email.
+func (s *User) GetEmail() string {
+	return s.Email
+}
+
+// GetName returns the value of Name.
+func (s *User) GetName() string {
+	return s.Name
+}
+
+// GetRole returns the value of Role.
+func (s *User) GetRole() string {
+	return s.Role
+}
+
+// GetSurname returns the value of Surname.
+func (s *User) GetSurname() string {
+	return s.Surname
+}
+
+// SetEmail sets the value of Email.
+func (s *User) SetEmail(val string) {
+	s.Email = val
+}
+
+// SetName sets the value of Name.
+func (s *User) SetName(val string) {
+	s.Name = val
+}
+
+// SetRole sets the value of Role.
+func (s *User) SetRole(val string) {
+	s.Role = val
+}
+
+// SetSurname sets the value of Surname.
+func (s *User) SetSurname(val string) {
+	s.Surname = val
+}
+
+type UserAddRacketReq struct {
+	Quantity int `json:"quantity"`
+	RacketID int `json:"racket_id"`
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *UserAddRacketReq) GetQuantity() int {
+	return s.Quantity
+}
+
+// GetRacketID returns the value of RacketID.
+func (s *UserAddRacketReq) GetRacketID() int {
+	return s.RacketID
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *UserAddRacketReq) SetQuantity(val int) {
+	s.Quantity = val
+}
+
+// SetRacketID sets the value of RacketID.
+func (s *UserAddRacketReq) SetRacketID(val int) {
+	s.RacketID = val
+}
+
+type UserCreateFeedbackReq struct {
+	Feedback string `json:"feedback"`
+	RacketID int    `json:"racket_id"`
+	Rating   int    `json:"rating"`
+}
+
+// GetFeedback returns the value of Feedback.
+func (s *UserCreateFeedbackReq) GetFeedback() string {
+	return s.Feedback
+}
+
+// GetRacketID returns the value of RacketID.
+func (s *UserCreateFeedbackReq) GetRacketID() int {
+	return s.RacketID
+}
+
+// GetRating returns the value of Rating.
+func (s *UserCreateFeedbackReq) GetRating() int {
+	return s.Rating
+}
+
+// SetFeedback sets the value of Feedback.
+func (s *UserCreateFeedbackReq) SetFeedback(val string) {
+	s.Feedback = val
+}
+
+// SetRacketID sets the value of RacketID.
+func (s *UserCreateFeedbackReq) SetRacketID(val int) {
+	s.RacketID = val
+}
+
+// SetRating sets the value of Rating.
+func (s *UserCreateFeedbackReq) SetRating(val int) {
+	s.Rating = val
+}
+
+// UserCreateOrderOK is response for UserCreateOrder operation.
+type UserCreateOrderOK struct{}
+
+type UserCreateOrderReq struct {
+	Address       string    `json:"address"`
+	DeliveryDate  time.Time `json:"delivery_date"`
+	RecipientName string    `json:"recipient_name"`
+}
+
+// GetAddress returns the value of Address.
+func (s *UserCreateOrderReq) GetAddress() string {
+	return s.Address
+}
+
+// GetDeliveryDate returns the value of DeliveryDate.
+func (s *UserCreateOrderReq) GetDeliveryDate() time.Time {
+	return s.DeliveryDate
+}
+
+// GetRecipientName returns the value of RecipientName.
+func (s *UserCreateOrderReq) GetRecipientName() string {
+	return s.RecipientName
+}
+
+// SetAddress sets the value of Address.
+func (s *UserCreateOrderReq) SetAddress(val string) {
+	s.Address = val
+}
+
+// SetDeliveryDate sets the value of DeliveryDate.
+func (s *UserCreateOrderReq) SetDeliveryDate(val time.Time) {
+	s.DeliveryDate = val
+}
+
+// SetRecipientName sets the value of RecipientName.
+func (s *UserCreateOrderReq) SetRecipientName(val string) {
+	s.RecipientName = val
+}
+
+// UserDeleteFeedbackOK is response for UserDeleteFeedback operation.
+type UserDeleteFeedbackOK struct{}
+
+type UserUpdateRacketsCountReq struct {
+	Quantity int `json:"quantity"`
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *UserUpdateRacketsCountReq) GetQuantity() int {
+	return s.Quantity
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *UserUpdateRacketsCountReq) SetQuantity(val int) {
+	s.Quantity = val
 }

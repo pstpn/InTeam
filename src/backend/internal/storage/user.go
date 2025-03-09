@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-type IUserRepository interface {
+type IUserStorage interface {
 	Create(ctx context.Context, user *model.User) error
 	UpdateRole(ctx context.Context, user *model.User) error
 	GetUserByID(ctx context.Context, id int) (*model.User, error)

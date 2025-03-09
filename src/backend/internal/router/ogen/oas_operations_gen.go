@@ -6,6 +6,15 @@ package api
 type OperationName = string
 
 const (
-	AuthLoginOperation    OperationName = "AuthLogin"
-	AuthRegisterOperation OperationName = "AuthRegister"
+	AuthLoginOperation              OperationName = "AuthLogin"
+	AuthRegisterOperation           OperationName = "AuthRegister"
+	UserAddRacketOperation          OperationName = "UserAddRacket"
+	UserCreateFeedbackOperation     OperationName = "UserCreateFeedback"
+	UserCreateOrderOperation        OperationName = "UserCreateOrder"
+	UserDeleteFeedbackOperation     OperationName = "UserDeleteFeedback"
+	UserDeleteRacketOperation       OperationName = "UserDeleteRacket"
+	UserGetCartOperation            OperationName = "UserGetCart"
+	UserGetFeedbacksOperation       OperationName = "UserGetFeedbacks"
+	UserGetProfileOperation         OperationName = "UserGetProfile"
+	UserUpdateRacketsCountOperation OperationName = "UserUpdateRacketsCount"
 )

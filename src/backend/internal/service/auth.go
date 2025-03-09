@@ -21,7 +21,7 @@ type IAuthService interface {
 
 type AuthService struct {
 	Logger   logger.Interface
-	UserRepo storage.IUserRepository
+	UserRepo storage.IUserStorage
 
 	signingKey     string
 	accessTokenTTL time.Duration
@@ -29,7 +29,7 @@ type AuthService struct {
 
 func NewAuthService(
 	logger logger.Interface,
-	repo storage.IUserRepository,
+	repo storage.IUserStorage,
 	signingKey string,
 	accessTokenTTL time.Duration,
 ) *AuthService {
@@ -57,7 +57,7 @@ func (s *AuthService) Register(ctx context.Context, req *dto.RegisterReq) (strin
 		Name:     req.Name,
 		Surname:  req.Surname,
 		Email:    req.Email,
-		Role:     model.UserRoleCustomer,
+		Role:     model.RoleUser,
 		Password: hashed,
 	}
 
@@ -113,27 +113,6 @@ func generateToken(userID int, role string, signingKey string, ttl time.Duration
 	})
 
 	return token.SignedString([]byte(signingKey))
-}
-
-func parseToken(accessToken string, signingKey string) (int, error) {
-	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
-		_, err := token.Method.(*jwt.SigningMethodHMAC)
-		if !err {
-			return 0, fmt.Errorf("invalid signing method")
-		}
-
-		return []byte(signingKey), nil
-	})
-	if err != nil {
-		return 0, err
-	}
-
-	claims := token.Claims.(*tokenClaims)
-	if claims == nil {
-		return 0, fmt.Errorf("token claims are not of type *tokenClaims")
-	}
-
-	return claims.UserID, nil
 }
 
 func hashAndSalt(pass []byte) (string, error) {

@@ -1,17 +1,17 @@
 package model
 
-type UserRole string
+type Role string
 
 const (
-	UserRoleCustomer = "Customer"
-	UserRoleAdmin    = "Admin"
+	RoleUser  = "User"
+	RoleAdmin = "Admin"
 )
 
 type User struct {
-	ID       int      `json:"id"`
-	Name     string   `json:"name"`
-	Surname  string   `json:"surname"`
-	Email    string   `json:"email"`
-	Password string   `json:"password"`
-	Role     UserRole `json:"role"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Surname  string `json:"surname"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Role     Role   `json:"role"`
 }

@@ -5,17 +5,17 @@ import (
 	"backend/internal/storage"
 	"backend/pkg/storage/postgres"
 	"context"
-	"github.com/go-faster/errors"
+	"errors"
+	"github.com/jackc/pgx/v5"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx/v5"
 )
 
 type UserStorage struct {
 	*postgres.Postgres
 }
 
-func NewUserStorage(db *postgres.Postgres) storage.IUserRepository {
+func NewUserStorage(db *postgres.Postgres) storage.IUserStorage {
 	return &UserStorage{db}
 }
 
