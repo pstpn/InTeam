@@ -56,7 +56,11 @@ func main() {
 
 	err = srv.Run(
 		fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
-		http.Wrap(oas, http.HeartbeatMiddleware("/healthcheck")),
+		http.Wrap(
+			oas,
+			http.CORSMiddleware(),
+			http.HeartbeatMiddleware("/healthcheck"),
+		),
 	)
 	if err != nil {
 		log.Fatal(err)

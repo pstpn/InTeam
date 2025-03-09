@@ -3,16 +3,16 @@ logger:
   file: 'out.log'
 
 auth:
-  signingKey: ''
+  signingKey: 'masha'
   accessTokenTTL: 12h
 
 http:
-  port: 0
+  port: 8081
 
 database:
   postgres:
-    host: ''
-    port: 0
-    user: ''
-    password: ''
-    database: ''
+    host: 'host.docker.internal'
+    port: 5432
+    user: 'postgres'
+    password: 'admin'
+    database: 'racket_rave'
