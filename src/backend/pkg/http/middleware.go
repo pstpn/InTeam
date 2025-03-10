@@ -1,6 +1,7 @@
 package http
 
 import (
+	"backend/pkg/logger"
 	"net/http"
 	"strings"
 
@@ -23,12 +24,16 @@ func HeartbeatMiddleware(endpoint string) Middleware {
 	}
 }
 
-func CORSMiddleware() Middleware {
+func CORSMiddleware(l logger.Interface) Middleware {
 	return cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-XSRF-Token",
-			"Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Origin"},
+			"Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Origin", "Content-Length", "Accept-Encoding"},
+		ExposedHeaders:     []string{"Authorization"},
+		AllowCredentials:   true,
+		Logger:             l,
+		OptionsPassthrough: true,
 	}).Handler
 }
 

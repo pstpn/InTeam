@@ -9,13 +9,19 @@ var (
 	ErrInternal = &api.ErrorResponseStatusCode{
 		StatusCode: http.StatusInternalServerError,
 		Response: api.ErrorResponse{
-			Type: api.TypesInternalError,
+			Error: api.ErrorsInternalError,
 		},
 	}
 	ErrBadRequest = &api.ErrorResponseStatusCode{
 		StatusCode: http.StatusBadRequest,
 		Response: api.ErrorResponse{
-			Type: api.TypesBadRequest,
+			Error: api.ErrorsBadRequest,
+		},
+	}
+	ErrUnauthorized = &api.ErrorResponseStatusCode{
+		StatusCode: http.StatusUnauthorized,
+		Response: api.ErrorResponse{
+			Error: api.ErrorsUnauthorized,
 		},
 	}
 )

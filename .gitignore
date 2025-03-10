@@ -26,6 +26,7 @@ go.work.sum
 .DS_Store
 .env
 temp.*
+*.log
 
 # Typespec
 node_modules

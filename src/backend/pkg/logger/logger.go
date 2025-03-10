@@ -14,6 +14,7 @@ type Interface interface {
 	Warnf(message string, args ...interface{})
 	Errorf(message string, args ...interface{})
 	Fatalf(message string, args ...interface{})
+	Printf(s string, i2 ...interface{})
 }
 
 type Logger struct {
@@ -44,6 +45,10 @@ func New(level string, w io.Writer) *Logger {
 	return &Logger{
 		logger: &logger,
 	}
+}
+
+func (l *Logger) Printf(s string, i2 ...interface{}) {
+	l.logger.Printf(s, i2...)
 }
 
 func (l *Logger) Debugf(message string, args ...interface{}) {

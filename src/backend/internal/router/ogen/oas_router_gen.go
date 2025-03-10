@@ -40,6 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
+	args := [1]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -48,9 +49,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/api/auth/"
+		case '/': // Prefix: "/api/"
 			origElem := elem
-			if l := len("/api/auth/"); len(elem) >= l && elem[0:l] == "/api/auth/" {
+			if l := len("/api/"); len(elem) >= l && elem[0:l] == "/api/" {
 				elem = elem[l:]
 			} else {
 				break
@@ -60,9 +61,174 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
-			case 'l': // Prefix: "login"
+			case 'a': // Prefix: "auth/"
 				origElem := elem
-				if l := len("login"); len(elem) >= l && elem[0:l] == "login" {
+				if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'l': // Prefix: "login"
+					origElem := elem
+					if l := len("login"); len(elem) >= l && elem[0:l] == "login" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "POST":
+							s.handleAuthLoginRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "POST")
+						}
+
+						return
+					}
+
+					elem = origElem
+				case 'r': // Prefix: "register"
+					origElem := elem
+					if l := len("register"); len(elem) >= l && elem[0:l] == "register" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "POST":
+							s.handleAuthRegisterRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "POST")
+						}
+
+						return
+					}
+
+					elem = origElem
+				}
+
+				elem = origElem
+			case 'c': // Prefix: "cart"
+				origElem := elem
+				if l := len("cart"); len(elem) >= l && elem[0:l] == "cart" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch r.Method {
+					case "GET":
+						s.handleUserGetCartRequest([0]string{}, elemIsEscaped, w, r)
+					case "POST":
+						s.handleUserAddRacketRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET,POST")
+					}
+
+					return
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/rackets/"
+					origElem := elem
+					if l := len("/rackets/"); len(elem) >= l && elem[0:l] == "/rackets/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "racket_id"
+					// Leaf parameter
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "DELETE":
+							s.handleUserDeleteRacketRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "PUT":
+							s.handleUserUpdateRacketsCountRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "DELETE,PUT")
+						}
+
+						return
+					}
+
+					elem = origElem
+				}
+
+				elem = origElem
+			case 'f': // Prefix: "feedbacks"
+				origElem := elem
+				if l := len("feedbacks"); len(elem) >= l && elem[0:l] == "feedbacks" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch r.Method {
+					case "GET":
+						s.handleUserGetFeedbacksRequest([0]string{}, elemIsEscaped, w, r)
+					case "POST":
+						s.handleUserCreateFeedbackRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET,POST")
+					}
+
+					return
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+					origElem := elem
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "racket_id"
+					// Leaf parameter
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "DELETE":
+							s.handleUserDeleteFeedbackRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "DELETE")
+						}
+
+						return
+					}
+
+					elem = origElem
+				}
+
+				elem = origElem
+			case 'o': // Prefix: "orders"
+				origElem := elem
+				if l := len("orders"); len(elem) >= l && elem[0:l] == "orders" {
 					elem = elem[l:]
 				} else {
 					break
@@ -72,7 +238,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					// Leaf node.
 					switch r.Method {
 					case "POST":
-						s.handleAuthLoginRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleUserCreateOrderRequest([0]string{}, elemIsEscaped, w, r)
 					default:
 						s.notAllowed(w, r, "POST")
 					}
@@ -81,9 +247,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 				elem = origElem
-			case 'r': // Prefix: "register"
+			case 'p': // Prefix: "profile"
 				origElem := elem
-				if l := len("register"); len(elem) >= l && elem[0:l] == "register" {
+				if l := len("profile"); len(elem) >= l && elem[0:l] == "profile" {
 					elem = elem[l:]
 				} else {
 					break
@@ -92,10 +258,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				if len(elem) == 0 {
 					// Leaf node.
 					switch r.Method {
-					case "POST":
-						s.handleAuthRegisterRequest([0]string{}, elemIsEscaped, w, r)
+					case "GET":
+						s.handleUserGetProfileRequest([0]string{}, elemIsEscaped, w, r)
 					default:
-						s.notAllowed(w, r, "POST")
+						s.notAllowed(w, r, "GET")
 					}
 
 					return
@@ -117,7 +283,7 @@ type Route struct {
 	operationID string
 	pathPattern string
 	count       int
-	args        [0]string
+	args        [1]string
 }
 
 // Name returns ogen operation name.
@@ -185,9 +351,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/api/auth/"
+		case '/': // Prefix: "/api/"
 			origElem := elem
-			if l := len("/api/auth/"); len(elem) >= l && elem[0:l] == "/api/auth/" {
+			if l := len("/api/"); len(elem) >= l && elem[0:l] == "/api/" {
 				elem = elem[l:]
 			} else {
 				break
@@ -197,9 +363,210 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
-			case 'l': // Prefix: "login"
+			case 'a': // Prefix: "auth/"
 				origElem := elem
-				if l := len("login"); len(elem) >= l && elem[0:l] == "login" {
+				if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					break
+				}
+				switch elem[0] {
+				case 'l': // Prefix: "login"
+					origElem := elem
+					if l := len("login"); len(elem) >= l && elem[0:l] == "login" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "POST":
+							r.name = AuthLoginOperation
+							r.summary = "login user"
+							r.operationID = "Auth_login"
+							r.pathPattern = "/api/auth/login"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+					elem = origElem
+				case 'r': // Prefix: "register"
+					origElem := elem
+					if l := len("register"); len(elem) >= l && elem[0:l] == "register" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "POST":
+							r.name = AuthRegisterOperation
+							r.summary = "register user"
+							r.operationID = "Auth_register"
+							r.pathPattern = "/api/auth/register"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+					elem = origElem
+				}
+
+				elem = origElem
+			case 'c': // Prefix: "cart"
+				origElem := elem
+				if l := len("cart"); len(elem) >= l && elem[0:l] == "cart" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						r.name = UserGetCartOperation
+						r.summary = "get cart items"
+						r.operationID = "User_getCart"
+						r.pathPattern = "/api/cart"
+						r.args = args
+						r.count = 0
+						return r, true
+					case "POST":
+						r.name = UserAddRacketOperation
+						r.summary = "add racket in cart"
+						r.operationID = "User_addRacket"
+						r.pathPattern = "/api/cart"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/rackets/"
+					origElem := elem
+					if l := len("/rackets/"); len(elem) >= l && elem[0:l] == "/rackets/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "racket_id"
+					// Leaf parameter
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "DELETE":
+							r.name = UserDeleteRacketOperation
+							r.summary = "delete racket from cart"
+							r.operationID = "User_deleteRacket"
+							r.pathPattern = "/api/cart/rackets/{racket_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "PUT":
+							r.name = UserUpdateRacketsCountOperation
+							r.summary = "update rackets count in cart"
+							r.operationID = "User_updateRacketsCount"
+							r.pathPattern = "/api/cart/rackets/{racket_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
+					}
+
+					elem = origElem
+				}
+
+				elem = origElem
+			case 'f': // Prefix: "feedbacks"
+				origElem := elem
+				if l := len("feedbacks"); len(elem) >= l && elem[0:l] == "feedbacks" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						r.name = UserGetFeedbacksOperation
+						r.summary = "get user feedbacks"
+						r.operationID = "User_getFeedbacks"
+						r.pathPattern = "/api/feedbacks"
+						r.args = args
+						r.count = 0
+						return r, true
+					case "POST":
+						r.name = UserCreateFeedbackOperation
+						r.summary = "create feedback"
+						r.operationID = "User_createFeedback"
+						r.pathPattern = "/api/feedbacks"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+					origElem := elem
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "racket_id"
+					// Leaf parameter
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "DELETE":
+							r.name = UserDeleteFeedbackOperation
+							r.summary = "delete feedback"
+							r.operationID = "User_deleteFeedback"
+							r.pathPattern = "/api/feedbacks/{racket_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
+					}
+
+					elem = origElem
+				}
+
+				elem = origElem
+			case 'o': // Prefix: "orders"
+				origElem := elem
+				if l := len("orders"); len(elem) >= l && elem[0:l] == "orders" {
 					elem = elem[l:]
 				} else {
 					break
@@ -209,10 +576,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					// Leaf node.
 					switch method {
 					case "POST":
-						r.name = AuthLoginOperation
-						r.summary = "login user"
-						r.operationID = "Auth_login"
-						r.pathPattern = "/api/auth/login"
+						r.name = UserCreateOrderOperation
+						r.summary = "create order"
+						r.operationID = "User_createOrder"
+						r.pathPattern = "/api/orders"
 						r.args = args
 						r.count = 0
 						return r, true
@@ -222,9 +589,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 
 				elem = origElem
-			case 'r': // Prefix: "register"
+			case 'p': // Prefix: "profile"
 				origElem := elem
-				if l := len("register"); len(elem) >= l && elem[0:l] == "register" {
+				if l := len("profile"); len(elem) >= l && elem[0:l] == "profile" {
 					elem = elem[l:]
 				} else {
 					break
@@ -233,11 +600,11 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				if len(elem) == 0 {
 					// Leaf node.
 					switch method {
-					case "POST":
-						r.name = AuthRegisterOperation
-						r.summary = "register user"
-						r.operationID = "Auth_register"
-						r.pathPattern = "/api/auth/register"
+					case "GET":
+						r.name = UserGetProfileOperation
+						r.summary = "get user profile"
+						r.operationID = "User_getProfile"
+						r.pathPattern = "/api/profile"
 						r.args = args
 						r.count = 0
 						return r, true

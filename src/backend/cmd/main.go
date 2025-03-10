@@ -43,12 +43,29 @@ func main() {
 		log.Fatal(err)
 	}
 
-	userRepo := mypostgres2.NewUserStorage(db)
+	userStorage := mypostgres2.NewUserStorage(db)
+	cartStorage := mypostgres2.NewCartStorage(db)
+	feedbackStorage := mypostgres2.NewFeedbackStorage(db)
+	orderStorage := mypostgres2.NewOrderStorage(db)
+	racketStorage := mypostgres2.NewRacketStorage(db)
 
-	authService := service.NewAuthService(l, userRepo, cfg.Auth.SigningKey, cfg.Auth.AccessTokenTTL)
+	authService := service.NewAuthService(l, userStorage, cfg.Auth.SigningKey, cfg.Auth.AccessTokenTTL)
+	userService := service.NewUserService(l, userStorage)
+	cartService := service.NewCartService(l, cartStorage, racketStorage)
+	feedbackService := service.NewFeedbackService(l, feedbackStorage)
+	orderService := service.NewOrderService(l, orderStorage, cartStorage, racketStorage)
+	//racketService := service.NewRacketService(l, racketStorage)
 
-	h := handlers.NewHandler(l, authService)
-	oas, err := api.NewServer(h)
+	h := handlers.NewHandler(
+		l,
+		authService,
+		cartService,
+		userService,
+		feedbackService,
+		orderService,
+	)
+	securityHandler := handlers.NewSecurityHandler(userService, []byte(cfg.Auth.SigningKey))
+	oas, err := api.NewServer(h, securityHandler)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +75,7 @@ func main() {
 		fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
 		http.Wrap(
 			oas,
-			http.CORSMiddleware(),
+			http.CORSMiddleware(l),
 			http.HeartbeatMiddleware("/healthcheck"),
 		),
 	)

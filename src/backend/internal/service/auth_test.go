@@ -97,7 +97,7 @@ func TestService_Login(t *testing.T) {
 			mock.SetUp(t)
 			s := service.NewAuthService(
 				mock.Mock[logger.Interface](),
-				mock.Mock[storage.IUserRepository](),
+				mock.Mock[storage.IUserStorage](),
 				"test",
 				time.Second,
 			)
@@ -206,7 +206,7 @@ func TestService_Register(t *testing.T) {
 			mock.SetUp(t)
 			s := service.NewAuthService(
 				mock.Mock[logger.Interface](),
-				mock.Mock[storage.IUserRepository](),
+				mock.Mock[storage.IUserStorage](),
 				"test",
 				time.Second,
 			)

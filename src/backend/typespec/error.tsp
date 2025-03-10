@@ -1,13 +1,14 @@
-enum Types {
+enum Errors {
   BadRequest,
   ValidationError,
   NotFoundError,
   InternalError,
   NotModifiedError,
   ConflictError,
+  Unauthorized
 }
 
 @error
 model ErrorResponse {
-  type: Types;
+  error: Errors;
 }
