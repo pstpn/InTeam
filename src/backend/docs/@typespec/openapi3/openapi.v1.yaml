@@ -1,0 +1,608 @@
+openapi: 3.0.0
+info:
+  title: RacketShop
+  version: v1
+tags:
+  - name: auth
+  - name: user
+paths:
+  /api/auth/login:
+    post:
+      operationId: Auth_login
+      summary: login user
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+  /api/auth/register:
+    post:
+      operationId: Auth_register
+      summary: register user
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+                surname:
+                  type: string
+              required:
+                - email
+                - name
+                - password
+                - surname
+  /api/cart:
+    get:
+      operationId: User_getCart
+      summary: get cart items
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCartResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+    post:
+      operationId: User_addRacket
+      summary: add racket in cart
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddRacketResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                racket_id:
+                  type: integer
+              required:
+                - quantity
+                - racket_id
+      security:
+        - BearerAuth: []
+  /api/cart/rackets/{racket_id}:
+    delete:
+      operationId: User_deleteRacket
+      summary: delete racket from cart
+      parameters:
+        - $ref: '#/components/parameters/DeleteRacketRequest'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteRacketResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+    put:
+      operationId: User_updateRacketsCount
+      summary: update rackets count in cart
+      parameters:
+        - $ref: '#/components/parameters/UpdateRacketsCountRequest.racket_id'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateRacketsCountResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+              required:
+                - quantity
+      security:
+        - BearerAuth: []
+  /api/feedbacks:
+    get:
+      operationId: User_getFeedbacks
+      summary: get user feedbacks
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFeedbacksResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+    post:
+      operationId: User_createFeedback
+      summary: create feedback
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFeedbackResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                feedback:
+                  type: string
+                racket_id:
+                  type: integer
+                rating:
+                  type: integer
+              required:
+                - feedback
+                - racket_id
+                - rating
+      security:
+        - BearerAuth: []
+  /api/feedbacks/{racket_id}:
+    delete:
+      operationId: User_deleteFeedback
+      summary: delete feedback
+      parameters:
+        - $ref: '#/components/parameters/DeleteFeedbackRequest'
+      responses:
+        '200':
+          description: The request has succeeded.
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+  /api/orders:
+    post:
+      operationId: User_createOrder
+      summary: create order
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                address:
+                  type: string
+                delivery_date:
+                  type: string
+                  format: time
+                recipient_name:
+                  type: string
+              required:
+                - address
+                - delivery_date
+                - recipient_name
+      security:
+        - BearerAuth: []
+  /api/profile:
+    get:
+      operationId: User_getProfile
+      summary: get user profile
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProfileResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+components:
+  parameters:
+    DeleteFeedbackRequest:
+      name: racket_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    DeleteRacketRequest:
+      name: racket_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    UpdateRacketsCountRequest.racket_id:
+      name: racket_id
+      in: path
+      required: true
+      schema:
+        type: integer
+  schemas:
+    AddRacketRequest:
+      type: object
+      required:
+        - addRacketBody
+      properties:
+        addRacketBody:
+          type: object
+          properties:
+            quantity:
+              type: integer
+            racket_id:
+              type: integer
+          required:
+            - quantity
+            - racket_id
+    AddRacketResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithCart'
+    Cart:
+      type: object
+      required:
+        - lines
+        - quantity
+        - total_price
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartLine'
+        quantity:
+          type: integer
+        total_price:
+          type: number
+          format: float
+    CartLine:
+      type: object
+      required:
+        - racket_id
+        - price
+        - quantity
+      properties:
+        racket_id:
+          type: integer
+        price:
+          type: number
+          format: float
+        quantity:
+          type: integer
+    CreateFeedbackRequest:
+      type: object
+      required:
+        - createFeedbackBody
+      properties:
+        createFeedbackBody:
+          type: object
+          properties:
+            feedback:
+              type: string
+            racket_id:
+              type: integer
+            rating:
+              type: integer
+          required:
+            - feedback
+            - racket_id
+            - rating
+    CreateFeedbackResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithFeedback'
+    CreateOrderRequest:
+      type: object
+      required:
+        - createOrderBody
+      properties:
+        createOrderBody:
+          type: object
+          properties:
+            address:
+              type: string
+            delivery_date:
+              type: string
+              format: time
+            recipient_name:
+              type: string
+          required:
+            - address
+            - delivery_date
+            - recipient_name
+    DeleteRacketResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithCart'
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          $ref: '#/components/schemas/Errors'
+    Errors:
+      type: string
+      enum:
+        - BadRequest
+        - ValidationError
+        - NotFoundError
+        - InternalError
+        - NotModifiedError
+        - ConflictError
+        - Unauthorized
+    Feedback:
+      type: object
+      required:
+        - date
+        - feedback
+        - racket_id
+        - rating
+      properties:
+        date:
+          type: string
+          format: time
+        feedback:
+          type: string
+        racket_id:
+          type: integer
+        rating:
+          type: integer
+    GetCartResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithCart'
+    GetFeedbacksResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithFeedbacks'
+    GetProfileResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithUser'
+    LoginRequest:
+      type: object
+      required:
+        - loginBody
+      properties:
+        loginBody:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+          required:
+            - email
+            - password
+    LoginResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithAccessToken'
+    RegisterRequest:
+      type: object
+      required:
+        - registerBody
+      properties:
+        registerBody:
+          type: object
+          properties:
+            email:
+              type: string
+            name:
+              type: string
+            password:
+              type: string
+            surname:
+              type: string
+          required:
+            - email
+            - name
+            - password
+            - surname
+      description: API Requests
+    RegisterResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithAccessToken'
+      description: API Responses
+    ResponseWithAccessToken:
+      type: object
+      required:
+        - access_token
+      properties:
+        access_token:
+          type: string
+    ResponseWithCart:
+      type: object
+      required:
+        - cart
+      properties:
+        cart:
+          $ref: '#/components/schemas/Cart'
+    ResponseWithFeedback:
+      type: object
+      required:
+        - feedback
+      properties:
+        feedback:
+          $ref: '#/components/schemas/Feedback'
+    ResponseWithFeedbacks:
+      type: object
+      required:
+        - feedbacks
+      properties:
+        feedbacks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feedback'
+    ResponseWithUser:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+    UpdateRacketsCountResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithCart'
+    User:
+      type: object
+      required:
+        - email
+        - name
+        - role
+        - surname
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        surname:
+          type: string
+    Versions:
+      type: string
+      enum:
+        - v1
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+servers:
+  - url: http://localhost:8080
+    description: localhost
+    variables: {}
