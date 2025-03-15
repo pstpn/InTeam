@@ -1,0 +1,14 @@
+services:
+  racket-front:
+    container_name: racket-front
+    build:
+      context: ./racket-shop
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8082:80"
+    networks:
+      - vue-network
+networks:
+  vue-network:
+    driver: bridge
