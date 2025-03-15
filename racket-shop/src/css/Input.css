@@ -12,3 +12,9 @@ input {
     font-weight: 400;
     font-size: 15px;
 }
+
+.input-error {
+    border: 1px solid #EC5800;
+    background-color: #fedecd;
+    color: #EC5800;
+}

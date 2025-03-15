@@ -35,7 +35,7 @@
 }
 
 .container-icon:hover {
-    transform: scale(1.4);
+    transform: scale(1.2);
     opacity: 0.8;
 }
 

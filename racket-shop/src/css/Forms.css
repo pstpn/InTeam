@@ -4,7 +4,7 @@
     background-color: white;
     padding: 20px 20px; 
     border-radius: 30px; 
-    width: 500px;
+    width: 400px;
     height: auto; 
     border: 2px solid black; 
     justify-content: center;
@@ -23,7 +23,7 @@
 }
 
 .form-input:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
     opacity: 0.8;
 }
 

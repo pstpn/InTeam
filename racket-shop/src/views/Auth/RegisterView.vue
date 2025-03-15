@@ -9,6 +9,7 @@
                     id="name"
                     v-model="name"
                     placeholder="Имя"
+                    @input="resetError"
                     required
                 />
             </div>
@@ -19,6 +20,7 @@
                     id="surname"
                     v-model="surname"
                     placeholder="Фамилия"
+                    @input="resetError"
                     required
                 />
             </div>
@@ -29,6 +31,8 @@
                     id="email"
                     v-model="email"
                     placeholder="Электронная почта"
+                    :class="{ 'input-error': error }"
+                    @input="resetError"
                     required
                 />
             </div>
@@ -39,8 +43,14 @@
                     id="password"
                     v-model="password"
                     placeholder="Пароль"
+                    :class="{ 'input-error': error }"
+                    @input="resetError"
                     required
                 />
+            </div>
+
+            <div class="form-in-row" v-if="showError">
+                <p class="font-form-body-error">{{ errorMessage }}</p>
             </div>
 
             <div class="form-in-row">
@@ -64,12 +74,34 @@ import backend_url from "../../../config.js"
 export default {
     data() {
         return {
+            name: '',
+            surname: '',
             email: '',
-            password: ''
+            password: '',
+            error: false,
+            showError: false,
+            errorMessage: 'Некорректные данные для ввода!'
         };
     },
     methods: {
         async register() {
+            // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            // if (!this.email || !emailRegex.test(this.email)) {
+            //     this.showError = true;
+            //     this.error = true;
+
+            //     this.errorMessage = 'Некорректный формат электронной почты!';
+            //     return;
+            // }
+
+            // if (!this.password || this.password.length == 0) {
+            //     this.showError = true;
+            //     this.error = true;
+
+            //     this.errorMessage = 'Пароль не должен быть пустым!';
+            //     return;
+            // }
+            
             try {
                 const cur_url = backend_url + 'api/auth/register'
                 const response = await axios.post(cur_url, {
@@ -81,10 +113,21 @@ export default {
 
                 if (response.data) {
                     console.log('Register successful:', response.data);
+                    localStorage.setItem('token', response.data.access_token);
+
+                    this.error = false;
+                    this.$router.push('/profile');
                 }
             } catch (error) {
-                console.error('Error logging in:', error);
+                console.error('Error register in:', error);
+                
+                this.error = true;
+                this.showError = true;
             }
+        },
+        resetError() {
+            this.error = false;
+            this.showError = false;
         }
     }
 };
