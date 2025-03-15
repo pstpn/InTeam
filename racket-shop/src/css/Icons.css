@@ -6,3 +6,9 @@
 .icon-logo {
     width: 80px;  
 }
+
+/* Стиль для активной иконки */
+.router-link-active .icon,
+.router-link-exact-active .icon {
+    filter: brightness(1.2) invert(0.5);
+}
