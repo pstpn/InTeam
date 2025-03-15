@@ -25,6 +25,8 @@ go.work.sum
 .idea
 .DS_Store
 .env
+
+.idea
 temp.*
 *.log
 

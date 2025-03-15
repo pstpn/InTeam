@@ -1,0 +1,53 @@
+.submit-button-green {
+    width: auto; 
+    height: 35px; 
+  
+    background-color: #CFFA55; 
+    color: black; 
+    border: none; 
+    border-radius: 10px; 
+    cursor: pointer; 
+
+    text-align: center;
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 700;
+    font-size: 15px;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.submit-button-green:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+.submit-button-font {  
+    color: black; 
+    cursor: pointer; 
+
+    text-align: center;
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.submit-button-orange {
+    width: auto; 
+    height: 35px; 
+  
+    background-color: #fa9055; 
+    color: black; 
+    border: none; 
+    border-radius: 10px; 
+    cursor: pointer; 
+
+    text-align: center;
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 700;
+    font-size: 15px;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.submit-button-orange:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
