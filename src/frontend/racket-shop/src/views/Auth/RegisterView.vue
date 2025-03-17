@@ -39,13 +39,18 @@
 
             <div class="form-input">
                 <input
-                    type="password"
+                    :type="showPassword ? 'text' : 'password'"
                     id="password"
                     v-model="password"
                     placeholder="Пароль"
                     :class="{ 'input-error': error }"
                     @input="resetError"
                     required
+                />
+                <img 
+                    :src="showPassword ? require('@/assets/noview.png') : require('@/assets/view.png')" 
+                    class="icon" 
+                    @click="togglePasswordVisibility"
                 />
             </div>
 
@@ -69,7 +74,7 @@
 
 <script>
 import axios from 'axios';
-import backend_url from "../../../config.js"
+import config from "../../../config.js"
 
 export default {
     data() {
@@ -80,30 +85,14 @@ export default {
             password: '',
             error: false,
             showError: false,
-            errorMessage: 'Некорректные данные для ввода!'
+            errorMessage: 'Некорректные данные для ввода!',
+            showPassword: false
         };
     },
     methods: {
         async register() {
-            // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            // if (!this.email || !emailRegex.test(this.email)) {
-            //     this.showError = true;
-            //     this.error = true;
-
-            //     this.errorMessage = 'Некорректный формат электронной почты!';
-            //     return;
-            // }
-
-            // if (!this.password || this.password.length == 0) {
-            //     this.showError = true;
-            //     this.error = true;
-
-            //     this.errorMessage = 'Пароль не должен быть пустым!';
-            //     return;
-            // }
-            
             try {
-                const cur_url = backend_url + 'api/auth/register'
+                const cur_url = config.BACKEND_URL + config.API.auth.register;
                 const response = await axios.post(cur_url, {
                     name: this.name,
                     surname: this.surname,
@@ -128,6 +117,9 @@ export default {
         resetError() {
             this.error = false;
             this.showError = false;
+        },
+        togglePasswordVisibility() {
+            this.showPassword = !this.showPassword;
         }
     }
 };

@@ -18,6 +18,7 @@
     display: flex; 
     justify-content: space-between; 
     margin-bottom: 15px;
+    gap: 10px;
 
     transition: transform 0.3s, opacity 0.3s;
 }
@@ -35,6 +36,13 @@
 
     opacity: 0;
     animation: ani 1.5s forwards;
+}
+
+.form-in-row-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
 }
 
 @keyframes ani {

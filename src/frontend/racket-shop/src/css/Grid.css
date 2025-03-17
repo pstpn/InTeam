@@ -1,0 +1,32 @@
+.grid-profile {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px 50px;
+    width: 90%;
+}
+
+.grid-card-name {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    border-radius: 30px;
+    background-color: #d9d9d9;
+}
+
+.grid-card-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    border-radius: 30px;
+    background-color: #d9d9d9;
+    cursor: pointer;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.grid-card-icon:hover {
+    transform: scale(1.03);
+    opacity: 0.8;
+}

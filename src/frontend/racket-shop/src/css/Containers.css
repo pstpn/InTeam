@@ -1,7 +1,9 @@
 .container-page {
     padding: 30px 30px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center; 
     opacity: 0;
     animation: ani 1.5s forwards;
 }
@@ -32,6 +34,7 @@
     position: relative; 
     display: inline-block;
     transition: transform 0.3s, opacity 0.3s;
+    cursor: pointer;
 }
 
 .container-icon:hover {
