@@ -1,12 +1,13 @@
 package config
 
 import (
+	"os"
 	"time"
 
 	"github.com/spf13/viper"
 )
 
-const configPath = "./config/config.yaml"
+const defaultConfigPath = "./config/config.yaml"
 
 type Config struct {
 	Logger   LoggerConfig   `yaml:"logger"`
@@ -45,7 +46,10 @@ func NewConfig() (*Config, error) {
 	var err error
 	var config Config
 
-	viper.SetConfigFile(configPath)
+	viper.SetConfigFile(defaultConfigPath)
+	if path := os.Getenv("CONFIG_PATH"); path != "" {
+		viper.SetConfigFile(path)
+	}
 
 	err = viper.ReadInConfig()
 	if err != nil {
