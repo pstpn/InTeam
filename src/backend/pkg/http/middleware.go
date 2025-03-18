@@ -26,10 +26,9 @@ func HeartbeatMiddleware(endpoint string) Middleware {
 
 func CORSMiddleware(l logger.Interface) Middleware {
 	return cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-XSRF-Token",
-			"Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Origin", "Content-Length", "Accept-Encoding"},
+		AllowedOrigins:     []string{"*"},
+		AllowedMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+		AllowedHeaders:     []string{"*"},
 		ExposedHeaders:     []string{"Authorization"},
 		AllowCredentials:   true,
 		Logger:             l,
