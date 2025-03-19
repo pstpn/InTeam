@@ -1,5 +1,8 @@
 run:
-	docker-compose up -d
+	docker compose up -d
 
-dowm:
-	docker-compose down
+down:
+	@docker compose down
+
+rm: down
+	@docker image rm frontend-racket-front:latest
