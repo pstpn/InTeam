@@ -4,8 +4,8 @@
         
         <div class="grid-profile">
             <div class="grid-card-name">
-                <p class="font-grid-1">Имя Фамилия</p>
-                <p class="font-grid-2">Email</p>
+                <p class="font-grid-1">{{ userData.name }} {{ userData.surname }}</p>
+                <p class="font-grid-2">{{ userData.email }}</p>
                 <div class="form-in-row-right">
                     <button 
                         class="submit-button-orange"
@@ -31,16 +31,50 @@
 </template>
 
 <script>
+import axios from 'axios';
 import config from "../../../config.js"
 
 export default {
     name: 'AppMenuBar',
     data() {
         return {
-            config: config, 
+            config: config,
+            userData: {
+                name: '',
+                surname: '',
+                email: ''
+            }
         };
     },
     methods: {
+        async fetchUserData() {
+            try {
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    this.$router.push(this.config.API.auth.login);
+                    return;
+                }
+
+                const cur_url = config.BACKEND_URL + config.API.user.profile;
+                const response = await axios.get(cur_url, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                
+                if (response.data) {
+                    this.userData = {   
+                        name: response.data.name,
+                        surname: response.data.surname,
+                        email: response.data.email
+                    };
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                this.$router.push(this.config.API.auth.login);
+            }
+        },
         navigateTo(route) {
             this.$router.push(route);
         },
@@ -48,6 +82,9 @@ export default {
             localStorage.removeItem('token');
             this.$router.push(this.config.API.auth.login);
         }
+    },
+    mounted() {
+        this.fetchUserData();
     }
 }
 </script>
