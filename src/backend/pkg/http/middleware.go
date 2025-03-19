@@ -32,7 +32,6 @@ func CORSMiddleware(l logger.Interface) Middleware {
 		ExposedHeaders:     []string{"Authorization"},
 		AllowCredentials:   true,
 		Logger:             l,
-		OptionsPassthrough: true,
 	}).Handler
 }
 
