@@ -42,10 +42,17 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    align-items: flex-end;
+    align-items: center;
 }
 
 @keyframes ani {
     0% {opacity: 0;}
     100% {opacity: 1;}
+}
+
+.form-in-row-racket {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: center;
 }

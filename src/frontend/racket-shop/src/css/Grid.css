@@ -35,12 +35,18 @@
     display: grid;
     grid-template-columns: 75% 25%;
     width: 100%;
-    /* gap: 40px; */
+}
+
+.grid-feedback {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    width: 100%;
 }
 
 .grid-cart-column {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .grid-item {
@@ -66,9 +72,29 @@
 }
 
 .grid-photo img {
-    width: 100%; /* Ширина изображения равна ширине контейнера */
-    height: 100%; /* Высота изображения равна высоте контейнера */
-    object-fit: cover; /* Сохраняет пропорции и обрезает изображение, если нужно */
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.grid-photo-ball {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+.grid-photo-ball :hover {
+    transform: scale(1.03);
+    opacity: 0.8;
+}
+
+.grid-photo-ball img {
+    width: 10%; 
+    height: 10%; 
+    object-fit: cover;
 }
 
 .line {
@@ -77,4 +103,18 @@
     border: none;
     border-top: 3px solid #d9d9d9;
     margin: 1em 0;
+}
+
+.grid-order-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 30px;
+}
+
+.grid-card-feedback {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    border-radius: 30px;
 }
