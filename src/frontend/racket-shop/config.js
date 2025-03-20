@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://192.168.1.199:8081/api";
+const BACKEND_URL = "http://localhost:8081/api";
 
 const API = {
     auth: {
@@ -7,9 +7,9 @@ const API = {
     },
     user: {
         profile: '/profile',
-        orders: '/profile/orders',
-        cart: '/profile/cart',
-        feedbacks: '/profile/feedbacks'
+        orders: '/orders',
+        cart: '/cart',
+        feedbacks: '/feedbacks'
     }
 };
 

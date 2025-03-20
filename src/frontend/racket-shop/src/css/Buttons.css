@@ -51,3 +51,19 @@
     transform: scale(1.05);
     opacity: 0.8;
 }
+
+.submit-button-cart {
+    width: 30px;
+  
+    background-color: #d9d9d9; 
+    color: black; 
+    border: none; 
+    border-radius: 10px; 
+    cursor: pointer; 
+
+    text-align: center;
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 700;
+    font-size: 15px;
+    transition: transform 0.3s, opacity 0.3s;
+}

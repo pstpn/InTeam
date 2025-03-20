@@ -17,6 +17,11 @@
             <div></div>
             <div></div>
             <div class="grid-card-icon">
+                <a @click="navigateTo(config.API.user.cart)">
+                    <h1 class="font-grid-1">Моя корзина</h1>
+                </a>
+            </div>
+            <div class="grid-card-icon">
                 <a @click="navigateTo(config.API.user.orders)">
                     <h1 class="font-grid-1">Мои заказы</h1>
                 </a>
@@ -64,10 +69,11 @@ export default {
                 });
                 
                 if (response.data) {
+                    const user = response.data.user
                     this.userData = {   
-                        name: response.data.name,
-                        surname: response.data.surname,
-                        email: response.data.email
+                        name: user.name,
+                        surname: user.surname,
+                        email: user.email
                     };
                 }
             } catch (error) {

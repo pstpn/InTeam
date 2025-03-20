@@ -48,5 +48,11 @@
 .font-grid-2 {
     font-family: 'Montserrat', sans-serif; 
     font-weight: 400;
-    font-size: 20px;
+    font-size: 15px;
+}
+
+.font-grid-2-bold {
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 600;
+    font-size: 15px;
 }
