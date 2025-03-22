@@ -34,8 +34,11 @@ func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, operationName ap
 	if err != nil {
 		return ctx, ErrUnauthorized
 	}
+	ctx = UserToCtx(ctx, res)
 
-	if res.Role == model.RoleUser && isUserMethod(operationName) {
+	if isAllAuthorizedUserMethod(operationName) {
+		return ctx, nil
+	} else if res.Role == model.RoleUser && isUserMethod(operationName) {
 		return common.UserIDToCtx(ctx, id), nil
 	} else if res.Role == model.RoleAdmin && isAdminMethod(operationName) {
 		return common.AdminIDToCtx(ctx, id), nil
@@ -73,20 +76,35 @@ func (s *SecurityHandler) parseToken(accessToken string) (int, error) {
 
 func isUserMethod(op api.OperationName) bool {
 	_, ok := map[api.OperationName]struct{}{
-		api.UserAddRacketOperation:          {},
-		api.UserCreateFeedbackOperation:     {},
-		api.UserCreateOrderOperation:        {},
-		api.UserDeleteFeedbackOperation:     {},
-		api.UserDeleteRacketOperation:       {},
-		api.UserGetCartOperation:            {},
-		api.UserGetFeedbacksOperation:       {},
-		api.UserGetProfileOperation:         {},
-		api.UserUpdateRacketsCountOperation: {},
+		api.CartGetCartOperation:               {},
+		api.CartAddRacketOperation:             {},
+		api.RacketsDeleteRacketOperation:       {},
+		api.RacketsUpdateRacketsCountOperation: {},
+		api.FeedbacksGetFeedbacksOperation:     {},
+		api.FeedbacksCreateFeedbackOperation:   {},
+		api.FeedbacksDeleteFeedbackOperation:   {},
+		api.OrdersCreateOrderOperation:         {},
+		api.ProfileGetProfileOperation:         {},
 	}[op]
 	return ok
 }
 
 func isAdminMethod(op api.OperationName) bool {
-	// TODO
-	return false
+	_, ok := map[api.OperationName]struct{}{
+		api.OrdersGetOrderOperation:              {},
+		api.OrdersUpdateOrderStatusOperation:     {},
+		api.RacketsCreateRacketOperation:         {},
+		api.RacketsUpdateRacketQuantityOperation: {},
+		api.UsersGetUsersOperation:               {},
+		api.UsersGetUserOperation:                {},
+		api.UsersChangeUserRoleOperation:         {},
+	}[op]
+	return ok
+}
+
+func isAllAuthorizedUserMethod(op api.OperationName) bool {
+	_, ok := map[api.OperationName]struct{}{
+		api.OrdersGetOrdersOperation: {},
+	}[op]
+	return ok
 }

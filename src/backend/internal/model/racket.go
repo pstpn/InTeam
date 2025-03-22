@@ -8,6 +8,6 @@ type Racket struct {
 	HeadSize  float32 `json:"head_size"`
 	Available bool    `json:"available"`
 	Quantity  int     `json:"quantity"`
-	Price     int     `json:"price"`
+	Price     float32 `json:"price"`
 	Image     []byte  `json:"image"`
 }

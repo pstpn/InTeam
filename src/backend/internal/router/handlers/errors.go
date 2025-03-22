@@ -24,4 +24,10 @@ var (
 			Error: api.ErrorsUnauthorized,
 		},
 	}
+	ErrNotModified = &api.ErrorResponseStatusCode{
+		StatusCode: http.StatusNotModified,
+		Response: api.ErrorResponse{
+			Error: api.ErrorsNotModifiedError,
+		},
+	}
 )

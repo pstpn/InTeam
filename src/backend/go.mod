@@ -8,7 +8,7 @@ require (
 	github.com/Masterminds/squirrel v1.5.4
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/ogen-go/ogen v1.10.0
 	github.com/ovechkin-dm/mockio v1.0.2

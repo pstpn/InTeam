@@ -4,11 +4,16 @@ package api
 
 import (
 	"bytes"
+	"mime"
+	"mime/multipart"
 	"net/http"
 
+	"github.com/go-faster/errors"
 	"github.com/go-faster/jx"
 
+	"github.com/ogen-go/ogen/conv"
 	ht "github.com/ogen-go/ogen/http"
+	"github.com/ogen-go/ogen/uri"
 )
 
 func encodeAuthLoginRequest(
@@ -39,8 +44,8 @@ func encodeAuthRegisterRequest(
 	return nil
 }
 
-func encodeUserAddRacketRequest(
-	req *UserAddRacketReq,
+func encodeCartAddRacketRequest(
+	req *CartAddRacketReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -53,8 +58,8 @@ func encodeUserAddRacketRequest(
 	return nil
 }
 
-func encodeUserCreateFeedbackRequest(
-	req *UserCreateFeedbackReq,
+func encodeFeedbacksCreateFeedbackRequest(
+	req *FeedbacksCreateFeedbackReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -67,8 +72,8 @@ func encodeUserCreateFeedbackRequest(
 	return nil
 }
 
-func encodeUserCreateOrderRequest(
-	req *UserCreateOrderReq,
+func encodeOrdersCreateOrderRequest(
+	req *OrdersCreateOrderReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -81,8 +86,149 @@ func encodeUserCreateOrderRequest(
 	return nil
 }
 
-func encodeUserUpdateRacketsCountRequest(
-	req *UserUpdateRacketsCountReq,
+func encodeOrdersUpdateOrderStatusRequest(
+	req *OrdersUpdateOrderStatusReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeRacketsCreateRacketRequest(
+	req *RacketsCreateRacketReq,
+	r *http.Request,
+) error {
+	const contentType = "multipart/form-data"
+	request := req
+
+	q := uri.NewFormEncoder(map[string]string{})
+	{
+		// Encode "balance" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "balance",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.Float32ToString(request.Balance))
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "brand" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "brand",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(request.Brand))
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "head_size" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "head_size",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.Float32ToString(request.HeadSize))
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "price" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "price",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.Float32ToString(request.Price))
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "quantity" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "quantity",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.Float32ToString(request.Quantity))
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "weight" form field.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "weight",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.Float32ToString(request.Weight))
+		}); err != nil {
+			return errors.Wrap(err, "encode query")
+		}
+	}
+	body, boundary := ht.CreateMultipartBody(func(w *multipart.Writer) error {
+		if err := request.Image.WriteMultipart("image", w); err != nil {
+			return errors.Wrap(err, "write \"image\"")
+		}
+		if err := q.WriteMultipart(w); err != nil {
+			return errors.Wrap(err, "write multipart")
+		}
+		return nil
+	})
+	ht.SetCloserBody(r, body, mime.FormatMediaType(contentType, map[string]string{"boundary": boundary}))
+	return nil
+}
+
+func encodeRacketsUpdateRacketQuantityRequest(
+	req *RacketsUpdateRacketQuantityReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeRacketsUpdateRacketsCountRequest(
+	req *RacketsUpdateRacketsCountReq,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUsersChangeUserRoleRequest(
+	req *UsersChangeUserRoleReq,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

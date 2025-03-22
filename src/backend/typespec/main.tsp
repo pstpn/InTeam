@@ -46,12 +46,10 @@ model AddRacketRequest {
   }
 };
 model DeleteRacketRequest {
-  @path
-  racket_id: integer
+  ...WithRacketId
 };
 model UpdateRacketsCountRequest {
-  @path
-  racket_id: integer,
+  ...WithRacketId,
   @body
   updateRacketsCountBody: {
     quantity: integer
@@ -66,8 +64,7 @@ model CreateFeedbackRequest {
   }
 }
 model DeleteFeedbackRequest {
-  @path
-  racket_id: integer
+  ...WithRacketId
 };
 model CreateOrderRequest {
   @body
@@ -76,6 +73,61 @@ model CreateOrderRequest {
     delivery_date: plainTime,
     recipient_name: string
   }
+}
+model GetOrderRequest {
+  ...WithOrderId
+}
+model UpdateOrderStatusRequest {
+  ...WithOrderId,
+  @body
+  updateStatusBody: {
+    status: string
+  }
+}
+model CreateRacketRequest {
+  @header
+  contentType: "multipart/form-data",
+  @multipartBody
+  createRacketBody: {
+    balance: HttpPart<float32>,
+    brand: HttpPart<string>,
+    head_size: HttpPart<float32>,
+    price: HttpPart<float32>,
+    // Float32 for fix ogen encode error.
+    // Original value - integer. Need to convert on server side
+    quantity: HttpPart<float32>,
+    weight: HttpPart<float32>,
+    image: HttpPart<bytes>
+  }
+}
+model UpdateRacketQuantityRequest {
+  ...WithRacketId,
+  @body
+  updateQuantityBody: {
+    quantity: integer
+  }
+}
+model GetUserRequest {
+  ...WithUserId
+}
+model ChangeUserRole {
+  ...WithUserId,
+  @body
+  changeRoleBody: {
+    role: string
+  }
+}
+model GetOrdersRequest {
+  ...WithPaging
+}
+model GetRacketFeedbacksRequest {
+  ...WithRacketId
+}
+model GetRacketsRequest {
+  ...WithPaging
+}
+model GetRacketRequest {
+  ...WithRacketId
 }
 
 /**
@@ -90,13 +142,20 @@ model UpdateRacketsCountResponse extends ResponseWithCart {};
 model GetFeedbacksResponse extends ResponseWithFeedbacks {};
 model CreateFeedbackResponse extends ResponseWithFeedback {};
 model GetProfileResponse extends ResponseWithUser {};
+model GetOrderResponse extends ResponseWithOrder {};
+model CreateRacketResponse extends ResponseWithRacket {};
+model GetUsersResponse extends ResponseWithUsers {};
+model GetUserResponse extends ResponseWithUser {};
+model GetOrdersResponse extends ResponseWithOrders {};
+model GetRacketFeedbacksResponse extends ResponseWithFeedbacks {};
+model GetRacketsResponse extends ResponseWithRackets {};
+model GetRacketResponse extends ResponseWithRacket {};
 
 /**
   API Definition
 **/
 @route("/api")
 namespace Api {
-
   @tag("auth")
   @route("/auth")
   namespace Auth {
@@ -110,50 +169,113 @@ namespace Api {
   }
 
   @tag("user")
+  @useAuth(BearerAuth)
   namespace User {
-    @summary("get cart items")
     @route("/cart")
-    @useAuth(BearerAuth)
-    @get op getCart(): GetCartResponse | ErrorResponse;
+    namespace Cart {
+      @summary("get cart items")
+      @get op getCart(): GetCartResponse | ErrorResponse;
 
-    @summary("add racket in cart")
-    @route("/cart")
-    @useAuth(BearerAuth)
-    @post op addRacket(...AddRacketRequest): AddRacketResponse | ErrorResponse;
+      @summary("add racket in cart")
+      @post op addRacket(...AddRacketRequest): AddRacketResponse | ErrorResponse;
 
-    @summary("delete racket from cart")
-    @route("/cart/rackets/{racket_id}")
-    @useAuth(BearerAuth)
-    @delete op deleteRacket(...DeleteRacketRequest): DeleteRacketResponse | ErrorResponse;
+      @route("/rackets")
+      namespace Rackets {
+        @summary("delete racket from cart")
+        @delete op deleteRacket(...DeleteRacketRequest): DeleteRacketResponse | ErrorResponse;
 
-    @summary("update rackets count in cart")
-    @route("/cart/rackets/{racket_id}")
-    @useAuth(BearerAuth)
-    @put op updateRacketsCount(...UpdateRacketsCountRequest): UpdateRacketsCountResponse | ErrorResponse;
+        @summary("update rackets count in cart")
+        @put op updateRacketsCount(...UpdateRacketsCountRequest): UpdateRacketsCountResponse | ErrorResponse;
+      }
+    }
 
-    @summary("get user feedbacks")
     @route("/feedbacks")
-    @useAuth(BearerAuth)
-    @get op getFeedbacks(): GetFeedbacksResponse | ErrorResponse;
+    namespace Feedbacks {
+      @summary("get user feedbacks")
+      @get op getFeedbacks(): GetFeedbacksResponse | ErrorResponse;
 
-    @summary("create feedback")
-    @route("/feedbacks")
-    @useAuth(BearerAuth)
-    @post op createFeedback(...CreateFeedbackRequest): CreateFeedbackResponse | ErrorResponse;
+      @summary("create feedback")
+      @post op createFeedback(...CreateFeedbackRequest): CreateFeedbackResponse | ErrorResponse;
 
-    @summary("delete feedback")
-    @route("/feedbacks/{racket_id}")
-    @useAuth(BearerAuth)
-    @delete op deleteFeedback(...DeleteFeedbackRequest): OkResponse | ErrorResponse;
+      @summary("delete feedback")
+      @delete op deleteFeedback(...DeleteFeedbackRequest): OkResponse | ErrorResponse;
+    }
 
-    @summary("create order")
     @route("/orders")
-    @useAuth(BearerAuth)
-    @post op createOrder(...CreateOrderRequest): OkResponse | ErrorResponse;
+    namespace Orders {
+      @summary("create order")
+      @post op createOrder(...CreateOrderRequest): OkResponse | ErrorResponse;
+    }
 
-    @summary("get user profile")
     @route("/profile")
-    @useAuth(BearerAuth)
-    @get op getProfile(): GetProfileResponse | ErrorResponse;
+    namespace Profile {
+      @summary("get user profile")
+      @get op getProfile(): GetProfileResponse | ErrorResponse;
+    }
+  }
+
+  @tag("admin")
+  @useAuth(BearerAuth)
+  namespace Admin {
+    @route("/orders")
+    namespace Orders {
+      @summary("get order")
+      @get op getOrder(...GetOrderRequest): GetOrderResponse | ErrorResponse;
+
+      @summary("update order status")
+      @patch op updateOrderStatus(...UpdateOrderStatusRequest): OkResponse | ErrorResponse;
+    }
+
+    @route("/rackets")
+    namespace Rackets {
+      @summary("create racket in shop")
+      @post op createRacket(...CreateRacketRequest): CreateRacketResponse | ErrorResponse;
+
+      @summary("update racket quantity")
+      @patch op updateRacketQuantity(...UpdateRacketQuantityRequest): OkResponse | ErrorResponse;
+    }
+
+    @route("/users")
+    namespace Users {
+      @summary("get all users")
+      @get op getUsers(): GetUsersResponse | ErrorResponse;
+
+      @summary("get user")
+      @get op getUser(...GetUserRequest): GetUserResponse | ErrorResponse;
+
+      @summary("change user role")
+      @patch op changeUserRole(...ChangeUserRole): OkResponse | ErrorResponse;
+    }
+  }
+
+  @tag("authorized users")
+  @useAuth(BearerAuth)
+  namespace AuthorizedUsers {
+    @route("/orders")
+    namespace Orders {
+      @summary("get orders")
+      @get op getOrders(...GetOrdersRequest): GetOrdersResponse | ErrorResponse;
+    }
+  }
+
+  @tag("all users")
+  namespace AllUsers {
+    @route("/feedbacks")
+    namespace Feedbacks {
+      @route("/rackets")
+      namespace Rackets {
+        @summary("get feedbacks for racket")
+        @get op getRacketFeedbacks(...GetRacketFeedbacksRequest): GetRacketFeedbacksResponse | ErrorResponse;
+      }
+    }
+
+    @route("/rackets")
+    namespace Rackets {
+      @summary("get all rackets")
+      @get op getRackets(...GetRacketsRequest): GetRacketsResponse | ErrorResponse;
+
+      @summary("get racket")
+      @get op getRacket(...GetRacketRequest): GetRacketResponse | ErrorResponse;
+    }
   }
 }
