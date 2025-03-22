@@ -5,6 +5,9 @@ info:
 tags:
   - name: auth
   - name: user
+  - name: admin
+  - name: authorized users
+  - name: all users
 paths:
   /api/auth/login:
     post:
@@ -82,7 +85,7 @@ paths:
                 - surname
   /api/cart:
     get:
-      operationId: User_getCart
+      operationId: Cart_getCart
       summary: get cart items
       parameters: []
       responses:
@@ -103,7 +106,7 @@ paths:
       security:
         - BearerAuth: []
     post:
-      operationId: User_addRacket
+      operationId: Cart_addRacket
       summary: add racket in cart
       parameters: []
       responses:
@@ -139,10 +142,10 @@ paths:
         - BearerAuth: []
   /api/cart/rackets/{racket_id}:
     delete:
-      operationId: User_deleteRacket
+      operationId: Rackets_deleteRacket
       summary: delete racket from cart
       parameters:
-        - $ref: '#/components/parameters/DeleteRacketRequest'
+        - $ref: '#/components/parameters/WithRacketId'
       responses:
         '200':
           description: The request has succeeded.
@@ -161,10 +164,10 @@ paths:
       security:
         - BearerAuth: []
     put:
-      operationId: User_updateRacketsCount
+      operationId: Rackets_updateRacketsCount
       summary: update rackets count in cart
       parameters:
-        - $ref: '#/components/parameters/UpdateRacketsCountRequest.racket_id'
+        - $ref: '#/components/parameters/WithRacketId'
       responses:
         '200':
           description: The request has succeeded.
@@ -195,7 +198,7 @@ paths:
         - BearerAuth: []
   /api/feedbacks:
     get:
-      operationId: User_getFeedbacks
+      operationId: Feedbacks_getFeedbacks
       summary: get user feedbacks
       parameters: []
       responses:
@@ -216,7 +219,7 @@ paths:
       security:
         - BearerAuth: []
     post:
-      operationId: User_createFeedback
+      operationId: Feedbacks_createFeedback
       summary: create feedback
       parameters: []
       responses:
@@ -253,12 +256,33 @@ paths:
                 - rating
       security:
         - BearerAuth: []
+  /api/feedbacks/rackets/{racket_id}:
+    get:
+      operationId: Rackets_getRacketFeedbacks
+      summary: get feedbacks for racket
+      parameters:
+        - $ref: '#/components/parameters/WithRacketId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRacketFeedbacksResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - all users
   /api/feedbacks/{racket_id}:
     delete:
-      operationId: User_deleteFeedback
+      operationId: Feedbacks_deleteFeedback
       summary: delete feedback
       parameters:
-        - $ref: '#/components/parameters/DeleteFeedbackRequest'
+        - $ref: '#/components/parameters/WithRacketId'
       responses:
         '200':
           description: The request has succeeded.
@@ -274,7 +298,7 @@ paths:
         - BearerAuth: []
   /api/orders:
     post:
-      operationId: User_createOrder
+      operationId: Orders_createOrder
       summary: create order
       parameters: []
       responses:
@@ -308,9 +332,83 @@ paths:
                 - recipient_name
       security:
         - BearerAuth: []
+    get:
+      operationId: Orders_getOrders
+      summary: get orders
+      parameters:
+        - $ref: '#/components/parameters/WithPaging.pattern'
+        - $ref: '#/components/parameters/WithPaging.field'
+        - $ref: '#/components/parameters/WithPaging.sort'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrdersResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - authorized users
+      security:
+        - BearerAuth: []
+  /api/orders/{order_id}:
+    get:
+      operationId: Orders_getOrder
+      summary: get order
+      parameters:
+        - $ref: '#/components/parameters/WithOrderId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - admin
+      security:
+        - BearerAuth: []
+    patch:
+      operationId: Orders_updateOrderStatus
+      summary: update order status
+      parameters:
+        - $ref: '#/components/parameters/WithOrderId'
+      responses:
+        '200':
+          description: The request has succeeded.
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+      security:
+        - BearerAuth: []
   /api/profile:
     get:
-      operationId: User_getProfile
+      operationId: Profile_getProfile
       summary: get user profile
       parameters: []
       responses:
@@ -330,22 +428,242 @@ paths:
         - user
       security:
         - BearerAuth: []
+  /api/rackets:
+    post:
+      operationId: Rackets_createRacket
+      summary: create racket in shop
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRacketResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - admin
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                balance:
+                  type: number
+                  format: float
+                brand:
+                  type: string
+                head_size:
+                  type: number
+                  format: float
+                price:
+                  type: number
+                  format: float
+                quantity:
+                  type: number
+                  format: float
+                weight:
+                  type: number
+                  format: float
+                image:
+                  type: string
+                  format: binary
+              required:
+                - balance
+                - brand
+                - head_size
+                - price
+                - quantity
+                - weight
+                - image
+      security:
+        - BearerAuth: []
+    get:
+      operationId: Rackets_getRackets
+      summary: get all rackets
+      parameters:
+        - $ref: '#/components/parameters/WithPaging.pattern'
+        - $ref: '#/components/parameters/WithPaging.field'
+        - $ref: '#/components/parameters/WithPaging.sort'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRacketsResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - all users
+  /api/rackets/{racket_id}:
+    patch:
+      operationId: Rackets_updateRacketQuantity
+      summary: update racket quantity
+      parameters:
+        - $ref: '#/components/parameters/WithRacketId'
+      responses:
+        '200':
+          description: The request has succeeded.
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+      security:
+        - BearerAuth: []
+    get:
+      operationId: Rackets_getRacket
+      summary: get racket
+      parameters:
+        - $ref: '#/components/parameters/WithRacketId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRacketResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - all users
+  /api/users:
+    get:
+      operationId: Users_getUsers
+      summary: get all users
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUsersResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - admin
+      security:
+        - BearerAuth: []
+  /api/users/{user_id}:
+    get:
+      operationId: Users_getUser
+      summary: get user
+      parameters:
+        - $ref: '#/components/parameters/WithUserId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - admin
+      security:
+        - BearerAuth: []
+    patch:
+      operationId: Users_changeUserRole
+      summary: change user role
+      parameters:
+        - $ref: '#/components/parameters/WithUserId'
+      responses:
+        '200':
+          description: The request has succeeded.
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+      security:
+        - BearerAuth: []
 components:
   parameters:
-    DeleteFeedbackRequest:
+    WithOrderId:
+      name: order_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    WithPaging.field:
+      name: field
+      in: query
+      required: false
+      schema:
+        type: string
+      explode: false
+    WithPaging.pattern:
+      name: pattern
+      in: query
+      required: false
+      schema:
+        type: string
+      explode: false
+    WithPaging.sort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+      explode: false
+    WithRacketId:
       name: racket_id
       in: path
       required: true
       schema:
         type: integer
-    DeleteRacketRequest:
-      name: racket_id
-      in: path
-      required: true
-      schema:
-        type: integer
-    UpdateRacketsCountRequest.racket_id:
-      name: racket_id
+    WithUserId:
+      name: user_id
       in: path
       required: true
       schema:
@@ -400,6 +718,21 @@ components:
           format: float
         quantity:
           type: integer
+    ChangeUserRole:
+      type: object
+      required:
+        - user_id
+        - changeRoleBody
+      properties:
+        user_id:
+          type: integer
+        changeRoleBody:
+          type: object
+          properties:
+            role:
+              type: string
+          required:
+            - role
     CreateFeedbackRequest:
       type: object
       required:
@@ -441,6 +774,54 @@ components:
             - address
             - delivery_date
             - recipient_name
+    CreateRacketRequest:
+      type: object
+      required:
+        - createRacketBody
+      properties:
+        createRacketBody:
+          type: object
+          properties:
+            balance:
+              type: object
+            brand:
+              type: object
+            head_size:
+              type: object
+            price:
+              type: object
+            quantity:
+              type: object
+            weight:
+              type: object
+            image:
+              type: object
+          required:
+            - balance
+            - brand
+            - head_size
+            - price
+            - quantity
+            - weight
+            - image
+    CreateRacketResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithRacket'
+    DeleteFeedbackRequest:
+      type: object
+      required:
+        - racket_id
+      properties:
+        racket_id:
+          type: integer
+    DeleteRacketRequest:
+      type: object
+      required:
+        - racket_id
+      properties:
+        racket_id:
+          type: integer
     DeleteRacketResponse:
       type: object
       allOf:
@@ -487,10 +868,84 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/ResponseWithFeedbacks'
+    GetOrderRequest:
+      type: object
+      required:
+        - order_id
+      properties:
+        order_id:
+          type: integer
+    GetOrderResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithOrder'
+    GetOrdersRequest:
+      type: object
+      properties:
+        pattern:
+          type: string
+        field:
+          type: string
+        sort:
+          type: string
+    GetOrdersResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithOrders'
     GetProfileResponse:
       type: object
       allOf:
         - $ref: '#/components/schemas/ResponseWithUser'
+    GetRacketFeedbacksRequest:
+      type: object
+      required:
+        - racket_id
+      properties:
+        racket_id:
+          type: integer
+    GetRacketFeedbacksResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithFeedbacks'
+    GetRacketRequest:
+      type: object
+      required:
+        - racket_id
+      properties:
+        racket_id:
+          type: integer
+    GetRacketResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithRacket'
+    GetRacketsRequest:
+      type: object
+      properties:
+        pattern:
+          type: string
+        field:
+          type: string
+        sort:
+          type: string
+    GetRacketsResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithRackets'
+    GetUserRequest:
+      type: object
+      required:
+        - user_id
+      properties:
+        user_id:
+          type: integer
+    GetUserResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithUser'
+    GetUsersResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ResponseWithUsers'
     LoginRequest:
       type: object
       required:
@@ -510,6 +965,88 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/ResponseWithAccessToken'
+    Order:
+      type: object
+      required:
+        - id
+        - user_id
+        - creation_date
+        - delivery_date
+        - address
+        - recipient_name
+        - status
+        - lines
+        - total_price
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        creation_date:
+          type: string
+          format: time
+        delivery_date:
+          type: string
+          format: time
+        address:
+          type: string
+        recipient_name:
+          type: string
+        status:
+          type: string
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderLine'
+        total_price:
+          type: number
+          format: float
+    OrderLine:
+      type: object
+      required:
+        - quantity
+        - racket_id
+      properties:
+        quantity:
+          type: integer
+        racket_id:
+          type: integer
+    Racket:
+      type: object
+      required:
+        - id
+        - brand
+        - weight
+        - balance
+        - head_size
+        - available
+        - quantity
+        - price
+        - image
+      properties:
+        id:
+          type: integer
+        brand:
+          type: string
+        weight:
+          type: number
+          format: float
+        balance:
+          type: number
+          format: float
+        head_size:
+          type: number
+          format: float
+        available:
+          type: boolean
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: float
+        image:
+          type: string
+          format: byte
     RegisterRequest:
       type: object
       required:
@@ -567,6 +1104,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Feedback'
+    ResponseWithOrder:
+      type: object
+      required:
+        - order
+      properties:
+        order:
+          $ref: '#/components/schemas/Order'
+    ResponseWithOrders:
+      type: object
+      required:
+        - orders
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    ResponseWithRacket:
+      type: object
+      required:
+        - racket
+      properties:
+        racket:
+          $ref: '#/components/schemas/Racket'
+    ResponseWithRackets:
+      type: object
+      required:
+        - rackets
+      properties:
+        rackets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Racket'
     ResponseWithUser:
       type: object
       required:
@@ -574,6 +1143,60 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
+    ResponseWithUsers:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    UpdateOrderStatusRequest:
+      type: object
+      required:
+        - order_id
+        - updateStatusBody
+      properties:
+        order_id:
+          type: integer
+        updateStatusBody:
+          type: object
+          properties:
+            status:
+              type: string
+          required:
+            - status
+    UpdateRacketQuantityRequest:
+      type: object
+      required:
+        - racket_id
+        - updateQuantityBody
+      properties:
+        racket_id:
+          type: integer
+        updateQuantityBody:
+          type: object
+          properties:
+            quantity:
+              type: integer
+          required:
+            - quantity
+    UpdateRacketsCountRequest:
+      type: object
+      required:
+        - racket_id
+        - updateRacketsCountBody
+      properties:
+        racket_id:
+          type: integer
+        updateRacketsCountBody:
+          type: object
+          properties:
+            quantity:
+              type: integer
+          required:
+            - quantity
     UpdateRacketsCountResponse:
       type: object
       allOf:
@@ -601,7 +1224,7 @@ components:
   securitySchemes:
     BearerAuth:
       type: http
-      scheme: bearer
+      scheme: Bearer
 servers:
   - url: http://localhost:8080
     description: localhost

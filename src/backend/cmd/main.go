@@ -54,7 +54,7 @@ func main() {
 	cartService := service.NewCartService(l, cartStorage, racketStorage)
 	feedbackService := service.NewFeedbackService(l, feedbackStorage)
 	orderService := service.NewOrderService(l, orderStorage, cartStorage, racketStorage)
-	//racketService := service.NewRacketService(l, racketStorage)
+	racketService := service.NewRacketService(l, racketStorage)
 
 	h := handlers.NewHandler(
 		l,
@@ -63,6 +63,7 @@ func main() {
 		userService,
 		feedbackService,
 		orderService,
+		racketService,
 	)
 	securityHandler := handlers.NewSecurityHandler(userService, []byte(cfg.Auth.SigningKey))
 	oas, err := api.NewServer(h, securityHandler)

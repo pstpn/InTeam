@@ -15,12 +15,12 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-// UserDeleteFeedbackParams is parameters of User_deleteFeedback operation.
-type UserDeleteFeedbackParams struct {
+// FeedbacksDeleteFeedbackParams is parameters of Feedbacks_deleteFeedback operation.
+type FeedbacksDeleteFeedbackParams struct {
 	RacketID int
 }
 
-func unpackUserDeleteFeedbackParams(packed middleware.Parameters) (params UserDeleteFeedbackParams) {
+func unpackFeedbacksDeleteFeedbackParams(packed middleware.Parameters) (params FeedbacksDeleteFeedbackParams) {
 	{
 		key := middleware.ParameterKey{
 			Name: "racket_id",
@@ -31,7 +31,7 @@ func unpackUserDeleteFeedbackParams(packed middleware.Parameters) (params UserDe
 	return params
 }
 
-func decodeUserDeleteFeedbackParams(args [1]string, argsEscaped bool, r *http.Request) (params UserDeleteFeedbackParams, _ error) {
+func decodeFeedbacksDeleteFeedbackParams(args [1]string, argsEscaped bool, r *http.Request) (params FeedbacksDeleteFeedbackParams, _ error) {
 	// Decode path: racket_id.
 	if err := func() error {
 		param := args[0]
@@ -80,12 +80,308 @@ func decodeUserDeleteFeedbackParams(args [1]string, argsEscaped bool, r *http.Re
 	return params, nil
 }
 
-// UserDeleteRacketParams is parameters of User_deleteRacket operation.
-type UserDeleteRacketParams struct {
+// OrdersGetOrderParams is parameters of Orders_getOrder operation.
+type OrdersGetOrderParams struct {
+	OrderID int
+}
+
+func unpackOrdersGetOrderParams(packed middleware.Parameters) (params OrdersGetOrderParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(int)
+	}
+	return params
+}
+
+func decodeOrdersGetOrderParams(args [1]string, argsEscaped bool, r *http.Request) (params OrdersGetOrderParams, _ error) {
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.OrderID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// OrdersGetOrdersParams is parameters of Orders_getOrders operation.
+type OrdersGetOrdersParams struct {
+	Pattern OptString
+	Field   OptString
+	Sort    OptString
+}
+
+func unpackOrdersGetOrdersParams(packed middleware.Parameters) (params OrdersGetOrdersParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "pattern",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Pattern = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "field",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Field = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Sort = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeOrdersGetOrdersParams(args [0]string, argsEscaped bool, r *http.Request) (params OrdersGetOrdersParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: pattern.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "pattern",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPatternVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPatternVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Pattern.SetTo(paramsDotPatternVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "pattern",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: field.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "field",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Field.SetTo(paramsDotFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "field",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sort.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Sort.SetTo(paramsDotSortVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// OrdersUpdateOrderStatusParams is parameters of Orders_updateOrderStatus operation.
+type OrdersUpdateOrderStatusParams struct {
+	OrderID int
+}
+
+func unpackOrdersUpdateOrderStatusParams(packed middleware.Parameters) (params OrdersUpdateOrderStatusParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "order_id",
+			In:   "path",
+		}
+		params.OrderID = packed[key].(int)
+	}
+	return params
+}
+
+func decodeOrdersUpdateOrderStatusParams(args [1]string, argsEscaped bool, r *http.Request) (params OrdersUpdateOrderStatusParams, _ error) {
+	// Decode path: order_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "order_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.OrderID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "order_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RacketsDeleteRacketParams is parameters of Rackets_deleteRacket operation.
+type RacketsDeleteRacketParams struct {
 	RacketID int
 }
 
-func unpackUserDeleteRacketParams(packed middleware.Parameters) (params UserDeleteRacketParams) {
+func unpackRacketsDeleteRacketParams(packed middleware.Parameters) (params RacketsDeleteRacketParams) {
 	{
 		key := middleware.ParameterKey{
 			Name: "racket_id",
@@ -96,7 +392,7 @@ func unpackUserDeleteRacketParams(packed middleware.Parameters) (params UserDele
 	return params
 }
 
-func decodeUserDeleteRacketParams(args [1]string, argsEscaped bool, r *http.Request) (params UserDeleteRacketParams, _ error) {
+func decodeRacketsDeleteRacketParams(args [1]string, argsEscaped bool, r *http.Request) (params RacketsDeleteRacketParams, _ error) {
 	// Decode path: racket_id.
 	if err := func() error {
 		param := args[0]
@@ -145,12 +441,12 @@ func decodeUserDeleteRacketParams(args [1]string, argsEscaped bool, r *http.Requ
 	return params, nil
 }
 
-// UserUpdateRacketsCountParams is parameters of User_updateRacketsCount operation.
-type UserUpdateRacketsCountParams struct {
+// RacketsGetRacketParams is parameters of Rackets_getRacket operation.
+type RacketsGetRacketParams struct {
 	RacketID int
 }
 
-func unpackUserUpdateRacketsCountParams(packed middleware.Parameters) (params UserUpdateRacketsCountParams) {
+func unpackRacketsGetRacketParams(packed middleware.Parameters) (params RacketsGetRacketParams) {
 	{
 		key := middleware.ParameterKey{
 			Name: "racket_id",
@@ -161,7 +457,7 @@ func unpackUserUpdateRacketsCountParams(packed middleware.Parameters) (params Us
 	return params
 }
 
-func decodeUserUpdateRacketsCountParams(args [1]string, argsEscaped bool, r *http.Request) (params UserUpdateRacketsCountParams, _ error) {
+func decodeRacketsGetRacketParams(args [1]string, argsEscaped bool, r *http.Request) (params RacketsGetRacketParams, _ error) {
 	// Decode path: racket_id.
 	if err := func() error {
 		param := args[0]
@@ -203,6 +499,497 @@ func decodeUserUpdateRacketsCountParams(args [1]string, argsEscaped bool, r *htt
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "racket_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RacketsGetRacketFeedbacksParams is parameters of Rackets_getRacketFeedbacks operation.
+type RacketsGetRacketFeedbacksParams struct {
+	RacketID int
+}
+
+func unpackRacketsGetRacketFeedbacksParams(packed middleware.Parameters) (params RacketsGetRacketFeedbacksParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "racket_id",
+			In:   "path",
+		}
+		params.RacketID = packed[key].(int)
+	}
+	return params
+}
+
+func decodeRacketsGetRacketFeedbacksParams(args [1]string, argsEscaped bool, r *http.Request) (params RacketsGetRacketFeedbacksParams, _ error) {
+	// Decode path: racket_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "racket_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.RacketID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "racket_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RacketsGetRacketsParams is parameters of Rackets_getRackets operation.
+type RacketsGetRacketsParams struct {
+	Pattern OptString
+	Field   OptString
+	Sort    OptString
+}
+
+func unpackRacketsGetRacketsParams(packed middleware.Parameters) (params RacketsGetRacketsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "pattern",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Pattern = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "field",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Field = v.(OptString)
+		}
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "sort",
+			In:   "query",
+		}
+		if v, ok := packed[key]; ok {
+			params.Sort = v.(OptString)
+		}
+	}
+	return params
+}
+
+func decodeRacketsGetRacketsParams(args [0]string, argsEscaped bool, r *http.Request) (params RacketsGetRacketsParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: pattern.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "pattern",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotPatternVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotPatternVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Pattern.SetTo(paramsDotPatternVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "pattern",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: field.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "field",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotFieldVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotFieldVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Field.SetTo(paramsDotFieldVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "field",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	// Decode query: sort.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				var paramsDotSortVal string
+				if err := func() error {
+					val, err := d.DecodeValue()
+					if err != nil {
+						return err
+					}
+
+					c, err := conv.ToString(val)
+					if err != nil {
+						return err
+					}
+
+					paramsDotSortVal = c
+					return nil
+				}(); err != nil {
+					return err
+				}
+				params.Sort.SetTo(paramsDotSortVal)
+				return nil
+			}); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sort",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RacketsUpdateRacketQuantityParams is parameters of Rackets_updateRacketQuantity operation.
+type RacketsUpdateRacketQuantityParams struct {
+	RacketID int
+}
+
+func unpackRacketsUpdateRacketQuantityParams(packed middleware.Parameters) (params RacketsUpdateRacketQuantityParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "racket_id",
+			In:   "path",
+		}
+		params.RacketID = packed[key].(int)
+	}
+	return params
+}
+
+func decodeRacketsUpdateRacketQuantityParams(args [1]string, argsEscaped bool, r *http.Request) (params RacketsUpdateRacketQuantityParams, _ error) {
+	// Decode path: racket_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "racket_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.RacketID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "racket_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// RacketsUpdateRacketsCountParams is parameters of Rackets_updateRacketsCount operation.
+type RacketsUpdateRacketsCountParams struct {
+	RacketID int
+}
+
+func unpackRacketsUpdateRacketsCountParams(packed middleware.Parameters) (params RacketsUpdateRacketsCountParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "racket_id",
+			In:   "path",
+		}
+		params.RacketID = packed[key].(int)
+	}
+	return params
+}
+
+func decodeRacketsUpdateRacketsCountParams(args [1]string, argsEscaped bool, r *http.Request) (params RacketsUpdateRacketsCountParams, _ error) {
+	// Decode path: racket_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "racket_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.RacketID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "racket_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UsersChangeUserRoleParams is parameters of Users_changeUserRole operation.
+type UsersChangeUserRoleParams struct {
+	UserID int
+}
+
+func unpackUsersChangeUserRoleParams(packed middleware.Parameters) (params UsersChangeUserRoleParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "user_id",
+			In:   "path",
+		}
+		params.UserID = packed[key].(int)
+	}
+	return params
+}
+
+func decodeUsersChangeUserRoleParams(args [1]string, argsEscaped bool, r *http.Request) (params UsersChangeUserRoleParams, _ error) {
+	// Decode path: user_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "user_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.UserID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "user_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UsersGetUserParams is parameters of Users_getUser operation.
+type UsersGetUserParams struct {
+	UserID int
+}
+
+func unpackUsersGetUserParams(packed middleware.Parameters) (params UsersGetUserParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "user_id",
+			In:   "path",
+		}
+		params.UserID = packed[key].(int)
+	}
+	return params
+}
+
+func decodeUsersGetUserParams(args [1]string, argsEscaped bool, r *http.Request) (params UsersGetUserParams, _ error) {
+	// Decode path: user_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "user_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.UserID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "user_id",
 			In:   "path",
 			Err:  err,
 		}

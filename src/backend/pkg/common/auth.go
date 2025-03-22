@@ -24,6 +24,11 @@ func MustUserIDFromCtx(ctx context.Context) int {
 	return userID
 }
 
+func CtxContainUserID(ctx context.Context) bool {
+	_, ok := ctx.Value(userIDKey).(int)
+	return ok
+}
+
 func AdminIDToCtx(ctx context.Context, adminID int) context.Context {
 	return context.WithValue(ctx, adminID, adminID)
 }
@@ -35,4 +40,9 @@ func MustAdminIDFromCtx(ctx context.Context) int {
 	}
 
 	return adminID
+}
+
+func CtxContainAdminID(ctx context.Context) bool {
+	_, ok := ctx.Value(adminIDKey).(int)
+	return ok
 }
