@@ -1,14 +1,14 @@
 .icon {
-    width: 40px;  
+    width: 40px;
     height: 40px;
+    transition: filter 0.3s ease; /* Плавный переход */
 }
 
 .icon-logo {
-    width: 80px;  
+    width: 80px;
 }
 
-/* Стиль для активной иконки */
-.router-link-active .icon,
-.router-link-exact-active .icon {
+/* Стили для активного элемента <a> */
+a.active .icon {
     filter: brightness(1.2) invert(0.5);
 }

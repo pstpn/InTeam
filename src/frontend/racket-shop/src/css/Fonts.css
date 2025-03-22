@@ -32,3 +32,21 @@
     font-size: 15px;
     color: #EC5800;
 }
+
+.font-container-header {
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 300;
+    font-size: 30px;
+}
+
+.font-grid-1 {
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 400;
+    font-size: 25px;
+}
+
+.font-form-body-bold {
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 600;
+    font-size: 15px;
+}

@@ -17,7 +17,7 @@
 
             <div class="form-input">
                 <input
-                    type="password"
+                    :type="showPassword ? 'text' : 'password'"
                     id="password"
                     v-model="password"
                     placeholder="Пароль"
@@ -25,8 +25,13 @@
                     @input="resetError"
                     required
                 />
+                <img 
+                    :src="showPassword ? require('@/assets/noview.png') : require('@/assets/view.png')" 
+                    class="icon" 
+                    @click="togglePasswordVisibility"
+                />
             </div>
-
+        
             <div class="form-in-row" v-if="showError">
                 <p class="font-form-body-error">{{ errorMessage }}</p>
             </div>
@@ -47,7 +52,7 @@
 
 <script>
 import axios from 'axios';
-import backend_url from "../../../config.js"
+import config from "../../../config.js"
 
 export default {
     data() {
@@ -56,31 +61,14 @@ export default {
             password: '',
             error: false,
             showError: false,
-            errorMessage: 'Некорректные данные для ввода!'
+            errorMessage: 'Некорректные данные для ввода!',
+            showPassword: false, 
         };
     },
     methods: {
         async login() {
-
-            // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            // if (!this.email || !emailRegex.test(this.email)) {
-            //     this.showError = true;
-            //     this.error = true;
-
-            //     this.errorMessage = 'Некорректный формат электронной почты!';
-            //     return;
-            // }
-
-            // if (!this.password || this.password.length == 0) {
-            //     this.showError = true;
-            //     this.error = true;
-
-            //     this.errorMessage = 'Пароль не должен быть пустым!';
-            //     return;
-            // }
-
             try {
-                const cur_url = backend_url + 'api/auth/login'
+                const cur_url = config.BACKEND_URL + config.API.auth.login;
                 const response = await axios.post(cur_url, {
                     email: this.email,
                     password: this.password
@@ -91,18 +79,21 @@ export default {
                     localStorage.setItem('token', response.data.access_token);
 
                     this.error = false;
-                    this.$router.push('/profile');
+                    this.$router.push(config.API.user.profile);
                 }
+
             } catch (error) {
                 console.error('Error logging in:', error);
                 this.error = true;
-
                 this.showError = true;
             }
         },
         resetError() {
             this.error = false;
             this.showError = false;
+        },
+        togglePasswordVisibility() {
+            this.showPassword = !this.showPassword;
         }
     }
 };
@@ -114,4 +105,14 @@ export default {
 @import "../../css/Fonts.css";
 @import "../../css/Input.css";
 @import "../../css/Buttons.css";
+
+.password-toggle-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
 </style>

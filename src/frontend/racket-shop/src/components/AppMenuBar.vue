@@ -4,36 +4,66 @@
             <img src="../assets/logo.png" alt="Rackets" class="icon-logo"/>
         </router-link>
         <nav class="container-menu-items">
-            <router-link to="/orders" class="container-icon">
+            <a @click="navigateTo(config.API.user.orders)" :class="{ 'active': activeLink === config.API.user.orders }" class="container-icon">
                 <img src="../assets/order.png" alt="Order" class="icon"/>
                 <span class="tooltip font-tooltip">Заказы</span>
-            </router-link>
+            </a>
 
-            <router-link to="/feedbacks" class="container-icon">
+            <a @click="navigateTo(config.API.user.feedbacks)" :class="{ 'active': activeLink === config.API.user.feedbacks }" class="container-icon">
                 <img src="../assets/feedback.png" alt="Feedback" class="icon"/>
                 <span class="tooltip font-tooltip">Отзывы</span>
-            </router-link>
+            </a>
 
-            <router-link to="/cart" class="container-icon">
+            <a @click="navigateTo(config.API.user.cart)" :class="{ 'active': activeLink === config.API.user.cart }" class="container-icon">
                 <img src="../assets/cart.png" alt="Cart" class="icon"/>
                 <span class="tooltip font-tooltip">Корзина</span>
-            </router-link>
+            </a>
 
-            <router-link to="/auth/login" class="container-icon">
+            <a @click="navigateTo(config.API.user.profile)" class="container-icon">
                 <img src="../assets/auth.png" alt="Login" class="icon"/>
                 <span class="tooltip font-tooltip">Личный<br>кабинет</span>
-            </router-link>
+            </a>
         </nav>
     </nav>  
 </template>
 
 <script>
-import '../css/Containers.css'
-import '../css/Icons.css'
-import '../css/Fonts.css'
+import config from "../../config.js"; // Импортируем конфиг
 
 export default {
     name: 'AppMenuBar',
+    data() {
+        return {
+            activeLink: '',
+            config: config, 
+        };
+    },
+    methods: {
+        hasToken() {
+            return localStorage.getItem('token') !== null;
+        },
+        navigateTo(route) {
+            if (this.hasToken()) {
+                this.activeLink = route;
+                this.$router.push(route);
+            } else {
+                this.$router.push(config.API.auth.login);
+            }
+        }
+    },
+    mounted() {
+        this.activeLink = this.$route.path;
+    },
+    watch: {
+        '$route.path'(newPath) {
+            this.activeLink = newPath;
+        }
+    },
 }
-
 </script>
+
+<style>
+@import "../css/Containers.css";
+@import "../css/Icons.css";
+@import "../css/Fonts.css";
+</style>
