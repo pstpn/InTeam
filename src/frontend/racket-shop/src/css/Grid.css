@@ -86,8 +86,8 @@
     padding: 10px;
 }
 
-.grid-photo-ball :hover {
-    transform: scale(1.03);
+.grid-photo-ball img:hover {
+    transform: scale(1.2);
     opacity: 0.8;
 }
 
@@ -95,6 +95,7 @@
     width: 10%; 
     height: 10%; 
     object-fit: cover;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .line {

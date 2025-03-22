@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://localhost:8081/api";
+const BACKEND_URL = "http://localhost:8080/api";
 
 const API = {
     auth: {
@@ -10,7 +10,8 @@ const API = {
         orders: '/orders',
         cart: '/cart',
         feedbacks: '/feedbacks'
-    }
+    },
+    rackets: '/rackets'
 };
 
 export default { BACKEND_URL, API };

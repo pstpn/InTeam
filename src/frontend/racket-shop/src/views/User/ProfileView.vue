@@ -5,7 +5,7 @@
         <div class="grid-profile">
             <div class="grid-card-name">
                 <p class="font-grid-1">{{ userData.name }} {{ userData.surname }}</p>
-                <p class="font-grid-2">{{ userData.email }}</p>
+                <p class="font-form-body">{{ userData.email }}</p>
                 <div class="form-in-row-right">
                     <button 
                         class="submit-button-orange"

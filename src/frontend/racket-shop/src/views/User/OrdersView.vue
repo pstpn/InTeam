@@ -11,39 +11,39 @@
                             @click="handleOrderAction(order)">
                             {{ getStatusButtonText(order.status) }}
                         </button>
-                        <p class="font-grid-2-bold">
+                        <p class="font-form-body-bold">
                             Цена: {{ order.total_price }} ₽
                         </p>
                     </div>
                     <div class="form-in-row">
-                        <p class="font-grid-2">
+                        <p class="font-form-body">
                             Товары
                         </p>
-                        <p class="font-grid-2-bold">
+                        <p class="font-form-body-bold">
                             {{ order.items.length }} шт.
                         </p>
                     </div>
                     <div class="form-in-row">
-                        <p class="font-grid-2">
+                        <p class="font-form-body">
                             Получатель
                         </p>
-                        <p class="font-grid-2-bold">
+                        <p class="font-form-body-bold">
                             {{ order.recipient_name }}
                         </p>
                     </div>
                     <div class="form-in-row">
-                        <p class="font-grid-2">
+                        <p class="font-form-body">
                             Адрес доставки
                         </p>
-                        <p class="font-grid-2-bold">
+                        <p class="font-form-body-bold">
                             {{ order.delivery_address }}
                         </p>
                     </div>
                     <div class="form-in-row">
-                        <p class="font-grid-2">
+                        <p class="font-form-body">
                             Дата доставки
                         </p>
-                        <p class="font-grid-2-bold">
+                        <p class="font-form-body-bold">
                             {{ formatDate(order.delivery_date) }}
                         </p>
                     </div>
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <div v-else class="font-grid-2">
+        <div v-else class="font-form-body">
             <p>У вас пока нет заказов</p>
         </div>
     </div>
@@ -84,7 +84,6 @@ export default {
                     }
                 });
 
-                console.log(response)
                 if (response.data) {
                     this.orders = response.data.orders;
                 }

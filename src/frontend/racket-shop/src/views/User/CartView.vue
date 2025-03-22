@@ -2,7 +2,7 @@
     <div class="container-page">
         <h1 class="font-container-header">Моя корзина</h1>
         
-        <div v-if="cartData.lines.length === 0" class="font-grid-2">
+        <div v-if="cartData.lines.length === 0" class="font-form-body">
             <p>Ваша корзина пуста</p>
         </div>
 
@@ -16,24 +16,24 @@
                     </div>
                     <div class="grid-cart-column">
                         <div class="form-in-row">
-                            <p class="font-grid-2-bold">
+                            <p class="font-form-body-bold">
                                 {{ item.racket_id }}
                             </p>
                             <div class="grid-button">
                                 <button class="submit-button-cart" @click="decreaseQuantity(item)">
                                     -
                                 </button>
-                                <p class="font-grid-2-bold">{{ item.quantity }} шт.</p>
+                                <p class="font-form-body-bold">{{ item.quantity }} шт.</p>
                                 <button class="submit-button-cart" @click="increaseQuantity(item)">
                                     +
                                 </button>
                             </div>
                         </div>
                         <div class="form-in-row">
-                            <p class="font-grid-2">
+                            <p class="font-form-body">
                                 Цена
                             </p>
-                            <p class="font-grid-2-bold">
+                            <p class="font-form-body-bold">
                                 {{ item.price }}
                             </p>
                         </div>
@@ -53,18 +53,18 @@
             <div class="grid-cart-column">
                 <div class="grid-card-name">
                     <div class="form-in-row">
-                        <p class="font-grid-2">
+                        <p class="font-form-body">
                             Товары
                         </p>
-                        <p class="font-grid-2-bold">
+                        <p class="font-form-body-bold">
                             {{ cartData.quantity }} 
                         </p>
                     </div>
                     <div class="form-in-row">
-                        <p class="font-grid-2">
+                        <p class="font-form-body">
                             Итог
                         </p>
-                        <p class="font-grid-2-bold">
+                        <p class="font-form-body-bold">
                             {{ cartData.total_price }} 
                         </p>
                     </div>

@@ -2,7 +2,7 @@ build:
 	docker build -t racket-rave .
 
 run: build
-	docker run -p 8081:8081 -d --name racket-container racket-rave:latest
+	docker run -p 8080:8081 -d --name racket-container racket-rave:latest
 
 stop:
 	@docker stop racket-container

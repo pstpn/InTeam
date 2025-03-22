@@ -4,11 +4,12 @@ run:
 stop:
 	@docker stop racket-front
 
-down:
-	@docker compose down
-
-rm: down
+rm: stop
+	@docker rm racket-front
 	@docker image rm frontend-racket-front:latest
+
+run-local:
+	npm run serve
 
 logs:
 	docker logs racket-front

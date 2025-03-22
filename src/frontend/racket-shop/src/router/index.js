@@ -7,6 +7,7 @@ import ProfileView from '../views/User/ProfileView.vue'
 import CartView from '../views/User/CartView.vue'
 import FeedbacksView from '../views/User/FeedbacksView.vue'
 import OrdersView from '../views/User/OrdersView.vue'
+import RacketsView from '@/views/RacketsView.vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -14,6 +15,10 @@ const router = createRouter({
       {
         path: config.API.auth.login,
         component: LoginView,
+      },
+      {
+        path: config.API.rackets,
+        component: RacketsView,
       },
       {
         path: config.API.auth.register,
