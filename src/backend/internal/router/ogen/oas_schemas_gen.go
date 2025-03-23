@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/go-faster/errors"
+
+	ht "github.com/ogen-go/ogen/http"
 )
 
 func (s *ErrorResponseStatusCode) Error() string {
@@ -151,6 +153,31 @@ func (s *Cart) SetTotalPrice(val float32) {
 	s.TotalPrice = val
 }
 
+type CartAddRacketReq struct {
+	Quantity int `json:"quantity"`
+	RacketID int `json:"racket_id"`
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *CartAddRacketReq) GetQuantity() int {
+	return s.Quantity
+}
+
+// GetRacketID returns the value of RacketID.
+func (s *CartAddRacketReq) GetRacketID() int {
+	return s.RacketID
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *CartAddRacketReq) SetQuantity(val int) {
+	s.Quantity = val
+}
+
+// SetRacketID sets the value of RacketID.
+func (s *CartAddRacketReq) SetRacketID(val int) {
+	s.RacketID = val
+}
+
 // Ref: #/components/schemas/CartLine
 type CartLine struct {
 	RacketID int     `json:"racket_id"`
@@ -201,6 +228,21 @@ func (s *CreateFeedbackResponse) GetFeedback() Feedback {
 // SetFeedback sets the value of Feedback.
 func (s *CreateFeedbackResponse) SetFeedback(val Feedback) {
 	s.Feedback = val
+}
+
+// Ref: #/components/schemas/CreateRacketResponse
+type CreateRacketResponse struct {
+	Racket Racket `json:"racket"`
+}
+
+// GetRacket returns the value of Racket.
+func (s *CreateRacketResponse) GetRacket() Racket {
+	return s.Racket
+}
+
+// SetRacket sets the value of Racket.
+func (s *CreateRacketResponse) SetRacket(val Racket) {
+	s.Racket = val
 }
 
 // Ref: #/components/schemas/DeleteRacketResponse
@@ -384,6 +426,45 @@ func (s *Feedback) SetRating(val int) {
 	s.Rating = val
 }
 
+type FeedbacksCreateFeedbackReq struct {
+	Feedback string `json:"feedback"`
+	RacketID int    `json:"racket_id"`
+	Rating   int    `json:"rating"`
+}
+
+// GetFeedback returns the value of Feedback.
+func (s *FeedbacksCreateFeedbackReq) GetFeedback() string {
+	return s.Feedback
+}
+
+// GetRacketID returns the value of RacketID.
+func (s *FeedbacksCreateFeedbackReq) GetRacketID() int {
+	return s.RacketID
+}
+
+// GetRating returns the value of Rating.
+func (s *FeedbacksCreateFeedbackReq) GetRating() int {
+	return s.Rating
+}
+
+// SetFeedback sets the value of Feedback.
+func (s *FeedbacksCreateFeedbackReq) SetFeedback(val string) {
+	s.Feedback = val
+}
+
+// SetRacketID sets the value of RacketID.
+func (s *FeedbacksCreateFeedbackReq) SetRacketID(val int) {
+	s.RacketID = val
+}
+
+// SetRating sets the value of Rating.
+func (s *FeedbacksCreateFeedbackReq) SetRating(val int) {
+	s.Rating = val
+}
+
+// FeedbacksDeleteFeedbackOK is response for FeedbacksDeleteFeedback operation.
+type FeedbacksDeleteFeedbackOK struct{}
+
 // Ref: #/components/schemas/GetCartResponse
 type GetCartResponse struct {
 	Cart Cart `json:"cart"`
@@ -414,6 +495,36 @@ func (s *GetFeedbacksResponse) SetFeedbacks(val []Feedback) {
 	s.Feedbacks = val
 }
 
+// Ref: #/components/schemas/GetOrderResponse
+type GetOrderResponse struct {
+	Order Order `json:"order"`
+}
+
+// GetOrder returns the value of Order.
+func (s *GetOrderResponse) GetOrder() Order {
+	return s.Order
+}
+
+// SetOrder sets the value of Order.
+func (s *GetOrderResponse) SetOrder(val Order) {
+	s.Order = val
+}
+
+// Ref: #/components/schemas/GetOrdersResponse
+type GetOrdersResponse struct {
+	Orders []Order `json:"orders"`
+}
+
+// GetOrders returns the value of Orders.
+func (s *GetOrdersResponse) GetOrders() []Order {
+	return s.Orders
+}
+
+// SetOrders sets the value of Orders.
+func (s *GetOrdersResponse) SetOrders(val []Order) {
+	s.Orders = val
+}
+
 // Ref: #/components/schemas/GetProfileResponse
 type GetProfileResponse struct {
 	User User `json:"user"`
@@ -429,6 +540,81 @@ func (s *GetProfileResponse) SetUser(val User) {
 	s.User = val
 }
 
+// Ref: #/components/schemas/GetRacketFeedbacksResponse
+type GetRacketFeedbacksResponse struct {
+	Feedbacks []Feedback `json:"feedbacks"`
+}
+
+// GetFeedbacks returns the value of Feedbacks.
+func (s *GetRacketFeedbacksResponse) GetFeedbacks() []Feedback {
+	return s.Feedbacks
+}
+
+// SetFeedbacks sets the value of Feedbacks.
+func (s *GetRacketFeedbacksResponse) SetFeedbacks(val []Feedback) {
+	s.Feedbacks = val
+}
+
+// Ref: #/components/schemas/GetRacketResponse
+type GetRacketResponse struct {
+	Racket Racket `json:"racket"`
+}
+
+// GetRacket returns the value of Racket.
+func (s *GetRacketResponse) GetRacket() Racket {
+	return s.Racket
+}
+
+// SetRacket sets the value of Racket.
+func (s *GetRacketResponse) SetRacket(val Racket) {
+	s.Racket = val
+}
+
+// Ref: #/components/schemas/GetRacketsResponse
+type GetRacketsResponse struct {
+	Rackets []Racket `json:"rackets"`
+}
+
+// GetRackets returns the value of Rackets.
+func (s *GetRacketsResponse) GetRackets() []Racket {
+	return s.Rackets
+}
+
+// SetRackets sets the value of Rackets.
+func (s *GetRacketsResponse) SetRackets(val []Racket) {
+	s.Rackets = val
+}
+
+// Ref: #/components/schemas/GetUserResponse
+type GetUserResponse struct {
+	User User `json:"user"`
+}
+
+// GetUser returns the value of User.
+func (s *GetUserResponse) GetUser() User {
+	return s.User
+}
+
+// SetUser sets the value of User.
+func (s *GetUserResponse) SetUser(val User) {
+	s.User = val
+}
+
+// Ref: #/components/schemas/GetUsersResponse
+type GetUsersResponse struct {
+	Users []User `json:"users"`
+}
+
+// GetUsers returns the value of Users.
+func (s *GetUsersResponse) GetUsers() []User {
+	return s.Users
+}
+
+// SetUsers sets the value of Users.
+func (s *GetUsersResponse) SetUsers(val []User) {
+	s.Users = val
+}
+
 // Ref: #/components/schemas/LoginResponse
 type LoginResponse struct {
 	AccessToken string `json:"access_token"`
@@ -442,6 +628,497 @@ func (s *LoginResponse) GetAccessToken() string {
 // SetAccessToken sets the value of AccessToken.
 func (s *LoginResponse) SetAccessToken(val string) {
 	s.AccessToken = val
+}
+
+// NewOptInt returns new OptInt with value set to v.
+func NewOptInt(v int) OptInt {
+	return OptInt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt is optional int.
+type OptInt struct {
+	Value int
+	Set   bool
+}
+
+// IsSet returns true if OptInt was set.
+func (o OptInt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt) Reset() {
+	var v int
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt) SetTo(v int) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt) Get() (v int, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt) Or(d int) int {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptString returns new OptString with value set to v.
+func NewOptString(v string) OptString {
+	return OptString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptString is optional string.
+type OptString struct {
+	Value string
+	Set   bool
+}
+
+// IsSet returns true if OptString was set.
+func (o OptString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptString) SetTo(v string) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptString) Get() (v string, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// Ref: #/components/schemas/Order
+type Order struct {
+	ID            int         `json:"id"`
+	UserID        int         `json:"user_id"`
+	CreationDate  time.Time   `json:"creation_date"`
+	DeliveryDate  time.Time   `json:"delivery_date"`
+	Address       string      `json:"address"`
+	RecipientName string      `json:"recipient_name"`
+	Status        string      `json:"status"`
+	Lines         []OrderLine `json:"lines"`
+	TotalPrice    float32     `json:"total_price"`
+}
+
+// GetID returns the value of ID.
+func (s *Order) GetID() int {
+	return s.ID
+}
+
+// GetUserID returns the value of UserID.
+func (s *Order) GetUserID() int {
+	return s.UserID
+}
+
+// GetCreationDate returns the value of CreationDate.
+func (s *Order) GetCreationDate() time.Time {
+	return s.CreationDate
+}
+
+// GetDeliveryDate returns the value of DeliveryDate.
+func (s *Order) GetDeliveryDate() time.Time {
+	return s.DeliveryDate
+}
+
+// GetAddress returns the value of Address.
+func (s *Order) GetAddress() string {
+	return s.Address
+}
+
+// GetRecipientName returns the value of RecipientName.
+func (s *Order) GetRecipientName() string {
+	return s.RecipientName
+}
+
+// GetStatus returns the value of Status.
+func (s *Order) GetStatus() string {
+	return s.Status
+}
+
+// GetLines returns the value of Lines.
+func (s *Order) GetLines() []OrderLine {
+	return s.Lines
+}
+
+// GetTotalPrice returns the value of TotalPrice.
+func (s *Order) GetTotalPrice() float32 {
+	return s.TotalPrice
+}
+
+// SetID sets the value of ID.
+func (s *Order) SetID(val int) {
+	s.ID = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *Order) SetUserID(val int) {
+	s.UserID = val
+}
+
+// SetCreationDate sets the value of CreationDate.
+func (s *Order) SetCreationDate(val time.Time) {
+	s.CreationDate = val
+}
+
+// SetDeliveryDate sets the value of DeliveryDate.
+func (s *Order) SetDeliveryDate(val time.Time) {
+	s.DeliveryDate = val
+}
+
+// SetAddress sets the value of Address.
+func (s *Order) SetAddress(val string) {
+	s.Address = val
+}
+
+// SetRecipientName sets the value of RecipientName.
+func (s *Order) SetRecipientName(val string) {
+	s.RecipientName = val
+}
+
+// SetStatus sets the value of Status.
+func (s *Order) SetStatus(val string) {
+	s.Status = val
+}
+
+// SetLines sets the value of Lines.
+func (s *Order) SetLines(val []OrderLine) {
+	s.Lines = val
+}
+
+// SetTotalPrice sets the value of TotalPrice.
+func (s *Order) SetTotalPrice(val float32) {
+	s.TotalPrice = val
+}
+
+// Ref: #/components/schemas/OrderLine
+type OrderLine struct {
+	Quantity int `json:"quantity"`
+	RacketID int `json:"racket_id"`
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *OrderLine) GetQuantity() int {
+	return s.Quantity
+}
+
+// GetRacketID returns the value of RacketID.
+func (s *OrderLine) GetRacketID() int {
+	return s.RacketID
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *OrderLine) SetQuantity(val int) {
+	s.Quantity = val
+}
+
+// SetRacketID sets the value of RacketID.
+func (s *OrderLine) SetRacketID(val int) {
+	s.RacketID = val
+}
+
+// OrdersCreateOrderOK is response for OrdersCreateOrder operation.
+type OrdersCreateOrderOK struct{}
+
+type OrdersCreateOrderReq struct {
+	Address       string    `json:"address"`
+	DeliveryDate  time.Time `json:"delivery_date"`
+	RecipientName string    `json:"recipient_name"`
+}
+
+// GetAddress returns the value of Address.
+func (s *OrdersCreateOrderReq) GetAddress() string {
+	return s.Address
+}
+
+// GetDeliveryDate returns the value of DeliveryDate.
+func (s *OrdersCreateOrderReq) GetDeliveryDate() time.Time {
+	return s.DeliveryDate
+}
+
+// GetRecipientName returns the value of RecipientName.
+func (s *OrdersCreateOrderReq) GetRecipientName() string {
+	return s.RecipientName
+}
+
+// SetAddress sets the value of Address.
+func (s *OrdersCreateOrderReq) SetAddress(val string) {
+	s.Address = val
+}
+
+// SetDeliveryDate sets the value of DeliveryDate.
+func (s *OrdersCreateOrderReq) SetDeliveryDate(val time.Time) {
+	s.DeliveryDate = val
+}
+
+// SetRecipientName sets the value of RecipientName.
+func (s *OrdersCreateOrderReq) SetRecipientName(val string) {
+	s.RecipientName = val
+}
+
+// OrdersUpdateOrderStatusOK is response for OrdersUpdateOrderStatus operation.
+type OrdersUpdateOrderStatusOK struct{}
+
+type OrdersUpdateOrderStatusReq struct {
+	Status OptString `json:"status"`
+}
+
+// GetStatus returns the value of Status.
+func (s *OrdersUpdateOrderStatusReq) GetStatus() OptString {
+	return s.Status
+}
+
+// SetStatus sets the value of Status.
+func (s *OrdersUpdateOrderStatusReq) SetStatus(val OptString) {
+	s.Status = val
+}
+
+// Ref: #/components/schemas/Racket
+type Racket struct {
+	ID        int     `json:"id"`
+	Brand     string  `json:"brand"`
+	Weight    float32 `json:"weight"`
+	Balance   float32 `json:"balance"`
+	HeadSize  float32 `json:"head_size"`
+	Available bool    `json:"available"`
+	Quantity  int     `json:"quantity"`
+	Price     float32 `json:"price"`
+	Image     []byte  `json:"image"`
+}
+
+// GetID returns the value of ID.
+func (s *Racket) GetID() int {
+	return s.ID
+}
+
+// GetBrand returns the value of Brand.
+func (s *Racket) GetBrand() string {
+	return s.Brand
+}
+
+// GetWeight returns the value of Weight.
+func (s *Racket) GetWeight() float32 {
+	return s.Weight
+}
+
+// GetBalance returns the value of Balance.
+func (s *Racket) GetBalance() float32 {
+	return s.Balance
+}
+
+// GetHeadSize returns the value of HeadSize.
+func (s *Racket) GetHeadSize() float32 {
+	return s.HeadSize
+}
+
+// GetAvailable returns the value of Available.
+func (s *Racket) GetAvailable() bool {
+	return s.Available
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *Racket) GetQuantity() int {
+	return s.Quantity
+}
+
+// GetPrice returns the value of Price.
+func (s *Racket) GetPrice() float32 {
+	return s.Price
+}
+
+// GetImage returns the value of Image.
+func (s *Racket) GetImage() []byte {
+	return s.Image
+}
+
+// SetID sets the value of ID.
+func (s *Racket) SetID(val int) {
+	s.ID = val
+}
+
+// SetBrand sets the value of Brand.
+func (s *Racket) SetBrand(val string) {
+	s.Brand = val
+}
+
+// SetWeight sets the value of Weight.
+func (s *Racket) SetWeight(val float32) {
+	s.Weight = val
+}
+
+// SetBalance sets the value of Balance.
+func (s *Racket) SetBalance(val float32) {
+	s.Balance = val
+}
+
+// SetHeadSize sets the value of HeadSize.
+func (s *Racket) SetHeadSize(val float32) {
+	s.HeadSize = val
+}
+
+// SetAvailable sets the value of Available.
+func (s *Racket) SetAvailable(val bool) {
+	s.Available = val
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *Racket) SetQuantity(val int) {
+	s.Quantity = val
+}
+
+// SetPrice sets the value of Price.
+func (s *Racket) SetPrice(val float32) {
+	s.Price = val
+}
+
+// SetImage sets the value of Image.
+func (s *Racket) SetImage(val []byte) {
+	s.Image = val
+}
+
+type RacketsCreateRacketReq struct {
+	Balance  float32          `json:"balance"`
+	Brand    string           `json:"brand"`
+	HeadSize float32          `json:"head_size"`
+	Price    float32          `json:"price"`
+	Quantity float32          `json:"quantity"`
+	Weight   float32          `json:"weight"`
+	Image    ht.MultipartFile `json:"image"`
+}
+
+// GetBalance returns the value of Balance.
+func (s *RacketsCreateRacketReq) GetBalance() float32 {
+	return s.Balance
+}
+
+// GetBrand returns the value of Brand.
+func (s *RacketsCreateRacketReq) GetBrand() string {
+	return s.Brand
+}
+
+// GetHeadSize returns the value of HeadSize.
+func (s *RacketsCreateRacketReq) GetHeadSize() float32 {
+	return s.HeadSize
+}
+
+// GetPrice returns the value of Price.
+func (s *RacketsCreateRacketReq) GetPrice() float32 {
+	return s.Price
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *RacketsCreateRacketReq) GetQuantity() float32 {
+	return s.Quantity
+}
+
+// GetWeight returns the value of Weight.
+func (s *RacketsCreateRacketReq) GetWeight() float32 {
+	return s.Weight
+}
+
+// GetImage returns the value of Image.
+func (s *RacketsCreateRacketReq) GetImage() ht.MultipartFile {
+	return s.Image
+}
+
+// SetBalance sets the value of Balance.
+func (s *RacketsCreateRacketReq) SetBalance(val float32) {
+	s.Balance = val
+}
+
+// SetBrand sets the value of Brand.
+func (s *RacketsCreateRacketReq) SetBrand(val string) {
+	s.Brand = val
+}
+
+// SetHeadSize sets the value of HeadSize.
+func (s *RacketsCreateRacketReq) SetHeadSize(val float32) {
+	s.HeadSize = val
+}
+
+// SetPrice sets the value of Price.
+func (s *RacketsCreateRacketReq) SetPrice(val float32) {
+	s.Price = val
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *RacketsCreateRacketReq) SetQuantity(val float32) {
+	s.Quantity = val
+}
+
+// SetWeight sets the value of Weight.
+func (s *RacketsCreateRacketReq) SetWeight(val float32) {
+	s.Weight = val
+}
+
+// SetImage sets the value of Image.
+func (s *RacketsCreateRacketReq) SetImage(val ht.MultipartFile) {
+	s.Image = val
+}
+
+// RacketsUpdateRacketQuantityOK is response for RacketsUpdateRacketQuantity operation.
+type RacketsUpdateRacketQuantityOK struct{}
+
+type RacketsUpdateRacketQuantityReq struct {
+	Quantity OptInt `json:"quantity"`
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *RacketsUpdateRacketQuantityReq) GetQuantity() OptInt {
+	return s.Quantity
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *RacketsUpdateRacketQuantityReq) SetQuantity(val OptInt) {
+	s.Quantity = val
+}
+
+type RacketsUpdateRacketsCountReq struct {
+	Quantity int `json:"quantity"`
+}
+
+// GetQuantity returns the value of Quantity.
+func (s *RacketsUpdateRacketsCountReq) GetQuantity() int {
+	return s.Quantity
+}
+
+// SetQuantity sets the value of Quantity.
+func (s *RacketsUpdateRacketsCountReq) SetQuantity(val int) {
+	s.Quantity = val
 }
 
 // Ref: #/components/schemas/RegisterResponse
@@ -522,119 +1199,19 @@ func (s *User) SetSurname(val string) {
 	s.Surname = val
 }
 
-type UserAddRacketReq struct {
-	Quantity int `json:"quantity"`
-	RacketID int `json:"racket_id"`
+// UsersChangeUserRoleOK is response for UsersChangeUserRole operation.
+type UsersChangeUserRoleOK struct{}
+
+type UsersChangeUserRoleReq struct {
+	Role OptString `json:"role"`
 }
 
-// GetQuantity returns the value of Quantity.
-func (s *UserAddRacketReq) GetQuantity() int {
-	return s.Quantity
+// GetRole returns the value of Role.
+func (s *UsersChangeUserRoleReq) GetRole() OptString {
+	return s.Role
 }
 
-// GetRacketID returns the value of RacketID.
-func (s *UserAddRacketReq) GetRacketID() int {
-	return s.RacketID
-}
-
-// SetQuantity sets the value of Quantity.
-func (s *UserAddRacketReq) SetQuantity(val int) {
-	s.Quantity = val
-}
-
-// SetRacketID sets the value of RacketID.
-func (s *UserAddRacketReq) SetRacketID(val int) {
-	s.RacketID = val
-}
-
-type UserCreateFeedbackReq struct {
-	Feedback string `json:"feedback"`
-	RacketID int    `json:"racket_id"`
-	Rating   int    `json:"rating"`
-}
-
-// GetFeedback returns the value of Feedback.
-func (s *UserCreateFeedbackReq) GetFeedback() string {
-	return s.Feedback
-}
-
-// GetRacketID returns the value of RacketID.
-func (s *UserCreateFeedbackReq) GetRacketID() int {
-	return s.RacketID
-}
-
-// GetRating returns the value of Rating.
-func (s *UserCreateFeedbackReq) GetRating() int {
-	return s.Rating
-}
-
-// SetFeedback sets the value of Feedback.
-func (s *UserCreateFeedbackReq) SetFeedback(val string) {
-	s.Feedback = val
-}
-
-// SetRacketID sets the value of RacketID.
-func (s *UserCreateFeedbackReq) SetRacketID(val int) {
-	s.RacketID = val
-}
-
-// SetRating sets the value of Rating.
-func (s *UserCreateFeedbackReq) SetRating(val int) {
-	s.Rating = val
-}
-
-// UserCreateOrderOK is response for UserCreateOrder operation.
-type UserCreateOrderOK struct{}
-
-type UserCreateOrderReq struct {
-	Address       string    `json:"address"`
-	DeliveryDate  time.Time `json:"delivery_date"`
-	RecipientName string    `json:"recipient_name"`
-}
-
-// GetAddress returns the value of Address.
-func (s *UserCreateOrderReq) GetAddress() string {
-	return s.Address
-}
-
-// GetDeliveryDate returns the value of DeliveryDate.
-func (s *UserCreateOrderReq) GetDeliveryDate() time.Time {
-	return s.DeliveryDate
-}
-
-// GetRecipientName returns the value of RecipientName.
-func (s *UserCreateOrderReq) GetRecipientName() string {
-	return s.RecipientName
-}
-
-// SetAddress sets the value of Address.
-func (s *UserCreateOrderReq) SetAddress(val string) {
-	s.Address = val
-}
-
-// SetDeliveryDate sets the value of DeliveryDate.
-func (s *UserCreateOrderReq) SetDeliveryDate(val time.Time) {
-	s.DeliveryDate = val
-}
-
-// SetRecipientName sets the value of RecipientName.
-func (s *UserCreateOrderReq) SetRecipientName(val string) {
-	s.RecipientName = val
-}
-
-// UserDeleteFeedbackOK is response for UserDeleteFeedback operation.
-type UserDeleteFeedbackOK struct{}
-
-type UserUpdateRacketsCountReq struct {
-	Quantity int `json:"quantity"`
-}
-
-// GetQuantity returns the value of Quantity.
-func (s *UserUpdateRacketsCountReq) GetQuantity() int {
-	return s.Quantity
-}
-
-// SetQuantity sets the value of Quantity.
-func (s *UserUpdateRacketsCountReq) SetQuantity(val int) {
-	s.Quantity = val
+// SetRole sets the value of Role.
+func (s *UsersChangeUserRoleReq) SetRole(val OptString) {
+	s.Role = val
 }

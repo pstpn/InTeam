@@ -50,7 +50,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		switch elem[0] {
 		case '/': // Prefix: "/api/"
-			origElem := elem
+
 			if l := len("/api/"); len(elem) >= l && elem[0:l] == "/api/" {
 				elem = elem[l:]
 			} else {
@@ -62,7 +62,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			switch elem[0] {
 			case 'a': // Prefix: "auth/"
-				origElem := elem
+
 				if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
 					elem = elem[l:]
 				} else {
@@ -74,7 +74,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 				switch elem[0] {
 				case 'l': // Prefix: "login"
-					origElem := elem
+
 					if l := len("login"); len(elem) >= l && elem[0:l] == "login" {
 						elem = elem[l:]
 					} else {
@@ -93,9 +93,8 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
-					elem = origElem
 				case 'r': // Prefix: "register"
-					origElem := elem
+
 					if l := len("register"); len(elem) >= l && elem[0:l] == "register" {
 						elem = elem[l:]
 					} else {
@@ -114,12 +113,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
-					elem = origElem
 				}
 
-				elem = origElem
 			case 'c': // Prefix: "cart"
-				origElem := elem
+
 				if l := len("cart"); len(elem) >= l && elem[0:l] == "cart" {
 					elem = elem[l:]
 				} else {
@@ -129,9 +126,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				if len(elem) == 0 {
 					switch r.Method {
 					case "GET":
-						s.handleUserGetCartRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleCartGetCartRequest([0]string{}, elemIsEscaped, w, r)
 					case "POST":
-						s.handleUserAddRacketRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleCartAddRacketRequest([0]string{}, elemIsEscaped, w, r)
 					default:
 						s.notAllowed(w, r, "GET,POST")
 					}
@@ -140,7 +137,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 				switch elem[0] {
 				case '/': // Prefix: "/rackets/"
-					origElem := elem
+
 					if l := len("/rackets/"); len(elem) >= l && elem[0:l] == "/rackets/" {
 						elem = elem[l:]
 					} else {
@@ -148,7 +145,11 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 
 					// Param: "racket_id"
-					// Leaf parameter
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
 					args[0] = elem
 					elem = ""
 
@@ -156,11 +157,11 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						// Leaf node.
 						switch r.Method {
 						case "DELETE":
-							s.handleUserDeleteRacketRequest([1]string{
+							s.handleRacketsDeleteRacketRequest([1]string{
 								args[0],
 							}, elemIsEscaped, w, r)
 						case "PUT":
-							s.handleUserUpdateRacketsCountRequest([1]string{
+							s.handleRacketsUpdateRacketsCountRequest([1]string{
 								args[0],
 							}, elemIsEscaped, w, r)
 						default:
@@ -170,12 +171,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
-					elem = origElem
 				}
 
-				elem = origElem
 			case 'f': // Prefix: "feedbacks"
-				origElem := elem
+
 				if l := len("feedbacks"); len(elem) >= l && elem[0:l] == "feedbacks" {
 					elem = elem[l:]
 				} else {
@@ -185,9 +184,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				if len(elem) == 0 {
 					switch r.Method {
 					case "GET":
-						s.handleUserGetFeedbacksRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleFeedbacksGetFeedbacksRequest([0]string{}, elemIsEscaped, w, r)
 					case "POST":
-						s.handleUserCreateFeedbackRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleFeedbacksCreateFeedbackRequest([0]string{}, elemIsEscaped, w, r)
 					default:
 						s.notAllowed(w, r, "GET,POST")
 					}
@@ -196,15 +195,56 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 				switch elem[0] {
 				case '/': // Prefix: "/"
-					origElem := elem
+
 					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'r': // Prefix: "rackets/"
+						origElem := elem
+						if l := len("rackets/"); len(elem) >= l && elem[0:l] == "rackets/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "racket_id"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch r.Method {
+							case "GET":
+								s.handleRacketsGetRacketFeedbacksRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "GET")
+							}
+
+							return
+						}
+
+						elem = origElem
+					}
 					// Param: "racket_id"
-					// Leaf parameter
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
 					args[0] = elem
 					elem = ""
 
@@ -212,7 +252,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						// Leaf node.
 						switch r.Method {
 						case "DELETE":
-							s.handleUserDeleteFeedbackRequest([1]string{
+							s.handleFeedbacksDeleteFeedbackRequest([1]string{
 								args[0],
 							}, elemIsEscaped, w, r)
 						default:
@@ -222,12 +262,10 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return
 					}
 
-					elem = origElem
 				}
 
-				elem = origElem
 			case 'o': // Prefix: "orders"
-				origElem := elem
+
 				if l := len("orders"); len(elem) >= l && elem[0:l] == "orders" {
 					elem = elem[l:]
 				} else {
@@ -235,20 +273,57 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
 					switch r.Method {
+					case "GET":
+						s.handleOrdersGetOrdersRequest([0]string{}, elemIsEscaped, w, r)
 					case "POST":
-						s.handleUserCreateOrderRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleOrdersCreateOrderRequest([0]string{}, elemIsEscaped, w, r)
 					default:
-						s.notAllowed(w, r, "POST")
+						s.notAllowed(w, r, "GET,POST")
 					}
 
 					return
 				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
 
-				elem = origElem
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "order_id"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleOrdersGetOrderRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "PATCH":
+							s.handleOrdersUpdateOrderStatusRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET,PATCH")
+						}
+
+						return
+					}
+
+				}
+
 			case 'p': // Prefix: "profile"
-				origElem := elem
+
 				if l := len("profile"); len(elem) >= l && elem[0:l] == "profile" {
 					elem = elem[l:]
 				} else {
@@ -259,7 +334,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					// Leaf node.
 					switch r.Method {
 					case "GET":
-						s.handleUserGetProfileRequest([0]string{}, elemIsEscaped, w, r)
+						s.handleProfileGetProfileRequest([0]string{}, elemIsEscaped, w, r)
 					default:
 						s.notAllowed(w, r, "GET")
 					}
@@ -267,10 +342,122 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 
-				elem = origElem
+			case 'r': // Prefix: "rackets"
+
+				if l := len("rackets"); len(elem) >= l && elem[0:l] == "rackets" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch r.Method {
+					case "GET":
+						s.handleRacketsGetRacketsRequest([0]string{}, elemIsEscaped, w, r)
+					case "POST":
+						s.handleRacketsCreateRacketRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET,POST")
+					}
+
+					return
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "racket_id"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleRacketsGetRacketRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "PATCH":
+							s.handleRacketsUpdateRacketQuantityRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET,PATCH")
+						}
+
+						return
+					}
+
+				}
+
+			case 'u': // Prefix: "users"
+
+				if l := len("users"); len(elem) >= l && elem[0:l] == "users" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch r.Method {
+					case "GET":
+						s.handleUsersGetUsersRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET")
+					}
+
+					return
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "user_id"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "GET":
+							s.handleUsersGetUserRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						case "PATCH":
+							s.handleUsersChangeUserRoleRequest([1]string{
+								args[0],
+							}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "GET,PATCH")
+						}
+
+						return
+					}
+
+				}
+
 			}
 
-			elem = origElem
 		}
 	}
 	s.notFound(w, r)
@@ -352,7 +539,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 		}
 		switch elem[0] {
 		case '/': // Prefix: "/api/"
-			origElem := elem
+
 			if l := len("/api/"); len(elem) >= l && elem[0:l] == "/api/" {
 				elem = elem[l:]
 			} else {
@@ -364,7 +551,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			}
 			switch elem[0] {
 			case 'a': // Prefix: "auth/"
-				origElem := elem
+
 				if l := len("auth/"); len(elem) >= l && elem[0:l] == "auth/" {
 					elem = elem[l:]
 				} else {
@@ -376,7 +563,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 				switch elem[0] {
 				case 'l': // Prefix: "login"
-					origElem := elem
+
 					if l := len("login"); len(elem) >= l && elem[0:l] == "login" {
 						elem = elem[l:]
 					} else {
@@ -399,9 +586,8 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 					}
 
-					elem = origElem
 				case 'r': // Prefix: "register"
-					origElem := elem
+
 					if l := len("register"); len(elem) >= l && elem[0:l] == "register" {
 						elem = elem[l:]
 					} else {
@@ -424,12 +610,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 					}
 
-					elem = origElem
 				}
 
-				elem = origElem
 			case 'c': // Prefix: "cart"
-				origElem := elem
+
 				if l := len("cart"); len(elem) >= l && elem[0:l] == "cart" {
 					elem = elem[l:]
 				} else {
@@ -439,17 +623,17 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				if len(elem) == 0 {
 					switch method {
 					case "GET":
-						r.name = UserGetCartOperation
+						r.name = CartGetCartOperation
 						r.summary = "get cart items"
-						r.operationID = "User_getCart"
+						r.operationID = "Cart_getCart"
 						r.pathPattern = "/api/cart"
 						r.args = args
 						r.count = 0
 						return r, true
 					case "POST":
-						r.name = UserAddRacketOperation
+						r.name = CartAddRacketOperation
 						r.summary = "add racket in cart"
-						r.operationID = "User_addRacket"
+						r.operationID = "Cart_addRacket"
 						r.pathPattern = "/api/cart"
 						r.args = args
 						r.count = 0
@@ -460,7 +644,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 				switch elem[0] {
 				case '/': // Prefix: "/rackets/"
-					origElem := elem
+
 					if l := len("/rackets/"); len(elem) >= l && elem[0:l] == "/rackets/" {
 						elem = elem[l:]
 					} else {
@@ -468,7 +652,11 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					// Param: "racket_id"
-					// Leaf parameter
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
 					args[0] = elem
 					elem = ""
 
@@ -476,17 +664,17 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						// Leaf node.
 						switch method {
 						case "DELETE":
-							r.name = UserDeleteRacketOperation
+							r.name = RacketsDeleteRacketOperation
 							r.summary = "delete racket from cart"
-							r.operationID = "User_deleteRacket"
+							r.operationID = "Rackets_deleteRacket"
 							r.pathPattern = "/api/cart/rackets/{racket_id}"
 							r.args = args
 							r.count = 1
 							return r, true
 						case "PUT":
-							r.name = UserUpdateRacketsCountOperation
+							r.name = RacketsUpdateRacketsCountOperation
 							r.summary = "update rackets count in cart"
-							r.operationID = "User_updateRacketsCount"
+							r.operationID = "Rackets_updateRacketsCount"
 							r.pathPattern = "/api/cart/rackets/{racket_id}"
 							r.args = args
 							r.count = 1
@@ -496,12 +684,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 					}
 
-					elem = origElem
 				}
 
-				elem = origElem
 			case 'f': // Prefix: "feedbacks"
-				origElem := elem
+
 				if l := len("feedbacks"); len(elem) >= l && elem[0:l] == "feedbacks" {
 					elem = elem[l:]
 				} else {
@@ -511,17 +697,17 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				if len(elem) == 0 {
 					switch method {
 					case "GET":
-						r.name = UserGetFeedbacksOperation
+						r.name = FeedbacksGetFeedbacksOperation
 						r.summary = "get user feedbacks"
-						r.operationID = "User_getFeedbacks"
+						r.operationID = "Feedbacks_getFeedbacks"
 						r.pathPattern = "/api/feedbacks"
 						r.args = args
 						r.count = 0
 						return r, true
 					case "POST":
-						r.name = UserCreateFeedbackOperation
+						r.name = FeedbacksCreateFeedbackOperation
 						r.summary = "create feedback"
-						r.operationID = "User_createFeedback"
+						r.operationID = "Feedbacks_createFeedback"
 						r.pathPattern = "/api/feedbacks"
 						r.args = args
 						r.count = 0
@@ -532,15 +718,58 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 				switch elem[0] {
 				case '/': // Prefix: "/"
-					origElem := elem
+
 					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
+					if len(elem) == 0 {
+						break
+					}
+					switch elem[0] {
+					case 'r': // Prefix: "rackets/"
+						origElem := elem
+						if l := len("rackets/"); len(elem) >= l && elem[0:l] == "rackets/" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						// Param: "racket_id"
+						// Leaf parameter, slashes are prohibited
+						idx := strings.IndexByte(elem, '/')
+						if idx >= 0 {
+							break
+						}
+						args[0] = elem
+						elem = ""
+
+						if len(elem) == 0 {
+							// Leaf node.
+							switch method {
+							case "GET":
+								r.name = RacketsGetRacketFeedbacksOperation
+								r.summary = "get feedbacks for racket"
+								r.operationID = "Rackets_getRacketFeedbacks"
+								r.pathPattern = "/api/feedbacks/rackets/{racket_id}"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+
+						elem = origElem
+					}
 					// Param: "racket_id"
-					// Leaf parameter
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
 					args[0] = elem
 					elem = ""
 
@@ -548,9 +777,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						// Leaf node.
 						switch method {
 						case "DELETE":
-							r.name = UserDeleteFeedbackOperation
+							r.name = FeedbacksDeleteFeedbackOperation
 							r.summary = "delete feedback"
-							r.operationID = "User_deleteFeedback"
+							r.operationID = "Feedbacks_deleteFeedback"
 							r.pathPattern = "/api/feedbacks/{racket_id}"
 							r.args = args
 							r.count = 1
@@ -560,12 +789,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						}
 					}
 
-					elem = origElem
 				}
 
-				elem = origElem
 			case 'o': // Prefix: "orders"
-				origElem := elem
+
 				if l := len("orders"); len(elem) >= l && elem[0:l] == "orders" {
 					elem = elem[l:]
 				} else {
@@ -573,12 +800,19 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
 					switch method {
+					case "GET":
+						r.name = OrdersGetOrdersOperation
+						r.summary = "get orders"
+						r.operationID = "Orders_getOrders"
+						r.pathPattern = "/api/orders"
+						r.args = args
+						r.count = 0
+						return r, true
 					case "POST":
-						r.name = UserCreateOrderOperation
+						r.name = OrdersCreateOrderOperation
 						r.summary = "create order"
-						r.operationID = "User_createOrder"
+						r.operationID = "Orders_createOrder"
 						r.pathPattern = "/api/orders"
 						r.args = args
 						r.count = 0
@@ -587,10 +821,52 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						return
 					}
 				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
 
-				elem = origElem
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "order_id"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = OrdersGetOrderOperation
+							r.summary = "get order"
+							r.operationID = "Orders_getOrder"
+							r.pathPattern = "/api/orders/{order_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "PATCH":
+							r.name = OrdersUpdateOrderStatusOperation
+							r.summary = "update order status"
+							r.operationID = "Orders_updateOrderStatus"
+							r.pathPattern = "/api/orders/{order_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
+					}
+
+				}
+
 			case 'p': // Prefix: "profile"
-				origElem := elem
+
 				if l := len("profile"); len(elem) >= l && elem[0:l] == "profile" {
 					elem = elem[l:]
 				} else {
@@ -601,9 +877,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					// Leaf node.
 					switch method {
 					case "GET":
-						r.name = UserGetProfileOperation
+						r.name = ProfileGetProfileOperation
 						r.summary = "get user profile"
-						r.operationID = "User_getProfile"
+						r.operationID = "Profile_getProfile"
 						r.pathPattern = "/api/profile"
 						r.args = args
 						r.count = 0
@@ -613,10 +889,148 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 				}
 
-				elem = origElem
+			case 'r': // Prefix: "rackets"
+
+				if l := len("rackets"); len(elem) >= l && elem[0:l] == "rackets" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						r.name = RacketsGetRacketsOperation
+						r.summary = "get all rackets"
+						r.operationID = "Rackets_getRackets"
+						r.pathPattern = "/api/rackets"
+						r.args = args
+						r.count = 0
+						return r, true
+					case "POST":
+						r.name = RacketsCreateRacketOperation
+						r.summary = "create racket in shop"
+						r.operationID = "Rackets_createRacket"
+						r.pathPattern = "/api/rackets"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "racket_id"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = RacketsGetRacketOperation
+							r.summary = "get racket"
+							r.operationID = "Rackets_getRacket"
+							r.pathPattern = "/api/rackets/{racket_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "PATCH":
+							r.name = RacketsUpdateRacketQuantityOperation
+							r.summary = "update racket quantity"
+							r.operationID = "Rackets_updateRacketQuantity"
+							r.pathPattern = "/api/rackets/{racket_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
+					}
+
+				}
+
+			case 'u': // Prefix: "users"
+
+				if l := len("users"); len(elem) >= l && elem[0:l] == "users" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						r.name = UsersGetUsersOperation
+						r.summary = "get all users"
+						r.operationID = "Users_getUsers"
+						r.pathPattern = "/api/users"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+				switch elem[0] {
+				case '/': // Prefix: "/"
+
+					if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					// Param: "user_id"
+					// Leaf parameter, slashes are prohibited
+					idx := strings.IndexByte(elem, '/')
+					if idx >= 0 {
+						break
+					}
+					args[0] = elem
+					elem = ""
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "GET":
+							r.name = UsersGetUserOperation
+							r.summary = "get user"
+							r.operationID = "Users_getUser"
+							r.pathPattern = "/api/users/{user_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						case "PATCH":
+							r.name = UsersChangeUserRoleOperation
+							r.summary = "change user role"
+							r.operationID = "Users_changeUserRole"
+							r.pathPattern = "/api/users/{user_id}"
+							r.args = args
+							r.count = 1
+							return r, true
+						default:
+							return
+						}
+					}
+
+				}
+
 			}
 
-			elem = origElem
 		}
 	}
 	return r, false

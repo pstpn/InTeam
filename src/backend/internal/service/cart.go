@@ -91,12 +91,12 @@ func (s *CartService) AddRacket(ctx context.Context, req *dto.AddRacketCartReq) 
 
 		cart = &model.Cart{
 			UserID:     req.UserID,
-			TotalPrice: float32(racket.Price) * float32(req.Quantity),
+			TotalPrice: racket.Price * float32(req.Quantity),
 			Quantity:   req.Quantity,
 			Lines: []*model.CartLine{{
 				RacketID: req.RacketID,
 				Quantity: req.Quantity,
-				Price:    float32(racket.Price),
+				Price:    racket.Price,
 			}},
 		}
 
@@ -147,11 +147,11 @@ func (s *CartService) AddRacket(ctx context.Context, req *dto.AddRacketCartReq) 
 		&model.CartLine{
 			RacketID: req.RacketID,
 			Quantity: req.Quantity,
-			Price:    float32(racket.Price),
+			Price:    racket.Price,
 		})
 
 	cart.Quantity += req.Quantity
-	cart.TotalPrice += float32(racket.Price) * float32(req.Quantity)
+	cart.TotalPrice += racket.Price * float32(req.Quantity)
 
 	err = s.repo.Update(ctx, cart)
 	if err != nil {
@@ -185,7 +185,7 @@ func (s *CartService) RemoveRacket(ctx context.Context, req *dto.RemoveRacketCar
 			}
 
 			cart.Quantity -= cart.Lines[i].Quantity
-			cart.TotalPrice -= float32(racket.Price) * float32(cart.Lines[i].Quantity)
+			cart.TotalPrice -= racket.Price * float32(cart.Lines[i].Quantity)
 
 			cart.Lines = append(cart.Lines[:i], cart.Lines[i+1:]...)
 			break

@@ -41,60 +41,126 @@ type Invoker interface {
 	//
 	// POST /api/auth/register
 	AuthRegister(ctx context.Context, request *AuthRegisterReq) (*RegisterResponse, error)
-	// UserAddRacket invokes User_addRacket operation.
+	// CartAddRacket invokes Cart_addRacket operation.
 	//
 	// Add racket in cart.
 	//
 	// POST /api/cart
-	UserAddRacket(ctx context.Context, request *UserAddRacketReq) (*AddRacketResponse, error)
-	// UserCreateFeedback invokes User_createFeedback operation.
-	//
-	// Create feedback.
-	//
-	// POST /api/feedbacks
-	UserCreateFeedback(ctx context.Context, request *UserCreateFeedbackReq) (*CreateFeedbackResponse, error)
-	// UserCreateOrder invokes User_createOrder operation.
-	//
-	// Create order.
-	//
-	// POST /api/orders
-	UserCreateOrder(ctx context.Context, request *UserCreateOrderReq) error
-	// UserDeleteFeedback invokes User_deleteFeedback operation.
-	//
-	// Delete feedback.
-	//
-	// DELETE /api/feedbacks/{racket_id}
-	UserDeleteFeedback(ctx context.Context, params UserDeleteFeedbackParams) error
-	// UserDeleteRacket invokes User_deleteRacket operation.
-	//
-	// Delete racket from cart.
-	//
-	// DELETE /api/cart/rackets/{racket_id}
-	UserDeleteRacket(ctx context.Context, params UserDeleteRacketParams) (*DeleteRacketResponse, error)
-	// UserGetCart invokes User_getCart operation.
+	CartAddRacket(ctx context.Context, request *CartAddRacketReq) (*AddRacketResponse, error)
+	// CartGetCart invokes Cart_getCart operation.
 	//
 	// Get cart items.
 	//
 	// GET /api/cart
-	UserGetCart(ctx context.Context) (*GetCartResponse, error)
-	// UserGetFeedbacks invokes User_getFeedbacks operation.
+	CartGetCart(ctx context.Context) (*GetCartResponse, error)
+	// FeedbacksCreateFeedback invokes Feedbacks_createFeedback operation.
+	//
+	// Create feedback.
+	//
+	// POST /api/feedbacks
+	FeedbacksCreateFeedback(ctx context.Context, request *FeedbacksCreateFeedbackReq) (*CreateFeedbackResponse, error)
+	// FeedbacksDeleteFeedback invokes Feedbacks_deleteFeedback operation.
+	//
+	// Delete feedback.
+	//
+	// DELETE /api/feedbacks/{racket_id}
+	FeedbacksDeleteFeedback(ctx context.Context, params FeedbacksDeleteFeedbackParams) error
+	// FeedbacksGetFeedbacks invokes Feedbacks_getFeedbacks operation.
 	//
 	// Get user feedbacks.
 	//
 	// GET /api/feedbacks
-	UserGetFeedbacks(ctx context.Context) (*GetFeedbacksResponse, error)
-	// UserGetProfile invokes User_getProfile operation.
+	FeedbacksGetFeedbacks(ctx context.Context) (*GetFeedbacksResponse, error)
+	// OrdersCreateOrder invokes Orders_createOrder operation.
+	//
+	// Create order.
+	//
+	// POST /api/orders
+	OrdersCreateOrder(ctx context.Context, request *OrdersCreateOrderReq) error
+	// OrdersGetOrder invokes Orders_getOrder operation.
+	//
+	// Get order.
+	//
+	// GET /api/orders/{order_id}
+	OrdersGetOrder(ctx context.Context, params OrdersGetOrderParams) (*GetOrderResponse, error)
+	// OrdersGetOrders invokes Orders_getOrders operation.
+	//
+	// Get orders.
+	//
+	// GET /api/orders
+	OrdersGetOrders(ctx context.Context, params OrdersGetOrdersParams) (*GetOrdersResponse, error)
+	// OrdersUpdateOrderStatus invokes Orders_updateOrderStatus operation.
+	//
+	// Update order status.
+	//
+	// PATCH /api/orders/{order_id}
+	OrdersUpdateOrderStatus(ctx context.Context, request *OrdersUpdateOrderStatusReq, params OrdersUpdateOrderStatusParams) error
+	// ProfileGetProfile invokes Profile_getProfile operation.
 	//
 	// Get user profile.
 	//
 	// GET /api/profile
-	UserGetProfile(ctx context.Context) (*GetProfileResponse, error)
-	// UserUpdateRacketsCount invokes User_updateRacketsCount operation.
+	ProfileGetProfile(ctx context.Context) (*GetProfileResponse, error)
+	// RacketsCreateRacket invokes Rackets_createRacket operation.
+	//
+	// Create racket in shop.
+	//
+	// POST /api/rackets
+	RacketsCreateRacket(ctx context.Context, request *RacketsCreateRacketReq) (*CreateRacketResponse, error)
+	// RacketsDeleteRacket invokes Rackets_deleteRacket operation.
+	//
+	// Delete racket from cart.
+	//
+	// DELETE /api/cart/rackets/{racket_id}
+	RacketsDeleteRacket(ctx context.Context, params RacketsDeleteRacketParams) (*DeleteRacketResponse, error)
+	// RacketsGetRacket invokes Rackets_getRacket operation.
+	//
+	// Get racket.
+	//
+	// GET /api/rackets/{racket_id}
+	RacketsGetRacket(ctx context.Context, params RacketsGetRacketParams) (*GetRacketResponse, error)
+	// RacketsGetRacketFeedbacks invokes Rackets_getRacketFeedbacks operation.
+	//
+	// Get feedbacks for racket.
+	//
+	// GET /api/feedbacks/rackets/{racket_id}
+	RacketsGetRacketFeedbacks(ctx context.Context, params RacketsGetRacketFeedbacksParams) (*GetRacketFeedbacksResponse, error)
+	// RacketsGetRackets invokes Rackets_getRackets operation.
+	//
+	// Get all rackets.
+	//
+	// GET /api/rackets
+	RacketsGetRackets(ctx context.Context, params RacketsGetRacketsParams) (*GetRacketsResponse, error)
+	// RacketsUpdateRacketQuantity invokes Rackets_updateRacketQuantity operation.
+	//
+	// Update racket quantity.
+	//
+	// PATCH /api/rackets/{racket_id}
+	RacketsUpdateRacketQuantity(ctx context.Context, request *RacketsUpdateRacketQuantityReq, params RacketsUpdateRacketQuantityParams) error
+	// RacketsUpdateRacketsCount invokes Rackets_updateRacketsCount operation.
 	//
 	// Update rackets count in cart.
 	//
 	// PUT /api/cart/rackets/{racket_id}
-	UserUpdateRacketsCount(ctx context.Context, request *UserUpdateRacketsCountReq, params UserUpdateRacketsCountParams) (*UpdateRacketsCountResponse, error)
+	RacketsUpdateRacketsCount(ctx context.Context, request *RacketsUpdateRacketsCountReq, params RacketsUpdateRacketsCountParams) (*UpdateRacketsCountResponse, error)
+	// UsersChangeUserRole invokes Users_changeUserRole operation.
+	//
+	// Change user role.
+	//
+	// PATCH /api/users/{user_id}
+	UsersChangeUserRole(ctx context.Context, request *UsersChangeUserRoleReq, params UsersChangeUserRoleParams) error
+	// UsersGetUser invokes Users_getUser operation.
+	//
+	// Get user.
+	//
+	// GET /api/users/{user_id}
+	UsersGetUser(ctx context.Context, params UsersGetUserParams) (*GetUserResponse, error)
+	// UsersGetUsers invokes Users_getUsers operation.
+	//
+	// Get all users.
+	//
+	// GET /api/users
+	UsersGetUsers(ctx context.Context) (*GetUsersResponse, error)
 }
 
 // Client implements OAS client.
@@ -296,19 +362,19 @@ func (c *Client) sendAuthRegister(ctx context.Context, request *AuthRegisterReq)
 	return result, nil
 }
 
-// UserAddRacket invokes User_addRacket operation.
+// CartAddRacket invokes Cart_addRacket operation.
 //
 // Add racket in cart.
 //
 // POST /api/cart
-func (c *Client) UserAddRacket(ctx context.Context, request *UserAddRacketReq) (*AddRacketResponse, error) {
-	res, err := c.sendUserAddRacket(ctx, request)
+func (c *Client) CartAddRacket(ctx context.Context, request *CartAddRacketReq) (*AddRacketResponse, error) {
+	res, err := c.sendCartAddRacket(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendUserAddRacket(ctx context.Context, request *UserAddRacketReq) (res *AddRacketResponse, err error) {
+func (c *Client) sendCartAddRacket(ctx context.Context, request *CartAddRacketReq) (res *AddRacketResponse, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_addRacket"),
+		otelogen.OperationID("Cart_addRacket"),
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/api/cart"),
 	}
@@ -325,7 +391,7 @@ func (c *Client) sendUserAddRacket(ctx context.Context, request *UserAddRacketRe
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserAddRacketOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, CartAddRacketOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -351,7 +417,7 @@ func (c *Client) sendUserAddRacket(ctx context.Context, request *UserAddRacketRe
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeUserAddRacketRequest(request, r); err != nil {
+	if err := encodeCartAddRacketRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -360,7 +426,7 @@ func (c *Client) sendUserAddRacket(ctx context.Context, request *UserAddRacketRe
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserAddRacketOperation, r); {
+			switch err := c.securityBearerAuth(ctx, CartAddRacketOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -396,7 +462,7 @@ func (c *Client) sendUserAddRacket(ctx context.Context, request *UserAddRacketRe
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUserAddRacketResponse(resp)
+	result, err := decodeCartAddRacketResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -404,19 +470,124 @@ func (c *Client) sendUserAddRacket(ctx context.Context, request *UserAddRacketRe
 	return result, nil
 }
 
-// UserCreateFeedback invokes User_createFeedback operation.
+// CartGetCart invokes Cart_getCart operation.
+//
+// Get cart items.
+//
+// GET /api/cart
+func (c *Client) CartGetCart(ctx context.Context) (*GetCartResponse, error) {
+	res, err := c.sendCartGetCart(ctx)
+	return res, err
+}
+
+func (c *Client) sendCartGetCart(ctx context.Context) (res *GetCartResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Cart_getCart"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/cart"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, CartGetCartOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/cart"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, CartGetCartOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeCartGetCartResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// FeedbacksCreateFeedback invokes Feedbacks_createFeedback operation.
 //
 // Create feedback.
 //
 // POST /api/feedbacks
-func (c *Client) UserCreateFeedback(ctx context.Context, request *UserCreateFeedbackReq) (*CreateFeedbackResponse, error) {
-	res, err := c.sendUserCreateFeedback(ctx, request)
+func (c *Client) FeedbacksCreateFeedback(ctx context.Context, request *FeedbacksCreateFeedbackReq) (*CreateFeedbackResponse, error) {
+	res, err := c.sendFeedbacksCreateFeedback(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendUserCreateFeedback(ctx context.Context, request *UserCreateFeedbackReq) (res *CreateFeedbackResponse, err error) {
+func (c *Client) sendFeedbacksCreateFeedback(ctx context.Context, request *FeedbacksCreateFeedbackReq) (res *CreateFeedbackResponse, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_createFeedback"),
+		otelogen.OperationID("Feedbacks_createFeedback"),
 		semconv.HTTPRequestMethodKey.String("POST"),
 		semconv.HTTPRouteKey.String("/api/feedbacks"),
 	}
@@ -433,7 +604,7 @@ func (c *Client) sendUserCreateFeedback(ctx context.Context, request *UserCreate
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserCreateFeedbackOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, FeedbacksCreateFeedbackOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -459,7 +630,7 @@ func (c *Client) sendUserCreateFeedback(ctx context.Context, request *UserCreate
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeUserCreateFeedbackRequest(request, r); err != nil {
+	if err := encodeFeedbacksCreateFeedbackRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -468,7 +639,7 @@ func (c *Client) sendUserCreateFeedback(ctx context.Context, request *UserCreate
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserCreateFeedbackOperation, r); {
+			switch err := c.securityBearerAuth(ctx, FeedbacksCreateFeedbackOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -504,7 +675,7 @@ func (c *Client) sendUserCreateFeedback(ctx context.Context, request *UserCreate
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUserCreateFeedbackResponse(resp)
+	result, err := decodeFeedbacksCreateFeedbackResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -512,127 +683,19 @@ func (c *Client) sendUserCreateFeedback(ctx context.Context, request *UserCreate
 	return result, nil
 }
 
-// UserCreateOrder invokes User_createOrder operation.
-//
-// Create order.
-//
-// POST /api/orders
-func (c *Client) UserCreateOrder(ctx context.Context, request *UserCreateOrderReq) error {
-	_, err := c.sendUserCreateOrder(ctx, request)
-	return err
-}
-
-func (c *Client) sendUserCreateOrder(ctx context.Context, request *UserCreateOrderReq) (res *UserCreateOrderOK, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_createOrder"),
-		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/api/orders"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserCreateOrderOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/api/orders"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeUserCreateOrderRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserCreateOrderOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeUserCreateOrderResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// UserDeleteFeedback invokes User_deleteFeedback operation.
+// FeedbacksDeleteFeedback invokes Feedbacks_deleteFeedback operation.
 //
 // Delete feedback.
 //
 // DELETE /api/feedbacks/{racket_id}
-func (c *Client) UserDeleteFeedback(ctx context.Context, params UserDeleteFeedbackParams) error {
-	_, err := c.sendUserDeleteFeedback(ctx, params)
+func (c *Client) FeedbacksDeleteFeedback(ctx context.Context, params FeedbacksDeleteFeedbackParams) error {
+	_, err := c.sendFeedbacksDeleteFeedback(ctx, params)
 	return err
 }
 
-func (c *Client) sendUserDeleteFeedback(ctx context.Context, params UserDeleteFeedbackParams) (res *UserDeleteFeedbackOK, err error) {
+func (c *Client) sendFeedbacksDeleteFeedback(ctx context.Context, params FeedbacksDeleteFeedbackParams) (res *FeedbacksDeleteFeedbackOK, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_deleteFeedback"),
+		otelogen.OperationID("Feedbacks_deleteFeedback"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/api/feedbacks/{racket_id}"),
 	}
@@ -649,7 +712,7 @@ func (c *Client) sendUserDeleteFeedback(ctx context.Context, params UserDeleteFe
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserDeleteFeedbackOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, FeedbacksDeleteFeedbackOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -699,7 +762,7 @@ func (c *Client) sendUserDeleteFeedback(ctx context.Context, params UserDeleteFe
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserDeleteFeedbackOperation, r); {
+			switch err := c.securityBearerAuth(ctx, FeedbacksDeleteFeedbackOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -735,7 +798,7 @@ func (c *Client) sendUserDeleteFeedback(ctx context.Context, params UserDeleteFe
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUserDeleteFeedbackResponse(resp)
+	result, err := decodeFeedbacksDeleteFeedbackResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -743,19 +806,854 @@ func (c *Client) sendUserDeleteFeedback(ctx context.Context, params UserDeleteFe
 	return result, nil
 }
 
-// UserDeleteRacket invokes User_deleteRacket operation.
+// FeedbacksGetFeedbacks invokes Feedbacks_getFeedbacks operation.
+//
+// Get user feedbacks.
+//
+// GET /api/feedbacks
+func (c *Client) FeedbacksGetFeedbacks(ctx context.Context) (*GetFeedbacksResponse, error) {
+	res, err := c.sendFeedbacksGetFeedbacks(ctx)
+	return res, err
+}
+
+func (c *Client) sendFeedbacksGetFeedbacks(ctx context.Context) (res *GetFeedbacksResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Feedbacks_getFeedbacks"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/feedbacks"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, FeedbacksGetFeedbacksOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/feedbacks"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, FeedbacksGetFeedbacksOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeFeedbacksGetFeedbacksResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// OrdersCreateOrder invokes Orders_createOrder operation.
+//
+// Create order.
+//
+// POST /api/orders
+func (c *Client) OrdersCreateOrder(ctx context.Context, request *OrdersCreateOrderReq) error {
+	_, err := c.sendOrdersCreateOrder(ctx, request)
+	return err
+}
+
+func (c *Client) sendOrdersCreateOrder(ctx context.Context, request *OrdersCreateOrderReq) (res *OrdersCreateOrderOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Orders_createOrder"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/api/orders"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, OrdersCreateOrderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/orders"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeOrdersCreateOrderRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, OrdersCreateOrderOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeOrdersCreateOrderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// OrdersGetOrder invokes Orders_getOrder operation.
+//
+// Get order.
+//
+// GET /api/orders/{order_id}
+func (c *Client) OrdersGetOrder(ctx context.Context, params OrdersGetOrderParams) (*GetOrderResponse, error) {
+	res, err := c.sendOrdersGetOrder(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendOrdersGetOrder(ctx context.Context, params OrdersGetOrderParams) (res *GetOrderResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Orders_getOrder"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/orders/{order_id}"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, OrdersGetOrderOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.OrderID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, OrdersGetOrderOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeOrdersGetOrderResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// OrdersGetOrders invokes Orders_getOrders operation.
+//
+// Get orders.
+//
+// GET /api/orders
+func (c *Client) OrdersGetOrders(ctx context.Context, params OrdersGetOrdersParams) (*GetOrdersResponse, error) {
+	res, err := c.sendOrdersGetOrders(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendOrdersGetOrders(ctx context.Context, params OrdersGetOrdersParams) (res *GetOrdersResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Orders_getOrders"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/orders"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, OrdersGetOrdersOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/orders"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "pattern" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "pattern",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Pattern.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "field" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "field",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Field.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Sort.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, OrdersGetOrdersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeOrdersGetOrdersResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// OrdersUpdateOrderStatus invokes Orders_updateOrderStatus operation.
+//
+// Update order status.
+//
+// PATCH /api/orders/{order_id}
+func (c *Client) OrdersUpdateOrderStatus(ctx context.Context, request *OrdersUpdateOrderStatusReq, params OrdersUpdateOrderStatusParams) error {
+	_, err := c.sendOrdersUpdateOrderStatus(ctx, request, params)
+	return err
+}
+
+func (c *Client) sendOrdersUpdateOrderStatus(ctx context.Context, request *OrdersUpdateOrderStatusReq, params OrdersUpdateOrderStatusParams) (res *OrdersUpdateOrderStatusOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Orders_updateOrderStatus"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.HTTPRouteKey.String("/api/orders/{order_id}"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, OrdersUpdateOrderStatusOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/orders/"
+	{
+		// Encode "order_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "order_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.OrderID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeOrdersUpdateOrderStatusRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, OrdersUpdateOrderStatusOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeOrdersUpdateOrderStatusResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// ProfileGetProfile invokes Profile_getProfile operation.
+//
+// Get user profile.
+//
+// GET /api/profile
+func (c *Client) ProfileGetProfile(ctx context.Context) (*GetProfileResponse, error) {
+	res, err := c.sendProfileGetProfile(ctx)
+	return res, err
+}
+
+func (c *Client) sendProfileGetProfile(ctx context.Context) (res *GetProfileResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Profile_getProfile"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/profile"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, ProfileGetProfileOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/profile"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, ProfileGetProfileOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeProfileGetProfileResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RacketsCreateRacket invokes Rackets_createRacket operation.
+//
+// Create racket in shop.
+//
+// POST /api/rackets
+func (c *Client) RacketsCreateRacket(ctx context.Context, request *RacketsCreateRacketReq) (*CreateRacketResponse, error) {
+	res, err := c.sendRacketsCreateRacket(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendRacketsCreateRacket(ctx context.Context, request *RacketsCreateRacketReq) (res *CreateRacketResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Rackets_createRacket"),
+		semconv.HTTPRequestMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/api/rackets"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RacketsCreateRacketOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/rackets"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRacketsCreateRacketRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, RacketsCreateRacketOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRacketsCreateRacketResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RacketsDeleteRacket invokes Rackets_deleteRacket operation.
 //
 // Delete racket from cart.
 //
 // DELETE /api/cart/rackets/{racket_id}
-func (c *Client) UserDeleteRacket(ctx context.Context, params UserDeleteRacketParams) (*DeleteRacketResponse, error) {
-	res, err := c.sendUserDeleteRacket(ctx, params)
+func (c *Client) RacketsDeleteRacket(ctx context.Context, params RacketsDeleteRacketParams) (*DeleteRacketResponse, error) {
+	res, err := c.sendRacketsDeleteRacket(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendUserDeleteRacket(ctx context.Context, params UserDeleteRacketParams) (res *DeleteRacketResponse, err error) {
+func (c *Client) sendRacketsDeleteRacket(ctx context.Context, params RacketsDeleteRacketParams) (res *DeleteRacketResponse, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_deleteRacket"),
+		otelogen.OperationID("Rackets_deleteRacket"),
 		semconv.HTTPRequestMethodKey.String("DELETE"),
 		semconv.HTTPRouteKey.String("/api/cart/rackets/{racket_id}"),
 	}
@@ -772,7 +1670,7 @@ func (c *Client) sendUserDeleteRacket(ctx context.Context, params UserDeleteRack
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserDeleteRacketOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, RacketsDeleteRacketOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -822,7 +1720,7 @@ func (c *Client) sendUserDeleteRacket(ctx context.Context, params UserDeleteRack
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserDeleteRacketOperation, r); {
+			switch err := c.securityBearerAuth(ctx, RacketsDeleteRacketOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -858,7 +1756,7 @@ func (c *Client) sendUserDeleteRacket(ctx context.Context, params UserDeleteRack
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUserDeleteRacketResponse(resp)
+	result, err := decodeRacketsDeleteRacketResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -866,21 +1764,21 @@ func (c *Client) sendUserDeleteRacket(ctx context.Context, params UserDeleteRack
 	return result, nil
 }
 
-// UserGetCart invokes User_getCart operation.
+// RacketsGetRacket invokes Rackets_getRacket operation.
 //
-// Get cart items.
+// Get racket.
 //
-// GET /api/cart
-func (c *Client) UserGetCart(ctx context.Context) (*GetCartResponse, error) {
-	res, err := c.sendUserGetCart(ctx)
+// GET /api/rackets/{racket_id}
+func (c *Client) RacketsGetRacket(ctx context.Context, params RacketsGetRacketParams) (*GetRacketResponse, error) {
+	res, err := c.sendRacketsGetRacket(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendUserGetCart(ctx context.Context) (res *GetCartResponse, err error) {
+func (c *Client) sendRacketsGetRacket(ctx context.Context, params RacketsGetRacketParams) (res *GetRacketResponse, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_getCart"),
+		otelogen.OperationID("Rackets_getRacket"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/cart"),
+		semconv.HTTPRouteKey.String("/api/rackets/{racket_id}"),
 	}
 
 	// Run stopwatch.
@@ -895,7 +1793,187 @@ func (c *Client) sendUserGetCart(ctx context.Context) (res *GetCartResponse, err
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserGetCartOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, RacketsGetRacketOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/rackets/"
+	{
+		// Encode "racket_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "racket_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.RacketID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRacketsGetRacketResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RacketsGetRacketFeedbacks invokes Rackets_getRacketFeedbacks operation.
+//
+// Get feedbacks for racket.
+//
+// GET /api/feedbacks/rackets/{racket_id}
+func (c *Client) RacketsGetRacketFeedbacks(ctx context.Context, params RacketsGetRacketFeedbacksParams) (*GetRacketFeedbacksResponse, error) {
+	res, err := c.sendRacketsGetRacketFeedbacks(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendRacketsGetRacketFeedbacks(ctx context.Context, params RacketsGetRacketFeedbacksParams) (res *GetRacketFeedbacksResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Rackets_getRacketFeedbacks"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/feedbacks/rackets/{racket_id}"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RacketsGetRacketFeedbacksOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/feedbacks/rackets/"
+	{
+		// Encode "racket_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "racket_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.RacketID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeRacketsGetRacketFeedbacksResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// RacketsGetRackets invokes Rackets_getRackets operation.
+//
+// Get all rackets.
+//
+// GET /api/rackets
+func (c *Client) RacketsGetRackets(ctx context.Context, params RacketsGetRacketsParams) (*GetRacketsResponse, error) {
+	res, err := c.sendRacketsGetRackets(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendRacketsGetRackets(ctx context.Context, params RacketsGetRacketsParams) (res *GetRacketsResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Rackets_getRackets"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/rackets"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, RacketsGetRacketsOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -913,46 +1991,68 @@ func (c *Client) sendUserGetCart(ctx context.Context) (res *GetCartResponse, err
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/api/cart"
+	pathParts[0] = "/api/rackets"
 	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "pattern" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "pattern",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Pattern.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "field" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "field",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Field.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	{
+		// Encode "sort" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "sort",
+			Style:   uri.QueryStyleForm,
+			Explode: false,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			if val, ok := params.Sort.Get(); ok {
+				return e.EncodeValue(conv.StringToString(val))
+			}
+			return nil
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
-	}
-
-	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserGetCartOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
-		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
 	}
 
 	stage = "SendRequest"
@@ -963,7 +2063,7 @@ func (c *Client) sendUserGetCart(ctx context.Context) (res *GetCartResponse, err
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUserGetCartResponse(resp)
+	result, err := decodeRacketsGetRacketsResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -971,21 +2071,21 @@ func (c *Client) sendUserGetCart(ctx context.Context) (res *GetCartResponse, err
 	return result, nil
 }
 
-// UserGetFeedbacks invokes User_getFeedbacks operation.
+// RacketsUpdateRacketQuantity invokes Rackets_updateRacketQuantity operation.
 //
-// Get user feedbacks.
+// Update racket quantity.
 //
-// GET /api/feedbacks
-func (c *Client) UserGetFeedbacks(ctx context.Context) (*GetFeedbacksResponse, error) {
-	res, err := c.sendUserGetFeedbacks(ctx)
-	return res, err
+// PATCH /api/rackets/{racket_id}
+func (c *Client) RacketsUpdateRacketQuantity(ctx context.Context, request *RacketsUpdateRacketQuantityReq, params RacketsUpdateRacketQuantityParams) error {
+	_, err := c.sendRacketsUpdateRacketQuantity(ctx, request, params)
+	return err
 }
 
-func (c *Client) sendUserGetFeedbacks(ctx context.Context) (res *GetFeedbacksResponse, err error) {
+func (c *Client) sendRacketsUpdateRacketQuantity(ctx context.Context, request *RacketsUpdateRacketQuantityReq, params RacketsUpdateRacketQuantityParams) (res *RacketsUpdateRacketQuantityOK, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_getFeedbacks"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/feedbacks"),
+		otelogen.OperationID("Rackets_updateRacketQuantity"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.HTTPRouteKey.String("/api/rackets/{racket_id}"),
 	}
 
 	// Run stopwatch.
@@ -1000,7 +2100,7 @@ func (c *Client) sendUserGetFeedbacks(ctx context.Context) (res *GetFeedbacksRes
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserGetFeedbacksOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, RacketsUpdateRacketQuantityOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -1017,119 +2117,35 @@ func (c *Client) sendUserGetFeedbacks(ctx context.Context) (res *GetFeedbacksRes
 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/api/feedbacks"
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
+	var pathParts [2]string
+	pathParts[0] = "/api/rackets/"
 	{
-		type bitset = [1]uint8
-		var satisfied bitset
-		{
-			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserGetFeedbacksOperation, r); {
-			case err == nil: // if NO error
-				satisfied[0] |= 1 << 0
-			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
-				// Skip this security.
-			default:
-				return res, errors.Wrap(err, "security \"BearerAuth\"")
-			}
+		// Encode "racket_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "racket_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.RacketID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
 		}
-
-		if ok := func() bool {
-		nextRequirement:
-			for _, requirement := range []bitset{
-				{0b00000001},
-			} {
-				for i, mask := range requirement {
-					if satisfied[i]&mask != mask {
-						continue nextRequirement
-					}
-				}
-				return true
-			}
-			return false
-		}(); !ok {
-			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
-		}
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeUserGetFeedbacksResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// UserGetProfile invokes User_getProfile operation.
-//
-// Get user profile.
-//
-// GET /api/profile
-func (c *Client) UserGetProfile(ctx context.Context) (*GetProfileResponse, error) {
-	res, err := c.sendUserGetProfile(ctx)
-	return res, err
-}
-
-func (c *Client) sendUserGetProfile(ctx context.Context) (res *GetProfileResponse, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_getProfile"),
-		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/api/profile"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		// Use floating point division here for higher precision (instead of Millisecond method).
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserGetProfileOperation,
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
+		encoded, err := e.Result()
 		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+			return res, errors.Wrap(err, "encode path")
 		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [1]string
-	pathParts[0] = "/api/profile"
+		pathParts[1] = encoded
+	}
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "GET", u)
+	r, err := ht.NewRequest(ctx, "PATCH", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeRacketsUpdateRacketQuantityRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
 	}
 
 	{
@@ -1137,7 +2153,7 @@ func (c *Client) sendUserGetProfile(ctx context.Context) (res *GetProfileRespons
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserGetProfileOperation, r); {
+			switch err := c.securityBearerAuth(ctx, RacketsUpdateRacketQuantityOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -1173,7 +2189,7 @@ func (c *Client) sendUserGetProfile(ctx context.Context) (res *GetProfileRespons
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUserGetProfileResponse(resp)
+	result, err := decodeRacketsUpdateRacketQuantityResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -1181,19 +2197,19 @@ func (c *Client) sendUserGetProfile(ctx context.Context) (res *GetProfileRespons
 	return result, nil
 }
 
-// UserUpdateRacketsCount invokes User_updateRacketsCount operation.
+// RacketsUpdateRacketsCount invokes Rackets_updateRacketsCount operation.
 //
 // Update rackets count in cart.
 //
 // PUT /api/cart/rackets/{racket_id}
-func (c *Client) UserUpdateRacketsCount(ctx context.Context, request *UserUpdateRacketsCountReq, params UserUpdateRacketsCountParams) (*UpdateRacketsCountResponse, error) {
-	res, err := c.sendUserUpdateRacketsCount(ctx, request, params)
+func (c *Client) RacketsUpdateRacketsCount(ctx context.Context, request *RacketsUpdateRacketsCountReq, params RacketsUpdateRacketsCountParams) (*UpdateRacketsCountResponse, error) {
+	res, err := c.sendRacketsUpdateRacketsCount(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendUserUpdateRacketsCount(ctx context.Context, request *UserUpdateRacketsCountReq, params UserUpdateRacketsCountParams) (res *UpdateRacketsCountResponse, err error) {
+func (c *Client) sendRacketsUpdateRacketsCount(ctx context.Context, request *RacketsUpdateRacketsCountReq, params RacketsUpdateRacketsCountParams) (res *UpdateRacketsCountResponse, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("User_updateRacketsCount"),
+		otelogen.OperationID("Rackets_updateRacketsCount"),
 		semconv.HTTPRequestMethodKey.String("PUT"),
 		semconv.HTTPRouteKey.String("/api/cart/rackets/{racket_id}"),
 	}
@@ -1210,7 +2226,7 @@ func (c *Client) sendUserUpdateRacketsCount(ctx context.Context, request *UserUp
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, UserUpdateRacketsCountOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, RacketsUpdateRacketsCountOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -1254,7 +2270,7 @@ func (c *Client) sendUserUpdateRacketsCount(ctx context.Context, request *UserUp
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodeUserUpdateRacketsCountRequest(request, r); err != nil {
+	if err := encodeRacketsUpdateRacketsCountRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -1263,7 +2279,7 @@ func (c *Client) sendUserUpdateRacketsCount(ctx context.Context, request *UserUp
 		var satisfied bitset
 		{
 			stage = "Security:BearerAuth"
-			switch err := c.securityBearerAuth(ctx, UserUpdateRacketsCountOperation, r); {
+			switch err := c.securityBearerAuth(ctx, RacketsUpdateRacketsCountOperation, r); {
 			case err == nil: // if NO error
 				satisfied[0] |= 1 << 0
 			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
@@ -1299,7 +2315,361 @@ func (c *Client) sendUserUpdateRacketsCount(ctx context.Context, request *UserUp
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUserUpdateRacketsCountResponse(resp)
+	result, err := decodeRacketsUpdateRacketsCountResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UsersChangeUserRole invokes Users_changeUserRole operation.
+//
+// Change user role.
+//
+// PATCH /api/users/{user_id}
+func (c *Client) UsersChangeUserRole(ctx context.Context, request *UsersChangeUserRoleReq, params UsersChangeUserRoleParams) error {
+	_, err := c.sendUsersChangeUserRole(ctx, request, params)
+	return err
+}
+
+func (c *Client) sendUsersChangeUserRole(ctx context.Context, request *UsersChangeUserRoleReq, params UsersChangeUserRoleParams) (res *UsersChangeUserRoleOK, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Users_changeUserRole"),
+		semconv.HTTPRequestMethodKey.String("PATCH"),
+		semconv.HTTPRouteKey.String("/api/users/{user_id}"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UsersChangeUserRoleOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/users/"
+	{
+		// Encode "user_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "user_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.UserID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUsersChangeUserRoleRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, UsersChangeUserRoleOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUsersChangeUserRoleResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UsersGetUser invokes Users_getUser operation.
+//
+// Get user.
+//
+// GET /api/users/{user_id}
+func (c *Client) UsersGetUser(ctx context.Context, params UsersGetUserParams) (*GetUserResponse, error) {
+	res, err := c.sendUsersGetUser(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendUsersGetUser(ctx context.Context, params UsersGetUserParams) (res *GetUserResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Users_getUser"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/users/{user_id}"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UsersGetUserOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/users/"
+	{
+		// Encode "user_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "user_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.IntToString(params.UserID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, UsersGetUserOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUsersGetUserResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UsersGetUsers invokes Users_getUsers operation.
+//
+// Get all users.
+//
+// GET /api/users
+func (c *Client) UsersGetUsers(ctx context.Context) (*GetUsersResponse, error) {
+	res, err := c.sendUsersGetUsers(ctx)
+	return res, err
+}
+
+func (c *Client) sendUsersGetUsers(ctx context.Context) (res *GetUsersResponse, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("Users_getUsers"),
+		semconv.HTTPRequestMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/api/users"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(elapsedDuration)/float64(time.Millisecond), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, UsersGetUsersOperation,
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/users"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+			stage = "Security:BearerAuth"
+			switch err := c.securityBearerAuth(ctx, UsersGetUsersOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"BearerAuth\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeUsersGetUsersResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

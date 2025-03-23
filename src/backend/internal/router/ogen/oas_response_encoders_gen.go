@@ -41,7 +41,7 @@ func encodeAuthRegisterResponse(response *RegisterResponse, w http.ResponseWrite
 	return nil
 }
 
-func encodeUserAddRacketResponse(response *AddRacketResponse, w http.ResponseWriter, span trace.Span) error {
+func encodeCartAddRacketResponse(response *AddRacketResponse, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -55,7 +55,7 @@ func encodeUserAddRacketResponse(response *AddRacketResponse, w http.ResponseWri
 	return nil
 }
 
-func encodeUserCreateFeedbackResponse(response *CreateFeedbackResponse, w http.ResponseWriter, span trace.Span) error {
+func encodeCartGetCartResponse(response *GetCartResponse, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -69,21 +69,7 @@ func encodeUserCreateFeedbackResponse(response *CreateFeedbackResponse, w http.R
 	return nil
 }
 
-func encodeUserCreateOrderResponse(response *UserCreateOrderOK, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	return nil
-}
-
-func encodeUserDeleteFeedbackResponse(response *UserDeleteFeedbackOK, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	return nil
-}
-
-func encodeUserDeleteRacketResponse(response *DeleteRacketResponse, w http.ResponseWriter, span trace.Span) error {
+func encodeFeedbacksCreateFeedbackResponse(response *CreateFeedbackResponse, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -97,7 +83,14 @@ func encodeUserDeleteRacketResponse(response *DeleteRacketResponse, w http.Respo
 	return nil
 }
 
-func encodeUserGetCartResponse(response *GetCartResponse, w http.ResponseWriter, span trace.Span) error {
+func encodeFeedbacksDeleteFeedbackResponse(response *FeedbacksDeleteFeedbackOK, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	return nil
+}
+
+func encodeFeedbacksGetFeedbacksResponse(response *GetFeedbacksResponse, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -111,7 +104,14 @@ func encodeUserGetCartResponse(response *GetCartResponse, w http.ResponseWriter,
 	return nil
 }
 
-func encodeUserGetFeedbacksResponse(response *GetFeedbacksResponse, w http.ResponseWriter, span trace.Span) error {
+func encodeOrdersCreateOrderResponse(response *OrdersCreateOrderOK, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	return nil
+}
+
+func encodeOrdersGetOrderResponse(response *GetOrderResponse, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -125,7 +125,7 @@ func encodeUserGetFeedbacksResponse(response *GetFeedbacksResponse, w http.Respo
 	return nil
 }
 
-func encodeUserGetProfileResponse(response *GetProfileResponse, w http.ResponseWriter, span trace.Span) error {
+func encodeOrdersGetOrdersResponse(response *GetOrdersResponse, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -139,7 +139,140 @@ func encodeUserGetProfileResponse(response *GetProfileResponse, w http.ResponseW
 	return nil
 }
 
-func encodeUserUpdateRacketsCountResponse(response *UpdateRacketsCountResponse, w http.ResponseWriter, span trace.Span) error {
+func encodeOrdersUpdateOrderStatusResponse(response *OrdersUpdateOrderStatusOK, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	return nil
+}
+
+func encodeProfileGetProfileResponse(response *GetProfileResponse, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeRacketsCreateRacketResponse(response *CreateRacketResponse, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeRacketsDeleteRacketResponse(response *DeleteRacketResponse, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeRacketsGetRacketResponse(response *GetRacketResponse, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeRacketsGetRacketFeedbacksResponse(response *GetRacketFeedbacksResponse, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeRacketsGetRacketsResponse(response *GetRacketsResponse, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeRacketsUpdateRacketQuantityResponse(response *RacketsUpdateRacketQuantityOK, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	return nil
+}
+
+func encodeRacketsUpdateRacketsCountResponse(response *UpdateRacketsCountResponse, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeUsersChangeUserRoleResponse(response *UsersChangeUserRoleOK, w http.ResponseWriter, span trace.Span) error {
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	return nil
+}
+
+func encodeUsersGetUserResponse(response *GetUserResponse, w http.ResponseWriter, span trace.Span) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(200)
+	span.SetStatus(codes.Ok, http.StatusText(200))
+
+	e := new(jx.Encoder)
+	response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	return nil
+}
+
+func encodeUsersGetUsersResponse(response *GetUsersResponse, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))

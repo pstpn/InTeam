@@ -7,6 +7,7 @@ import (
 	"backend/internal/service"
 	"backend/pkg/common"
 	"backend/pkg/logger"
+	"backend/pkg/storage/postgres"
 	"context"
 	"errors"
 )
@@ -20,6 +21,7 @@ type Handler struct {
 	UserService     service.IUserService
 	FeedbackService service.IFeedbackService
 	OrderService    service.IOrderService
+	RacketService   service.IRacketService
 }
 
 func NewHandler(
@@ -29,6 +31,7 @@ func NewHandler(
 	userService service.IUserService,
 	feedbackService service.IFeedbackService,
 	orderService service.IOrderService,
+	racketService service.IRacketService,
 ) *Handler {
 	return &Handler{
 		Logger:          l,
@@ -37,6 +40,7 @@ func NewHandler(
 		UserService:     userService,
 		FeedbackService: feedbackService,
 		OrderService:    orderService,
+		RacketService:   racketService,
 	}
 }
 
@@ -68,7 +72,7 @@ func (h *Handler) AuthLogin(ctx context.Context, req *api.AuthLoginReq) (*api.Lo
 	return &api.LoginResponse{AccessToken: token}, nil
 }
 
-func (h *Handler) UserAddRacket(ctx context.Context, req *api.UserAddRacketReq) (*api.AddRacketResponse, error) {
+func (h *Handler) CartAddRacket(ctx context.Context, req *api.CartAddRacketReq) (*api.AddRacketResponse, error) {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	cart, err := h.CartService.AddRacket(ctx, &dto.AddRacketCartReq{
@@ -89,7 +93,7 @@ func (h *Handler) UserAddRacket(ctx context.Context, req *api.UserAddRacketReq) 
 	}, nil
 }
 
-func (h *Handler) UserCreateFeedback(ctx context.Context, req *api.UserCreateFeedbackReq) (*api.CreateFeedbackResponse, error) {
+func (h *Handler) FeedbacksCreateFeedback(ctx context.Context, req *api.FeedbacksCreateFeedbackReq) (*api.CreateFeedbackResponse, error) {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	feedback, err := h.FeedbackService.CreateFeedback(ctx, &dto.CreateFeedbackReq{
@@ -112,7 +116,7 @@ func (h *Handler) UserCreateFeedback(ctx context.Context, req *api.UserCreateFee
 	}, nil
 }
 
-func (h *Handler) UserCreateOrder(ctx context.Context, req *api.UserCreateOrderReq) error {
+func (h *Handler) OrdersCreateOrder(ctx context.Context, req *api.OrdersCreateOrderReq) error {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	if err := h.OrderService.CreateOrder(ctx, &dto.PlaceOrderReq{
@@ -127,7 +131,7 @@ func (h *Handler) UserCreateOrder(ctx context.Context, req *api.UserCreateOrderR
 	return nil
 }
 
-func (h *Handler) UserDeleteFeedback(ctx context.Context, params api.UserDeleteFeedbackParams) error {
+func (h *Handler) FeedbacksDeleteFeedback(ctx context.Context, params api.FeedbacksDeleteFeedbackParams) error {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	if err := h.FeedbackService.RemoveFeedback(ctx, &dto.RemoveFeedbackReq{
@@ -140,7 +144,7 @@ func (h *Handler) UserDeleteFeedback(ctx context.Context, params api.UserDeleteF
 	return nil
 }
 
-func (h *Handler) UserDeleteRacket(ctx context.Context, params api.UserDeleteRacketParams) (*api.DeleteRacketResponse, error) {
+func (h *Handler) RacketsDeleteRacket(ctx context.Context, params api.RacketsDeleteRacketParams) (*api.DeleteRacketResponse, error) {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	cart, err := h.CartService.RemoveRacket(ctx, &dto.RemoveRacketCartReq{
@@ -160,7 +164,7 @@ func (h *Handler) UserDeleteRacket(ctx context.Context, params api.UserDeleteRac
 	}, nil
 }
 
-func (h *Handler) UserGetCart(ctx context.Context) (*api.GetCartResponse, error) {
+func (h *Handler) CartGetCart(ctx context.Context) (*api.GetCartResponse, error) {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	cart, err := h.CartService.GetCartByID(ctx, userID)
@@ -177,7 +181,7 @@ func (h *Handler) UserGetCart(ctx context.Context) (*api.GetCartResponse, error)
 	}, nil
 }
 
-func (h *Handler) UserGetFeedbacks(ctx context.Context) (*api.GetFeedbacksResponse, error) {
+func (h *Handler) FeedbacksGetFeedbacks(ctx context.Context) (*api.GetFeedbacksResponse, error) {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	feedbacks, err := h.FeedbackService.GetFeedbacksByUserID(ctx, userID)
@@ -188,25 +192,11 @@ func (h *Handler) UserGetFeedbacks(ctx context.Context) (*api.GetFeedbacksRespon
 	return &api.GetFeedbacksResponse{Feedbacks: modelToApiFeedbacks(feedbacks)}, nil
 }
 
-func (h *Handler) UserGetProfile(ctx context.Context) (*api.GetProfileResponse, error) {
-	userID := common.MustUserIDFromCtx(ctx)
-
-	user, err := h.UserService.GetUserByID(ctx, userID)
-	if err != nil {
-		return nil, ErrBadRequest
-	}
-
-	return &api.GetProfileResponse{
-		User: api.User{
-			Email:   user.Email,
-			Name:    user.Name,
-			Role:    string(user.Role),
-			Surname: user.Surname,
-		},
-	}, nil
+func (h *Handler) ProfileGetProfile(ctx context.Context) (*api.GetProfileResponse, error) {
+	return &api.GetProfileResponse{User: modelToApiUser(MustUserFromCtx(ctx))}, nil
 }
 
-func (h *Handler) UserUpdateRacketsCount(ctx context.Context, req *api.UserUpdateRacketsCountReq, params api.UserUpdateRacketsCountParams) (*api.UpdateRacketsCountResponse, error) {
+func (h *Handler) RacketsUpdateRacketsCount(ctx context.Context, req *api.RacketsUpdateRacketsCountReq, params api.RacketsUpdateRacketsCountParams) (*api.UpdateRacketsCountResponse, error) {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	cart, err := h.CartService.UpdateRacket(ctx, &dto.UpdateRacketCartReq{
@@ -227,6 +217,157 @@ func (h *Handler) UserUpdateRacketsCount(ctx context.Context, req *api.UserUpdat
 	}, nil
 }
 
+func (h *Handler) RacketsCreateRacket(ctx context.Context, req *api.RacketsCreateRacketReq) (*api.CreateRacketResponse, error) {
+	imageBytes := make([]byte, req.Image.Size)
+	_, err := req.Image.File.Read(imageBytes)
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	racket, err := h.RacketService.CreateRacket(ctx, &dto.CreateRacketReq{
+		Brand:    req.Brand,
+		Weight:   req.Weight,
+		Balance:  req.Balance,
+		HeadSize: req.HeadSize,
+		Quantity: int(req.Quantity),
+		Price:    req.Price,
+		Image:    imageBytes,
+	})
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	return &api.CreateRacketResponse{Racket: modelToApiRacket(racket)}, nil
+}
+
+func (h *Handler) OrdersGetOrder(ctx context.Context, params api.OrdersGetOrderParams) (*api.GetOrderResponse, error) {
+	order, err := h.OrderService.GetOrderByID(ctx, params.OrderID)
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	return &api.GetOrderResponse{Order: modelToApiOrder(order)}, nil
+}
+
+func (h *Handler) OrdersGetOrders(ctx context.Context, params api.OrdersGetOrdersParams) (*api.GetOrdersResponse, error) {
+	var orders []*model.Order
+	var err error
+
+	p := pagination(params.Pattern, params.Field, params.Sort)
+
+	user := MustUserFromCtx(ctx)
+	if user.Role == model.RoleAdmin {
+		orders, err = h.OrderService.GetAllOrders(ctx, &dto.ListOrdersReq{Pagination: p})
+	} else if user.Role == model.RoleUser {
+		orders, err = h.OrderService.GetMyOrders(ctx, &dto.ListOrdersReq{
+			UserID:     common.MustUserIDFromCtx(ctx),
+			Pagination: p,
+		})
+	} else {
+		return nil, ErrInternal
+	}
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	return &api.GetOrdersResponse{Orders: modelToApiOrders(orders)}, nil
+}
+
+func (h *Handler) OrdersUpdateOrderStatus(ctx context.Context, req *api.OrdersUpdateOrderStatusReq, params api.OrdersUpdateOrderStatusParams) error {
+	if !req.GetStatus().IsSet() {
+		return ErrNotModified
+	}
+
+	_, err := h.OrderService.UpdateOrderStatus(ctx, &dto.UpdateOrderReq{
+		OrderID: params.OrderID,
+		Status:  model.OrderStatus(req.Status.Value),
+	})
+	if err != nil {
+		return ErrBadRequest
+	}
+
+	return nil
+}
+
+func (h *Handler) RacketsGetRacket(ctx context.Context, params api.RacketsGetRacketParams) (*api.GetRacketResponse, error) {
+	racket, err := h.RacketService.GetRacketByID(ctx, params.RacketID)
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	return &api.GetRacketResponse{Racket: modelToApiRacket(racket)}, nil
+}
+
+func (h *Handler) RacketsGetRacketFeedbacks(ctx context.Context, params api.RacketsGetRacketFeedbacksParams) (*api.GetRacketFeedbacksResponse, error) {
+	feedbacks, err := h.FeedbackService.GetFeedbacksByRacketID(ctx, params.RacketID)
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	return &api.GetRacketFeedbacksResponse{Feedbacks: modelToApiFeedbacks(feedbacks)}, nil
+}
+
+func (h *Handler) RacketsGetRackets(ctx context.Context, params api.RacketsGetRacketsParams) (*api.GetRacketsResponse, error) {
+	rackets, err := h.RacketService.GetAllRackets(ctx, &dto.ListRacketsReq{
+		Pagination: pagination(params.Pattern, params.Field, params.Sort),
+	})
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	return &api.GetRacketsResponse{Rackets: modelToApiRackets(rackets)}, nil
+}
+
+func (h *Handler) RacketsUpdateRacketQuantity(ctx context.Context, req *api.RacketsUpdateRacketQuantityReq, params api.RacketsUpdateRacketQuantityParams) error {
+	if !req.GetQuantity().IsSet() {
+		return ErrNotModified
+	}
+
+	err := h.RacketService.UpdateRacket(ctx, &dto.UpdateRacketReq{
+		ID:       params.RacketID,
+		Quantity: req.Quantity.Value,
+	})
+	if err != nil {
+		return ErrBadRequest
+	}
+
+	return nil
+}
+
+func (h *Handler) UsersChangeUserRole(ctx context.Context, req *api.UsersChangeUserRoleReq, params api.UsersChangeUserRoleParams) error {
+	if !req.GetRole().IsSet() {
+		return ErrNotModified
+	}
+
+	_, err := h.UserService.UpdateRole(ctx, &dto.UpdateRoleReq{
+		ID:   params.UserID,
+		Role: model.Role(req.Role.Value),
+	})
+	if err != nil {
+		return ErrBadRequest
+	}
+
+	return nil
+}
+
+func (h *Handler) UsersGetUser(ctx context.Context, params api.UsersGetUserParams) (*api.GetUserResponse, error) {
+	user, err := h.UserService.GetUserByID(ctx, params.UserID)
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	return &api.GetUserResponse{User: modelToApiUser(user)}, nil
+}
+
+func (h *Handler) UsersGetUsers(ctx context.Context) (*api.GetUsersResponse, error) {
+	users, err := h.UserService.GetAllUsers(ctx)
+	if err != nil {
+		return nil, ErrBadRequest
+	}
+
+	return &api.GetUsersResponse{Users: modelToApiUsers(users)}, nil
+}
+
 func (h *Handler) NewError(_ context.Context, err error) *api.ErrorResponseStatusCode {
 	h.Logger.Errorf("unknown error: %s", err.Error())
 
@@ -238,27 +379,15 @@ func (h *Handler) NewError(_ context.Context, err error) *api.ErrorResponseStatu
 	return ErrInternal
 }
 
-func modelToApiCartLines(cartLines []*model.CartLine) []api.CartLine {
-	apiCartLines := make([]api.CartLine, 0, len(cartLines))
-	for _, line := range cartLines {
-		apiCartLines = append(apiCartLines, api.CartLine{
-			RacketID: line.RacketID,
-			Price:    line.Price,
-			Quantity: line.Quantity,
-		})
+func pagination(pattern api.OptString, field api.OptString, sort api.OptString) *postgres.Pagination {
+	return &postgres.Pagination{
+		Filter: postgres.FilterOptions{
+			Pattern: pattern.Or("*"),
+			Column:  field.Or(""),
+		},
+		Sort: postgres.SortOptions{
+			Direction: postgres.SortDirectionFromString(sort.Or(postgres.DESC.String())),
+			Columns:   []string{field.Or("")},
+		},
 	}
-	return apiCartLines
-}
-
-func modelToApiFeedbacks(feedbacks []*model.Feedback) []api.Feedback {
-	apiFeedbacks := make([]api.Feedback, 0, len(feedbacks))
-	for _, feedback := range feedbacks {
-		apiFeedbacks = append(apiFeedbacks, api.Feedback{
-			Date:     feedback.Date,
-			Feedback: feedback.Feedback,
-			RacketID: feedback.RacketID,
-			Rating:   feedback.Rating,
-		})
-	}
-	return apiFeedbacks
 }
