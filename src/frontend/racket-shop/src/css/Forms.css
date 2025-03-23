@@ -18,6 +18,7 @@
     display: flex; 
     justify-content: space-between; 
     margin-bottom: 15px;
+    gap: 10px;
 
     transition: transform 0.3s, opacity 0.3s;
 }
@@ -37,7 +38,31 @@
     animation: ani 1.5s forwards;
 }
 
+.form-in-row-1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    opacity: 0;
+    animation: ani 1.5s forwards;
+}
+
+.form-in-row-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 @keyframes ani {
     0% {opacity: 0;}
     100% {opacity: 1;}
+}
+
+.form-in-row-racket {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    align-items: center;
 }
