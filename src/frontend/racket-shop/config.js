@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://localhost:8080/api";
+const BACKEND_URL = "http://158.160.175.99:8080/api";
 
 const API = {
     auth: {
