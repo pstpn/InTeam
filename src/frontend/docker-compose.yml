@@ -3,10 +3,10 @@ services:
     container_name: racket-front
     build:
       context: ./racket-shop
-      dockerfile: Dockerfile
+      dockerfile: docker-local.Dockerfile
     restart: always
     ports:
-      - "80:80"
+      - "8082:80"
     networks:
       - vue-network
 networks:
