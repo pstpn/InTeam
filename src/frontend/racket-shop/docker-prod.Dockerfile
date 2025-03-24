@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Build the app
-RUN npm run build
+RUN VUE_CLI_MODE=prod npm run build
 
 # Production image
 FROM nginx:1.21

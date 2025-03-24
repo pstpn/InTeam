@@ -11,8 +11,7 @@ http:
 
 database:
   postgres:
-    host: 'host.docker.internal'
-    port: 5432
-    user: 'postgres'
-    password: 'admin'
-    database: 'racket_rave'
+    host: 158.160.175.99
+    port: 6432
+    user: racket_shop
+    database: shop

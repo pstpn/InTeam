@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-const defaultConfigPath = "./config/config.yaml"
+const defaultConfigPath = "./config/config.local.yaml"
 
 type Config struct {
 	Logger   LoggerConfig   `yaml:"logger"`
@@ -55,6 +55,7 @@ func NewConfig() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	viper.BindEnv("database.postgres.password", "POSTGRES_PASSWORD")
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		return nil, err
