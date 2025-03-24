@@ -36,6 +36,7 @@
 
     opacity: 0;
     animation: ani 1.5s forwards;
+    transition: all 0.3s ease-in-out;
 }
 
 .form-in-row-1 {
@@ -53,6 +54,7 @@
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
+    transition: all 0.3s ease-in-out;
 }
 
 @keyframes ani {
@@ -65,4 +67,5 @@
     flex-direction: row;
     justify-content: right;
     align-items: center;
+    transition: all 0.3s ease-in-out;
 }

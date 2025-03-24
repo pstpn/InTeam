@@ -11,7 +11,8 @@
                 <div class="grid-item" v-for="(item, index) in cartData.lines" :key="index">
                     <div class="grid-cart-column">
                         <div class="grid-photo">
-                            <img src="../../assets/racket.png" alt="Описание изображения">
+                            <img src="../../assets/racket.png" 
+                            alt="Описание изображения">
                         </div>
                     </div>
                     <div class="grid-cart-column">
@@ -130,7 +131,7 @@ export default {
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.put(
-                    `${config.BACKEND_URL}${config.API.user.cart}/rackets/${item.racket_id}`,
+                    `${config.BACKEND_URL}${config.API.user.cart}${config.API.rackets}/${item.racket_id}`,
                     {
                         quantity: 1 
                     },

@@ -62,7 +62,6 @@ import axios from 'axios';
 import config from "../../../config.js";
 
 export default {
-    name: 'AppOrders',
     data() {
         return {
             orders: []

@@ -41,6 +41,7 @@
     display: grid;
     grid-template-columns: 75% 25%;
     width: 100%;
+    transition: all 0.3s ease-in-out;
 }
 
 .grid-cart-column {
@@ -69,6 +70,7 @@
 
 .grid-photo {
     height: 100%;
+    object-fit: cover;
 }
 
 .grid-photo img {
@@ -118,4 +120,31 @@
     flex-direction: column;
     padding: 30px;
     border-radius: 30px;
+    transition: all 0.3s ease-in-out;
+}
+
+.grid-card-feedback:hover {
+    transform: scale(1.01);
+    opacity: 0.8;
+}
+
+.grid-rackets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 100px 150px;
+    justify-content: space-between;
+    width: 90%;
+}
+
+.grid-racket-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.grid-racket {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    width: 90%;
+    gap: 30px;
 }
