@@ -1,15 +1,16 @@
 package mypostgres
 
 import (
-	"backend/internal/dto"
-	"backend/internal/model"
-	"backend/internal/storage"
-	"backend/pkg/storage/postgres"
 	"context"
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
+
+	"backend/internal/dto"
+	"backend/internal/model"
+	"backend/internal/storage"
+	"backend/pkg/storage/postgres"
 )
 
 type CartStorage struct {
@@ -201,6 +202,7 @@ func (r *CartStorage) GetCartByID(ctx context.Context, userID int) (*model.Cart,
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		line, err := r.rowToModelCartRacket(rows)

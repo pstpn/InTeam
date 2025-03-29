@@ -1,6 +1,5 @@
 logger:
   level: 'info'
-  file: 'out.log'
 
 auth:
   signingKey: 'masha'

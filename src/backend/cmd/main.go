@@ -1,18 +1,19 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"net"
+	"os"
+	"strconv"
+
+	"backend/config"
 	"backend/internal/router/handlers"
 	api "backend/internal/router/ogen"
+	"backend/internal/service"
 	mypostgres2 "backend/internal/storage/postgres"
 	"backend/pkg/http"
 	"backend/pkg/logger"
-	"fmt"
-	"log"
-	"os"
-
-	"backend/config"
-
-	"backend/internal/service"
 	"backend/pkg/storage/postgres"
 )
 
@@ -22,21 +23,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	loggerFile, err := os.OpenFile(
-		cfg.Logger.File,
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY,
-		0664,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	l := logger.New(cfg.Logger.Level, loggerFile)
+	l := logger.New(cfg.Logger.Level, os.Stdout)
 
-	db, err := postgres.New(fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+	db, err := postgres.New(fmt.Sprintf("postgres://%s:%s@%s/%s",
 		cfg.Database.Postgres.User,
 		cfg.Database.Postgres.Password,
-		cfg.Database.Postgres.Host,
-		cfg.Database.Postgres.Port,
+		net.JoinHostPort(cfg.Database.Postgres.Host, strconv.Itoa(cfg.Database.Postgres.Port)),
 		cfg.Database.Postgres.Database,
 	))
 	if err != nil {

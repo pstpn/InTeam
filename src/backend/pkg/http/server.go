@@ -1,11 +1,12 @@
 package http
 
 import (
-	"backend/pkg/logger"
 	"context"
 	"net/http"
 	"sync"
 	"time"
+
+	"backend/pkg/logger"
 )
 
 const (

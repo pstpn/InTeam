@@ -1,11 +1,12 @@
 package http
 
 import (
-	"backend/pkg/logger"
 	"net/http"
 	"strings"
 
 	"github.com/rs/cors"
+
+	"backend/pkg/logger"
 )
 
 type Middleware = func(http.Handler) http.Handler

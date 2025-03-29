@@ -1,14 +1,15 @@
 package mypostgres
 
 import (
-	"backend/internal/dto"
-	"backend/internal/model"
-	"backend/internal/storage"
-	"backend/pkg/storage/postgres"
 	"context"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
+
+	"backend/internal/dto"
+	"backend/internal/model"
+	"backend/internal/storage"
+	"backend/pkg/storage/postgres"
 )
 
 type RacketStorage struct {
@@ -129,6 +130,7 @@ func (r *RacketStorage) GetAllRackets(ctx context.Context, req *dto.ListRacketsR
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var rackets []*model.Racket
 

@@ -5,7 +5,7 @@ import (
 	api "backend/internal/router/ogen"
 )
 
-func modelToApiCartLines(cartLines []*model.CartLine) []api.CartLine {
+func modelToAPICartLines(cartLines []*model.CartLine) []api.CartLine {
 	apiCartLines := make([]api.CartLine, 0, len(cartLines))
 	for _, line := range cartLines {
 		apiCartLines = append(apiCartLines, api.CartLine{
@@ -17,7 +17,7 @@ func modelToApiCartLines(cartLines []*model.CartLine) []api.CartLine {
 	return apiCartLines
 }
 
-func modelToApiFeedbacks(feedbacks []*model.Feedback) []api.Feedback {
+func modelToAPIFeedbacks(feedbacks []*model.Feedback) []api.Feedback {
 	apiFeedbacks := make([]api.Feedback, 0, len(feedbacks))
 	for _, feedback := range feedbacks {
 		apiFeedbacks = append(apiFeedbacks, api.Feedback{
@@ -30,7 +30,7 @@ func modelToApiFeedbacks(feedbacks []*model.Feedback) []api.Feedback {
 	return apiFeedbacks
 }
 
-func modelToApiOrderLines(orderLines []*model.OrderLine) []api.OrderLine {
+func modelToAPIOrderLines(orderLines []*model.OrderLine) []api.OrderLine {
 	apiOrderLines := make([]api.OrderLine, 0, len(orderLines))
 	for _, line := range orderLines {
 		apiOrderLines = append(apiOrderLines, api.OrderLine{
@@ -41,29 +41,29 @@ func modelToApiOrderLines(orderLines []*model.OrderLine) []api.OrderLine {
 	return apiOrderLines
 }
 
-func modelToApiOrder(order *model.Order) api.Order {
+func modelToAPIOrder(order *model.Order) api.Order {
 	return api.Order{
 		ID:            order.ID,
 		UserID:        order.UserID,
 		CreationDate:  order.CreationDate,
 		DeliveryDate:  order.DeliveryDate,
 		Address:       order.Address,
-		RecipientName: order.RecepientName,
+		RecipientName: order.RecipientName,
 		Status:        string(order.Status),
-		Lines:         modelToApiOrderLines(order.Lines),
+		Lines:         modelToAPIOrderLines(order.Lines),
 		TotalPrice:    order.TotalPrice,
 	}
 }
 
-func modelToApiOrders(orders []*model.Order) []api.Order {
+func modelToAPIOrders(orders []*model.Order) []api.Order {
 	apiOrders := make([]api.Order, 0, len(orders))
 	for _, order := range orders {
-		apiOrders = append(apiOrders, modelToApiOrder(order))
+		apiOrders = append(apiOrders, modelToAPIOrder(order))
 	}
 	return apiOrders
 }
 
-func modelToApiRacket(racket *model.Racket) api.Racket {
+func modelToAPIRacket(racket *model.Racket) api.Racket {
 	return api.Racket{
 		ID:        racket.ID,
 		Brand:     racket.Brand,
@@ -77,15 +77,15 @@ func modelToApiRacket(racket *model.Racket) api.Racket {
 	}
 }
 
-func modelToApiRackets(rackets []*model.Racket) []api.Racket {
+func modelToAPIRackets(rackets []*model.Racket) []api.Racket {
 	apiRackets := make([]api.Racket, 0, len(rackets))
 	for _, racket := range rackets {
-		apiRackets = append(apiRackets, modelToApiRacket(racket))
+		apiRackets = append(apiRackets, modelToAPIRacket(racket))
 	}
 	return apiRackets
 }
 
-func modelToApiUser(user *model.User) api.User {
+func modelToAPIUser(user *model.User) api.User {
 	return api.User{
 		Email:   user.Email,
 		Name:    user.Name,
@@ -94,10 +94,10 @@ func modelToApiUser(user *model.User) api.User {
 	}
 }
 
-func modelToApiUsers(users []*model.User) []api.User {
+func modelToAPIUsers(users []*model.User) []api.User {
 	apiUsers := make([]api.User, 0, len(users))
 	for _, user := range users {
-		apiUsers = append(apiUsers, modelToApiUser(user))
+		apiUsers = append(apiUsers, modelToAPIUser(user))
 	}
 	return apiUsers
 }

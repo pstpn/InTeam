@@ -1,8 +1,9 @@
 package storage
 
 import (
-	"backend/internal/model"
 	"context"
+
+	"backend/internal/model"
 )
 
 type IUserStorage interface {

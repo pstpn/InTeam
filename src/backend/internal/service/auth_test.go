@@ -1,19 +1,20 @@
 package service_test
 
 import (
+	"context"
+	"errors"
+	"testing"
+	"time"
+
+	"github.com/ovechkin-dm/mockio/mock"
+	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/bcrypt"
+
 	"backend/internal/dto"
 	"backend/internal/model"
 	"backend/internal/service"
 	"backend/internal/storage"
 	"backend/pkg/logger"
-	"context"
-	"fmt"
-	"github.com/stretchr/testify/require"
-	"golang.org/x/crypto/bcrypt"
-	"testing"
-	"time"
-
-	"github.com/ovechkin-dm/mockio/mock"
 )
 
 func TestService_Login(t *testing.T) {
@@ -41,7 +42,7 @@ func TestService_Login(t *testing.T) {
 			setup: func(s *service.AuthService) {
 				mock.WhenDouble(
 					s.UserRepo.GetUserByEmail(mock.AnyContext(), mock.AnyString()),
-				).ThenReturn(nil, fmt.Errorf("failed"))
+				).ThenReturn(nil, errors.New("failed"))
 			},
 			wantErr: true,
 		},
@@ -141,7 +142,7 @@ func TestService_Register(t *testing.T) {
 			setup: func(s *service.AuthService) {
 				mock.WhenDouble(
 					s.UserRepo.GetUserByEmail(mock.AnyContext(), mock.AnyString()),
-				).ThenReturn(nil, fmt.Errorf("failed"))
+				).ThenReturn(nil, errors.New("failed"))
 			},
 			wantErr: true,
 		},
@@ -168,7 +169,7 @@ func TestService_Register(t *testing.T) {
 				}, storage.ErrNotFound)
 				mock.WhenSingle(
 					s.UserRepo.Create(mock.AnyContext(), mock.Any[*model.User]()),
-				).ThenReturn(fmt.Errorf("failed"))
+				).ThenReturn(errors.New("failed"))
 			},
 			wantErr: true,
 		},

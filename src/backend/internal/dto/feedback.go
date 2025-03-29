@@ -28,4 +28,3 @@ type UpdateFeedbackReq struct {
 	Date     time.Time `json:"date"`
 	Rating   int       `json:"rating"`
 }
-
