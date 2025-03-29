@@ -30,7 +30,7 @@ func (r *OrderStorage) Create(ctx context.Context, order *model.Order) error {
 			creationDateField,
 			deliveryDateField,
 			addressField,
-			recepientNameField).
+			recipientNameField).
 		Values(
 			order.UserID,
 			order.Status,
@@ -156,13 +156,12 @@ func (r *OrderStorage) Remove(ctx context.Context, orderID int) error {
 }
 
 func (r *OrderStorage) GetAllOrders(ctx context.Context, req *dto.ListOrdersReq) ([]*model.Order, error) {
-	ordersID, err := r.getAllOrders(ctx, req)
+	ordersID, err := r.allOrders(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
-	var orders []*model.Order
-
+	orders := make([]*model.Order, 0, len(ordersID))
 	for _, id := range ordersID {
 		order, err := r.GetOrderByID(ctx, id)
 		if err != nil {
@@ -175,7 +174,7 @@ func (r *OrderStorage) GetAllOrders(ctx context.Context, req *dto.ListOrdersReq)
 	return orders, nil
 }
 
-func (r *OrderStorage) getAllOrders(ctx context.Context, req *dto.ListOrdersReq) ([]int, error) {
+func (r *OrderStorage) allOrders(ctx context.Context, req *dto.ListOrdersReq) ([]int, error) {
 	query := r.Builder.
 		Select(idField).
 		From(orderTable)
@@ -219,7 +218,7 @@ func (r *OrderStorage) GetOrderByID(ctx context.Context, orderID int) (*model.Or
 			creationDateField,
 			deliveryDateField,
 			addressField,
-			recepientNameField).
+			recipientNameField).
 		From(orderTable).
 		Where(squirrel.Eq{idField: orderID})
 
@@ -252,6 +251,7 @@ func (r *OrderStorage) GetOrderByID(ctx context.Context, orderID int) (*model.Or
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var lines []*model.OrderLine
 
@@ -270,13 +270,12 @@ func (r *OrderStorage) GetOrderByID(ctx context.Context, orderID int) (*model.Or
 }
 
 func (r *OrderStorage) GetMyOrders(ctx context.Context, req *dto.ListOrdersReq) ([]*model.Order, error) {
-	ordersID, err := r.getMyOrders(ctx, req)
+	ordersID, err := r.myOrders(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
-	var orders []*model.Order
-
+	orders := make([]*model.Order, 0, len(ordersID))
 	for _, id := range ordersID {
 		order, err := r.GetOrderByID(ctx, id)
 		if err != nil {
@@ -289,7 +288,7 @@ func (r *OrderStorage) GetMyOrders(ctx context.Context, req *dto.ListOrdersReq) 
 	return orders, nil
 }
 
-func (r *OrderStorage) getMyOrders(ctx context.Context, req *dto.ListOrdersReq) ([]int, error) {
+func (r *OrderStorage) myOrders(ctx context.Context, req *dto.ListOrdersReq) ([]int, error) {
 	query := r.Builder.
 		Select(idField).
 		From(orderTable).

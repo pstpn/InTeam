@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"backend/internal/model"
 	"context"
+
+	"backend/internal/model"
 )
 
 type ctxKey string

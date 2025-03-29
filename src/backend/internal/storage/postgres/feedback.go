@@ -1,14 +1,15 @@
 package mypostgres
 
 import (
-	"backend/internal/dto"
-	"backend/internal/model"
-	"backend/internal/storage"
-	"backend/pkg/storage/postgres"
 	"context"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
+
+	"backend/internal/dto"
+	"backend/internal/model"
+	"backend/internal/storage"
+	"backend/pkg/storage/postgres"
 )
 
 type FeedbackStorage struct {
@@ -128,6 +129,7 @@ func (r *FeedbackStorage) GetFeedbacksByUserID(ctx context.Context, id int) ([]*
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var feedbacks []*model.Feedback
 
@@ -158,6 +160,7 @@ func (r *FeedbackStorage) GetFeedbacksByRacketID(ctx context.Context, id int) ([
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var feedbacks []*model.Feedback
 

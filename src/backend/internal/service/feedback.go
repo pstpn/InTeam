@@ -1,8 +1,6 @@
 package service
 
 import (
-	"backend/pkg/common"
-	"backend/pkg/logger"
 	"context"
 	"fmt"
 	"time"
@@ -10,6 +8,8 @@ import (
 	"backend/internal/dto"
 	"backend/internal/model"
 	"backend/internal/storage"
+	"backend/pkg/common"
+	"backend/pkg/logger"
 )
 
 type IFeedbackService interface {
@@ -21,14 +21,14 @@ type IFeedbackService interface {
 }
 
 type FeedbackService struct {
-	logger logger.Interface
-	repo   storage.IFeedbackStorage
+	l    logger.Interface
+	repo storage.IFeedbackStorage
 }
 
-func NewFeedbackService(logger logger.Interface, repo storage.IFeedbackStorage) *FeedbackService {
+func NewFeedbackService(l logger.Interface, repo storage.IFeedbackStorage) *FeedbackService {
 	return &FeedbackService{
-		logger: logger,
-		repo:   repo,
+		l:    l,
+		repo: repo,
 	}
 }
 
@@ -40,8 +40,8 @@ func (s *FeedbackService) CreateFeedback(ctx context.Context, req *dto.CreateFee
 
 	err := s.repo.Create(ctx, &feedback)
 	if err != nil {
-		s.logger.Errorf("create feedback fail, error %s", err.Error())
-		return nil, fmt.Errorf("create feedback fail, error %s", err)
+		s.l.Errorf("create feedback fail, error %s", err.Error())
+		return nil, fmt.Errorf("create feedback fail, error %w", err)
 	}
 
 	return &feedback, nil
@@ -55,14 +55,14 @@ func (s *FeedbackService) RemoveFeedback(ctx context.Context, req *dto.RemoveFee
 		},
 	)
 	if err != nil {
-		s.logger.Errorf("get feedback fail, error %s", err.Error())
-		return fmt.Errorf("get feedback fail, error %s", err)
+		s.l.Errorf("get feedback fail, error %s", err.Error())
+		return fmt.Errorf("get feedback fail, error %w", err)
 	}
 
 	err = s.repo.Remove(ctx, req)
 	if err != nil {
-		s.logger.Errorf("remove feedback fail, error %s", err.Error())
-		return fmt.Errorf("remove feedback fail, error %s", err)
+		s.l.Errorf("remove feedback fail, error %s", err.Error())
+		return fmt.Errorf("remove feedback fail, error %w", err)
 	}
 
 	return nil
@@ -76,16 +76,16 @@ func (s *FeedbackService) UpdateFeedback(ctx context.Context, req *dto.UpdateFee
 		},
 	)
 	if err != nil {
-		s.logger.Errorf("get feedback fail, error %s", err.Error())
-		return fmt.Errorf("get feedback fail, error %s", err)
+		s.l.Errorf("get feedback fail, error %s", err.Error())
+		return fmt.Errorf("get feedback fail, error %w", err)
 	}
 
 	common.Copy(&feedback, req)
 
 	err = s.repo.Update(ctx, feedback)
 	if err != nil {
-		s.logger.Errorf("update feedback fail, error %s", err.Error())
-		return fmt.Errorf("update feedback fail, error %s", err)
+		s.l.Errorf("update feedback fail, error %s", err.Error())
+		return fmt.Errorf("update feedback fail, error %w", err)
 	}
 
 	return nil
@@ -94,8 +94,8 @@ func (s *FeedbackService) UpdateFeedback(ctx context.Context, req *dto.UpdateFee
 func (s *FeedbackService) GetFeedbacksByRacketID(ctx context.Context, racketID int) ([]*model.Feedback, error) {
 	feedbacks, err := s.repo.GetFeedbacksByRacketID(ctx, racketID)
 	if err != nil {
-		s.logger.Errorf("get feedback by racket id fail, error %s", err.Error())
-		return nil, fmt.Errorf("get feedback by racket id fail, error %s", err)
+		s.l.Errorf("get feedback by racket id fail, error %s", err.Error())
+		return nil, fmt.Errorf("get feedback by racket id fail, error %w", err)
 	}
 
 	return feedbacks, nil
@@ -104,8 +104,8 @@ func (s *FeedbackService) GetFeedbacksByRacketID(ctx context.Context, racketID i
 func (s *FeedbackService) GetFeedbacksByUserID(ctx context.Context, userID int) ([]*model.Feedback, error) {
 	feedbacks, err := s.repo.GetFeedbacksByUserID(ctx, userID)
 	if err != nil {
-		s.logger.Errorf("get feedback by user id fail, error %s", err.Error())
-		return nil, fmt.Errorf("get feedback by user id fail, error %s", err)
+		s.l.Errorf("get feedback by user id fail, error %s", err.Error())
+		return nil, fmt.Errorf("get feedback by user id fail, error %w", err)
 	}
 
 	return feedbacks, nil
