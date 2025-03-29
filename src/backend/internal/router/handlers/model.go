@@ -48,7 +48,7 @@ func modelToAPIOrder(order *model.Order) api.Order {
 		CreationDate:  order.CreationDate,
 		DeliveryDate:  order.DeliveryDate,
 		Address:       order.Address,
-		RecipientName: order.RecepientName,
+		RecipientName: order.RecipientName,
 		Status:        string(order.Status),
 		Lines:         modelToAPIOrderLines(order.Lines),
 		TotalPrice:    order.TotalPrice,

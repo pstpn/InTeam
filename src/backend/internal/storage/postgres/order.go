@@ -38,7 +38,7 @@ func (r *OrderStorage) Create(ctx context.Context, order *model.Order) error {
 			order.CreationDate,
 			order.DeliveryDate,
 			order.Address,
-			order.RecepientName).
+			order.RecipientName).
 		Suffix("returning id")
 
 	sql, args, err := query.ToSql()
@@ -335,7 +335,7 @@ func (r *OrderStorage) rowToModel(row pgx.Row) (*model.Order, error) {
 		&order.CreationDate,
 		&order.DeliveryDate,
 		&order.Address,
-		&order.RecepientName,
+		&order.RecipientName,
 	)
 	if err != nil {
 		return nil, err
