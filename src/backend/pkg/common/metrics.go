@@ -28,7 +28,7 @@ func NewMetrics() *Metrics {
 				Help:    "Histogram of response latency (milliseconds) of HTTP requests.",
 				Buckets: prometheus.ExponentialBuckets(bucketMultiplier, bucketFactor, bucketCount),
 			},
-			[]string{"path", "method"},
+			[]string{"handler", "method"},
 		),
 	}
 

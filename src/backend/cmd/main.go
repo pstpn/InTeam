@@ -83,20 +83,16 @@ func main() {
 
 	srv := http.NewServer(l)
 	metrics := common.NewMetrics()
-	go func() {
-		err = srv.Run(
-			fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
-			http.Wrap(
-				oas,
-				http.MetricsMiddleware(metrics),
-				http.CORSMiddleware(l),
-				http.HeartbeatMiddleware("/healthcheck"),
-			),
-		)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	select {}
+	err = srv.Run(
+		fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
+		http.Wrap(
+			oas,
+			http.MetricsMiddleware(metrics),
+			http.CORSMiddleware(l),
+			http.HeartbeatMiddleware("/healthcheck"),
+		),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
