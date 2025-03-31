@@ -18,7 +18,7 @@ logs:
 	docker logs racket-container
 
 lint:
-	golangci-lint run
+	golangci-lint run --timeout=5m
 
 tsp-install:
 	cd typespec && tsp install
