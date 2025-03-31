@@ -4,14 +4,19 @@ import (
 	"fmt"
 	"log"
 	"net"
+	net_http "net/http"
 	"os"
 	"strconv"
+	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"backend/config"
 	"backend/internal/router/handlers"
 	api "backend/internal/router/ogen"
 	"backend/internal/service"
 	mypostgres2 "backend/internal/storage/postgres"
+	"backend/pkg/common"
 	"backend/pkg/http"
 	"backend/pkg/logger"
 	"backend/pkg/storage/postgres"
@@ -62,17 +67,36 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	srv := http.NewServer(l)
 
-	err = srv.Run(
-		fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
-		http.Wrap(
-			oas,
-			http.CORSMiddleware(l),
-			http.HeartbeatMiddleware("/healthcheck"),
-		),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	go func() {
+		metricsMux := net_http.NewServeMux()
+		metricsMux.Handle("/metrics", promhttp.Handler())
+		metricsServer := net_http.Server{
+			Addr:        fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.MetricsPort),
+			Handler:     metricsMux,
+			ReadTimeout: time.Second,
+		}
+		if err := metricsServer.ListenAndServe(); err != nil {
+			log.Fatalf("Error starting metrics server: %v", err)
+		}
+	}()
+
+	srv := http.NewServer(l)
+	metrics := common.NewMetrics()
+	go func() {
+		err = srv.Run(
+			fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
+			http.Wrap(
+				oas,
+				http.MetricsMiddleware(metrics),
+				http.CORSMiddleware(l),
+				http.HeartbeatMiddleware("/healthcheck"),
+			),
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	select {}
 }

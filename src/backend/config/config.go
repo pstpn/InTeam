@@ -26,7 +26,8 @@ type AuthConfig struct {
 }
 
 type HTTPConfig struct {
-	Port int `yaml:"port"`
+	Port        int `yaml:"port"`
+	MetricsPort int `yaml:"metrics_port"`
 }
 
 type DatabaseConfig struct {

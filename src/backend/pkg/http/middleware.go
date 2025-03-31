@@ -3,13 +3,20 @@ package http
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/rs/cors"
 
+	"backend/pkg/common"
 	"backend/pkg/logger"
 )
 
 type Middleware = func(http.Handler) http.Handler
+
+type responseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
 
 func HeartbeatMiddleware(endpoint string) Middleware {
 	return func(h http.Handler) http.Handler {
@@ -34,6 +41,24 @@ func CORSMiddleware(l logger.Interface) Middleware {
 		AllowCredentials: true,
 		Logger:           l,
 	}).Handler
+}
+
+func MetricsMiddleware(metrics *common.Metrics) Middleware {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			rw := &responseWriter{w, http.StatusOK}
+			start := time.Now()
+			h.ServeHTTP(rw, r)
+			elapsed := time.Since(start)
+			metrics.RequestCounter.WithLabelValues(r.URL.Path, r.Method, http.StatusText(rw.statusCode)).Inc()
+			metrics.RequestDuration.WithLabelValues(r.URL.Path, r.Method).Observe(elapsed.Seconds())
+		})
+	}
+}
+
+func (rw *responseWriter) WriteHeader(code int) {
+	rw.statusCode = code
+	rw.ResponseWriter.WriteHeader(code)
 }
 
 func Wrap(h http.Handler, middlewares ...Middleware) http.Handler {
