@@ -10,17 +10,16 @@
             <div 
                 class="grid-card-feedback" 
                 v-for="(feedback, index) in feedbacks" 
-                :key="index"
-            >
+                :key="index">
                 <div class="grid-feedback">
-                    <p class="font-form-header">
+                    <p class="font-form-header" @click="goToRacket(feedback.racket_id)">
                         Ракетка {{ feedback.racket_id }}
                     </p>
                     
                     <div class="form-in-row-racket">
                         <div class="grid-photo-ball">
                             <p class="font-form-body">
-                                {{ formatDate(feedback.date) }} 
+                                {{ feedback.date }} 
                             </p>
                             <img 
                                 v-for="(ball, ballIndex) in feedback.rating" 
@@ -73,6 +72,7 @@ export default {
     name: 'AppFeedbacks',
     data() {
         return {
+            config: config,
             feedbacks: [],
             isDeleteModalOpen: false,
             selectedRacketId: null 
@@ -104,6 +104,9 @@ export default {
             } catch (error) {
                 console.error('Ошибка при получении отзывов:', error);
             }
+        },
+        goToRacket(racketId) {
+            this.$router.push(`${this.config.VIEWS.rackets}/${racketId}`);
         },
 
         openDeleteModal(racketId) {

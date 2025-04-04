@@ -41,8 +41,7 @@ export default {
     methods: {
         async fetchRackets() {
             try {
-                const cur_url = config.BACKEND_URL + config.API.rackets;
-                const response = await axios.get(cur_url);
+                const response = await axios.get(`${config.BACKEND_URL}${config.API.rackets}`);
 
                 if (response.data) {
                     this.rackets = response.data.rackets;
@@ -91,8 +90,8 @@ export default {
                 await axios.post(
                     `${config.BACKEND_URL}${config.API.user.cart}`,
                     { 
-                        "racket_id": racketId,
-                        "quantity": 1 
+                        racket_id: racketId,
+                        quantity: 1 
                     },
                     {
                         headers: {

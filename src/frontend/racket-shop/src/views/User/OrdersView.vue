@@ -77,7 +77,7 @@ export default {
                     return;
                 }
 
-                const response = await axios.get(`${config.BACKEND_URL}${config.API.user.orders}`, {
+                const response = await axios.get(`${config.BACKEND_URL}${config.API.orders}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

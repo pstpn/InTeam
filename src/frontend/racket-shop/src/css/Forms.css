@@ -33,6 +33,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    overlay: auto;
 
     opacity: 0;
     animation: ani 1.5s forwards;
@@ -55,6 +56,24 @@
     justify-content: flex-end;
     align-items: center;
     transition: all 0.3s ease-in-out;
+}
+
+.form-in-row-left {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+    gap: 10px
+}
+
+.form-in-row-filters {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 15px;
+    overflow: visible !important;
 }
 
 @keyframes ani {

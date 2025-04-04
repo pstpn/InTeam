@@ -105,7 +105,7 @@ export default {
                     localStorage.setItem('token', response.data.access_token);
 
                     this.error = false;
-                    this.$router.push('/profile');
+                    this.$router.push(config.VIEWS.user.profile);
                 }
             } catch (error) {
                 console.error('Error register in:', error);

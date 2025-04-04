@@ -79,7 +79,7 @@ export default {
                     localStorage.setItem('token', response.data.access_token);
 
                     this.error = false;
-                    this.$router.push(config.API.user.profile);
+                    this.$router.push(config.VIEWS.user.profile);
                 }
 
             } catch (error) {

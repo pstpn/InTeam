@@ -6,6 +6,7 @@
     align-items: center; 
     opacity: 0;
     animation: ani 1.5s forwards;
+    gap: 30px;
 }
 
 .container-single-form {
@@ -54,4 +55,16 @@
 
 .container-icon:hover .tooltip {
     display: block;
+}
+
+.container-icon-tool {
+    /* position: relative; 
+    display: inline-block; */
+    transition: transform 0.3s, opacity 0.3s;
+    cursor: pointer;
+}
+
+.container-icon-tool:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
 }

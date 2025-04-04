@@ -14,35 +14,9 @@
 .modal-content {
     background-color: white;
     padding: 30px;
+    gap: 30px;
     border-radius: 30px;
     border: 2px solid black;
-    width: 300px;
+    width: 400px;
     text-align: center;
 }
-/* 
-.modal-content h2 {
-    margin-bottom: 16px;
-} */
-/* 
-.modal-buttons {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-.modal-buttons button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.modal-buttons .submit-button-orange {
-    background-color: #ffa500;
-    color: white;
-}
-
-.modal-buttons .submit-button-green {
-    background-color: #008000;
-    color: white;
-} */

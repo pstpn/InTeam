@@ -14,6 +14,13 @@
     background-color: #d9d9d9;
 }
 
+.grid-card-name-1 {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    border-radius: 30px;
+}
+
 .grid-card-icon {
     display: flex;
     flex-direction: column;
@@ -109,6 +116,7 @@
 }
 
 .grid-order-column {
+    overflow: visible !important;
     display: flex;
     flex-direction: column;
     width: 100%;
