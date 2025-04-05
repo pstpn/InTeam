@@ -114,7 +114,7 @@ func (UnimplementedHandler) OrdersUpdateOrderStatus(ctx context.Context, req *Or
 
 // ProfileGetProfile implements Profile_getProfile operation.
 //
-// Get user profile.
+// Get profile.
 //
 // GET /api/profile
 func (UnimplementedHandler) ProfileGetProfile(ctx context.Context) (r *GetProfileResponse, _ error) {

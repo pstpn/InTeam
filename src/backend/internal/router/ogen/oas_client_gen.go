@@ -97,7 +97,7 @@ type Invoker interface {
 	OrdersUpdateOrderStatus(ctx context.Context, request *OrdersUpdateOrderStatusReq, params OrdersUpdateOrderStatusParams) error
 	// ProfileGetProfile invokes Profile_getProfile operation.
 	//
-	// Get user profile.
+	// Get profile.
 	//
 	// GET /api/profile
 	ProfileGetProfile(ctx context.Context) (*GetProfileResponse, error)
@@ -1430,7 +1430,7 @@ func (c *Client) sendOrdersUpdateOrderStatus(ctx context.Context, request *Order
 
 // ProfileGetProfile invokes Profile_getProfile operation.
 //
-// Get user profile.
+// Get profile.
 //
 // GET /api/profile
 func (c *Client) ProfileGetProfile(ctx context.Context) (*GetProfileResponse, error) {

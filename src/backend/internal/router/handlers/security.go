@@ -88,7 +88,6 @@ func isUserMethod(op api.OperationName) bool {
 		api.FeedbacksCreateFeedbackOperation:   {},
 		api.FeedbacksDeleteFeedbackOperation:   {},
 		api.OrdersCreateOrderOperation:         {},
-		api.ProfileGetProfileOperation:         {},
 	}[op]
 	return ok
 }
@@ -108,7 +107,8 @@ func isAdminMethod(op api.OperationName) bool {
 
 func isAllAuthorizedUserMethod(op api.OperationName) bool {
 	_, ok := map[api.OperationName]struct{}{
-		api.OrdersGetOrdersOperation: {},
+		api.OrdersGetOrdersOperation:   {},
+		api.ProfileGetProfileOperation: {},
 	}[op]
 	return ok
 }
