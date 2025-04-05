@@ -426,6 +426,76 @@ func (s *Feedback) SetRating(val int) {
 	s.Rating = val
 }
 
+// Ref: #/components/schemas/FeedbackWithUsername
+type FeedbackWithUsername struct {
+	Date     time.Time `json:"date"`
+	Feedback string    `json:"feedback"`
+	RacketID int       `json:"racket_id"`
+	Rating   int       `json:"rating"`
+	UserID   int       `json:"user_id"`
+	Username string    `json:"username"`
+}
+
+// GetDate returns the value of Date.
+func (s *FeedbackWithUsername) GetDate() time.Time {
+	return s.Date
+}
+
+// GetFeedback returns the value of Feedback.
+func (s *FeedbackWithUsername) GetFeedback() string {
+	return s.Feedback
+}
+
+// GetRacketID returns the value of RacketID.
+func (s *FeedbackWithUsername) GetRacketID() int {
+	return s.RacketID
+}
+
+// GetRating returns the value of Rating.
+func (s *FeedbackWithUsername) GetRating() int {
+	return s.Rating
+}
+
+// GetUserID returns the value of UserID.
+func (s *FeedbackWithUsername) GetUserID() int {
+	return s.UserID
+}
+
+// GetUsername returns the value of Username.
+func (s *FeedbackWithUsername) GetUsername() string {
+	return s.Username
+}
+
+// SetDate sets the value of Date.
+func (s *FeedbackWithUsername) SetDate(val time.Time) {
+	s.Date = val
+}
+
+// SetFeedback sets the value of Feedback.
+func (s *FeedbackWithUsername) SetFeedback(val string) {
+	s.Feedback = val
+}
+
+// SetRacketID sets the value of RacketID.
+func (s *FeedbackWithUsername) SetRacketID(val int) {
+	s.RacketID = val
+}
+
+// SetRating sets the value of Rating.
+func (s *FeedbackWithUsername) SetRating(val int) {
+	s.Rating = val
+}
+
+// SetUserID sets the value of UserID.
+func (s *FeedbackWithUsername) SetUserID(val int) {
+	s.UserID = val
+}
+
+// SetUsername sets the value of Username.
+func (s *FeedbackWithUsername) SetUsername(val string) {
+	s.Username = val
+}
+
 type FeedbacksCreateFeedbackReq struct {
 	Feedback string `json:"feedback"`
 	RacketID int    `json:"racket_id"`
@@ -542,16 +612,16 @@ func (s *GetProfileResponse) SetUser(val User) {
 
 // Ref: #/components/schemas/GetRacketFeedbacksResponse
 type GetRacketFeedbacksResponse struct {
-	Feedbacks []Feedback `json:"feedbacks"`
+	Feedbacks []FeedbackWithUsername `json:"feedbacks"`
 }
 
 // GetFeedbacks returns the value of Feedbacks.
-func (s *GetRacketFeedbacksResponse) GetFeedbacks() []Feedback {
+func (s *GetRacketFeedbacksResponse) GetFeedbacks() []FeedbackWithUsername {
 	return s.Feedbacks
 }
 
 // SetFeedbacks sets the value of Feedbacks.
-func (s *GetRacketFeedbacksResponse) SetFeedbacks(val []Feedback) {
+func (s *GetRacketFeedbacksResponse) SetFeedbacks(val []FeedbackWithUsername) {
 	s.Feedbacks = val
 }
 

@@ -22,9 +22,24 @@ func modelToAPIFeedbacks(feedbacks []*model.Feedback) []api.Feedback {
 	for _, feedback := range feedbacks {
 		apiFeedbacks = append(apiFeedbacks, api.Feedback{
 			Date:     feedback.Date,
-			Feedback: feedback.Feedback,
+			Feedback: feedback.Text,
 			RacketID: feedback.RacketID,
 			Rating:   feedback.Rating,
+		})
+	}
+	return apiFeedbacks
+}
+
+func modelToAPIFeedbacksWithUsername(feedbacks []*model.FeedbackWithUsername) []api.FeedbackWithUsername {
+	apiFeedbacks := make([]api.FeedbackWithUsername, 0, len(feedbacks))
+	for _, feedback := range feedbacks {
+		apiFeedbacks = append(apiFeedbacks, api.FeedbackWithUsername{
+			Date:     feedback.Date,
+			Feedback: feedback.Text,
+			RacketID: feedback.RacketID,
+			Rating:   feedback.Rating,
+			UserID:   feedback.UserID,
+			Username: feedback.Username,
 		})
 	}
 	return apiFeedbacks

@@ -860,6 +860,29 @@ components:
           type: integer
         rating:
           type: integer
+    FeedbackWithUsername:
+      type: object
+      required:
+        - date
+        - feedback
+        - racket_id
+        - rating
+        - user_id
+        - username
+      properties:
+        date:
+          type: string
+          format: date-time
+        feedback:
+          type: string
+        racket_id:
+          type: integer
+        rating:
+          type: integer
+        user_id:
+          type: integer
+        username:
+          type: string
     GetCartResponse:
       type: object
       allOf:
@@ -906,7 +929,7 @@ components:
     GetRacketFeedbacksResponse:
       type: object
       allOf:
-        - $ref: '#/components/schemas/ResponseWithFeedbacks'
+        - $ref: '#/components/schemas/ResponseWithUsernameFeedbacks'
     GetRacketRequest:
       type: object
       required:
@@ -1143,6 +1166,15 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
+    ResponseWithUsernameFeedbacks:
+      type: object
+      required:
+        - feedbacks
+      properties:
+        feedbacks:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedbackWithUsername'
     ResponseWithUsers:
       type: object
       required:

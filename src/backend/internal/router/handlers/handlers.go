@@ -110,7 +110,7 @@ func (h *Handler) FeedbacksCreateFeedback(ctx context.Context, req *api.Feedback
 	return &api.CreateFeedbackResponse{
 		Feedback: api.Feedback{
 			Date:     feedback.Date,
-			Feedback: feedback.Feedback,
+			Feedback: feedback.Text,
 			RacketID: feedback.RacketID,
 			Rating:   feedback.Rating,
 		},
@@ -311,7 +311,7 @@ func (h *Handler) RacketsGetRacketFeedbacks(ctx context.Context, params api.Rack
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetRacketFeedbacksResponse{Feedbacks: modelToAPIFeedbacks(feedbacks)}, nil
+	return &api.GetRacketFeedbacksResponse{Feedbacks: modelToAPIFeedbacksWithUsername(feedbacks)}, nil
 }
 
 func (h *Handler) RacketsGetRackets(ctx context.Context, params api.RacketsGetRacketsParams) (*api.GetRacketsResponse, error) {

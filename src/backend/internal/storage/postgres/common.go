@@ -37,9 +37,6 @@ const (
 	deliveryDateField  = "delivery_date"
 	ratingField        = "rating"
 	dateField          = "date"
-	townField          = "town"
-	phoneField         = "phone"
-	subscriptionField  = "subscription"
 	availableField     = "available"
 	imageField         = "image"
 )
