@@ -54,6 +54,7 @@
 .grid-cart-column {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     width: 100%;
 }
 
@@ -76,14 +77,22 @@
 }
 
 .grid-photo {
-    height: 100%;
-    object-fit: cover;
+    position: relative;
+    padding-bottom: 100%;
 }
 
 .grid-photo img {
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.grid-photo img:hover {
+    transform: scale(1.03);
+    opacity: 0.8;
 }
 
 .grid-photo-ball {
@@ -105,6 +114,31 @@
     height: 10%; 
     object-fit: cover;
     transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.grid-photo-ball-feedback {
+    display: flex;
+    gap: 8px; /* Расстояние между шарами */
+    padding: 5px 0;
+}
+
+.grid-photo-ball-feedback img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    filter: grayscale(100%) brightness(0.7); /* Серые по умолчанию */
+}
+
+.grid-photo-ball-feedback img.active {
+    filter: none; /* Оригинальные цвета при активации */
+    transform: scale(1.1);
+}
+
+/* Эффект при наведении */
+.grid-photo-ball-feedback img:hover {
+    filter: grayscale(50%) brightness(1.1);
+    transform: scale(1.05);
 }
 
 .line {

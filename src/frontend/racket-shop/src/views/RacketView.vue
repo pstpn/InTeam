@@ -13,9 +13,10 @@
         <div v-else class="grid-racket">
             <div class="grid-cart-column">
                 <div class="grid-photo">
-                    <img src='../assets/racket.png'>
+                    <img :src="'data:image/jpeg;base64,' + imageData" alt="Динамическое изображение">
                 </div>
             </div>
+            
             <div class="grid-cart-column">
                 <div class="form-in-row">
                     <p class="font-form-body">Цена</p>
@@ -50,8 +51,12 @@
         </div>
 
         <div class="grid-order-column" v-if="!loading && !error">
-            <div v-if="feedbacks.length === 0" class="no-feedbacks">
-                <p>Пока нет отзывов</p>
+            <div v-if="feedbacks.length === 0" class="grid-card-name-1">
+                <div class="grid-card-feedback">
+                    <p class="font-form-header">
+                        Нет отзывов
+                    </p>
+                </div>
             </div>
             
             <div class="grid-card-feedback" v-for="feedback in feedbacks" :key="feedback.id">
@@ -89,6 +94,7 @@ export default {
     data() {
         return {
             config: config,
+            imageData: null,
             racket: {
                 name: '',
                 price: 0,
@@ -114,7 +120,9 @@ export default {
                 const response = await axios.get(`${config.BACKEND_URL}${config.API.rackets}/${racketId}`);
                 this.racket = response.data.racket;
 
-                console.log(this.racket)
+                this.imageData = this.racket.image;
+
+                console.log(this.racket.image)
             } catch (error) {
                 this.error = 'Ошибка при загрузке данных ракетки';
                 console.error('Ошибка загрузки ракетки:', error);
@@ -142,7 +150,7 @@ export default {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    this.$router.push(`${config.API.auth.login}`);
+                    this.$router.push(`${config.VIEWS.auth.login}`);
                     return;
                 }
 
@@ -164,6 +172,10 @@ export default {
                 console.error('Ошибка при добавлении в корзину:', error);
                 alert('Не удалось добавить ракетку в корзину');
             }
+        },
+        navigateTo(route) {
+            console.log(route);
+            // this.$router.push(route);
         }
     }
 };

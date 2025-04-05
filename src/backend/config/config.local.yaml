@@ -15,4 +15,5 @@ database:
     port: 5432
     user: 'postgres'
     password: 'admin'
-    database: 'racket_rave'
+    # database: 'racket_rave'
+    database: 'Shop'

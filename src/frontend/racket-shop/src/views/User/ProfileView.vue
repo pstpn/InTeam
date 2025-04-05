@@ -17,17 +17,17 @@
             <div></div>
             <div></div>
             <div class="grid-card-icon">
-                <a @click="navigateTo(config.API.user.cart)">
+                <a @click="navigateTo(config.VIEWS.user.cart)">
                     <h1 class="font-grid-1">Моя корзина</h1>
                 </a>
             </div>
             <div class="grid-card-icon">
-                <a @click="navigateTo(config.API.user.orders)">
+                <a @click="navigateTo(config.VIEWS.user.orders)">
                     <h1 class="font-grid-1">Мои заказы</h1>
                 </a>
             </div>
             <div class="grid-card-icon">
-                <a @click="navigateTo(config.API.user.feedbacks)">
+                <a @click="navigateTo(config.VIEWS.user.feedbacks)">
                     <h1 class="font-grid-1">Мои отзывы</h1>
                 </a>
             </div>

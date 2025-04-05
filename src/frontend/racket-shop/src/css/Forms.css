@@ -24,7 +24,7 @@
 }
 
 .form-input:hover {
-    transform: scale(1.03);
+    transform: scale(1.02);
     opacity: 0.8;
 }
 
@@ -38,6 +38,16 @@
     opacity: 0;
     animation: ani 1.5s forwards;
     transition: all 0.3s ease-in-out;
+}
+
+.form-in-row-add-feedback {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    overlay: auto;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .form-in-row-1 {

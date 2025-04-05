@@ -13,6 +13,32 @@ input {
     font-size: 15px;
 }
 
+textarea {
+    width: 100%;
+    padding: 10px; 
+    border: 1px solid black; 
+    border-radius: 20px;
+    color: #625E5E; 
+
+    color: #625E5E; 
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 400;
+    font-size: 15px;
+}
+
+select {
+    width: 100%;
+    padding: 10px; 
+    border: 1px solid black; 
+    border-radius: 15px;
+    color: #625E5E; 
+
+    color: #625E5E; 
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 400;
+    font-size: 15px;
+}
+
 .input-error {
     border: 1px solid #EC5800;
     background-color: #fedecd;

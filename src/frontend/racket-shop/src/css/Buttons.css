@@ -20,6 +20,10 @@
     opacity: 0.8;
 }
 
+.submit-button-grey.image-selected {
+    background: #CFFA55;
+}
+
 .submit-button-grey {
     width: auto; 
     height: 35px; 
@@ -44,7 +48,7 @@
 
 .submit-button-font {  
     color: black; 
-    cursor: pointer; 
+    cursor: pointer;
 
     text-align: center;
     font-family: 'Montserrat', sans-serif; 

@@ -23,14 +23,20 @@
 .font-form-body {
     font-family: 'Montserrat', sans-serif; 
     font-weight: 400;
-    font-size: 15px;
+    font-size: 18px;
 }
 
 .font-form-body-error {
     font-family: 'Montserrat', sans-serif; 
     font-weight: 400;
-    font-size: 15px;
+    font-size: 18px;
     color: #EC5800;
+}
+
+.font-form-body-bold {
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 600;
+    font-size: 18px;
 }
 
 .font-container-header {
@@ -43,10 +49,4 @@
     font-family: 'Montserrat', sans-serif; 
     font-weight: 400;
     font-size: 25px;
-}
-
-.font-form-body-bold {
-    font-family: 'Montserrat', sans-serif; 
-    font-weight: 600;
-    font-size: 15px;
 }

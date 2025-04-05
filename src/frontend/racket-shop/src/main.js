@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
-localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM4NDgxNTAsImlhdCI6MTc0MzgwNDk1MCwiVXNlcklEIjoyLCJSb2xlIjoiQWRtaW4ifQ.EjA7WY8VUb9gm_G5j58hNX_-u6-Br8AtY56QXsRXho0');
+localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM5MTg5ODIsImlhdCI6MTc0Mzg3NTc4MiwiVXNlcklEIjoyLCJSb2xlIjoiQWRtaW4ifQ.UMgpUSErCKGS9wSO2-CY0LN5Wd50zn-WnL0p4Kwhvlw');
 
 app.use(router)
 

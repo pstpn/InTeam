@@ -11,15 +11,22 @@
                 <div class="grid-item" v-for="(item, index) in cartData.lines" :key="index">
                     <div class="grid-cart-column">
                         <div class="grid-photo">
-                            <img src="../../assets/racket.png" 
-                            alt="Описание изображения">
+                            <img 
+                                v-if="racketImages[item.racket_id]"
+                                :src="racketImages[item.racket_id]" 
+                                :alt="`Ракетка ${item.racket_id}`"
+                                @error="handleImageError(item.racket_id)"
+                            />
+                            <p v-else class="loading-text">Загрузка изображения...</p>
                         </div>
                     </div>
                     <div class="grid-cart-column">
                         <div class="form-in-row">
-                            <p class="font-form-body-bold">
-                                {{ item.racket_id }}
-                            </p>
+                            <router-link 
+                                :to="`${config.VIEWS.rackets}/${item.racket_id}`" 
+                                class="submit-button-font-thin">
+                                {{ racketNames[item.racket_id] || `Ракетка ${item.racket_id}` }}
+                            </router-link> 
                             <div class="grid-button">
                                 <button class="submit-button-cart" @click="decreaseQuantity(item)">
                                     -
@@ -35,7 +42,7 @@
                                 Цена
                             </p>
                             <p class="font-form-body-bold">
-                                {{ item.price }}
+                                {{ item.price }} ₽
                             </p>
                         </div>
                         <div class="form-in-row-right">
@@ -51,6 +58,7 @@
                 </div>
             </div>
 
+            <!-- Модальное окно удаления -->
             <div v-if="isDeleteModalOpen" class="modal-overlay">
                 <div class="modal-content">
                     <p class="font-form-header">Подтверждение удаления</p>
@@ -85,7 +93,7 @@
                             Итог
                         </p>
                         <p class="font-form-body-bold">
-                            {{ cartData.total_price }} 
+                            {{ cartData.total_price }} ₽
                         </p>
                     </div>
                     <button 
@@ -97,6 +105,7 @@
             </div>
         </div>
 
+        <!-- Модальное окно оформления заказа -->
         <div v-if="showModal" class="modal-overlay">
             <div class="modal-content">
                 <h2 class="font-form-header">Оформление заказа</h2>
@@ -164,6 +173,9 @@ export default {
             recipient_name: '',
             isDeleteModalOpen: false,
             selectedRacketId: 0,
+            racketImages: {}, // Хранит изображения ракеток по ID
+            racketNames: {},  // Хранит названия ракеток по ID
+            loadingRackets: {} // Отслеживает загрузку данных по ракеткам
         };
     },
     methods: {
@@ -176,38 +188,69 @@ export default {
                     return;
                 }
 
-                const cur_url = config.BACKEND_URL + config.API.user.cart;
-                const response = await axios.get(cur_url, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                const response = await axios.get(`${config.BACKEND_URL}${config.API.user.cart}`, {
+                    headers: { Authorization: `Bearer ${token}` }
                 });
                 
                 if (response.data) {
                     const cart = response.data.cart;
-
                     this.cartData = {   
                         lines: cart.lines, 
                         total_price: cart.total_price, 
                         quantity: cart.quantity
                     };
+                    
+                    // Загружаем данные по каждой ракетке в корзине
+                    this.cartData.lines.forEach(item => {
+                        this.fetchRacketData(item.racket_id);
+                    });
                 }
             } catch (error) {
-                console.error('Error fetching user\'s cart data:', error);
+                console.error('Error fetching cart data:', error);
                 this.$router.push(this.config.API.auth.login);
             }
         },
+        
+        async fetchRacketData(racketId) {
+            if (this.loadingRackets[racketId]) return;
+            
+            // Исправляем: просто присваиваем значение вместо this.$set
+            this.loadingRackets = {...this.loadingRackets, [racketId]: true};
+            
+            try {
+                const response = await axios.get(`${config.BACKEND_URL}${config.API.rackets}/${racketId}`);
+                
+                if (response.data) {
+                    const racket = response.data.racket;
+                    console.log(racket)
+                    
+                    // Исправляем: обычное присваивание для объектов
+                    this.racketNames = {...this.racketNames, [racketId]: `${racket.brand} ${racket.id}`};
+                    
+                    // Обрабатываем изображение
+                    if (racket.image) {
+                        this.racketImages = {...this.racketImages, [racketId]: `data:image/jpeg;base64,${racket.image}`};
+                    }
+                }
+            } catch (error) {
+                console.error(`Error fetching racket ${racketId}:`, error);
+                this.racketImages = {...this.racketImages, [racketId]: require('../../assets/racket.png')};
+            } finally {
+                this.loadingRackets = {...this.loadingRackets, [racketId]: false};
+            }
+        },
+        
+        handleImageError(racketId) {
+            this.racketImages = {...this.racketImages, [racketId]: require('../../assets/racket.png')};
+        },
+        
         async increaseQuantity(item) {
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.put(
-                    `${config.BACKEND_URL}${config.API.user.cart}${config.API.rackets}/${item.racket_id}`,
-                    {
-                        quantity: 1 
-                    },
-                    {
-                        headers: { Authorization: `Bearer ${token}` }
-                    }
+                    `${config.BACKEND_URL}${config.API.user.cart}/rackets/${item.racket_id}`,
+                    { quantity: 1 },
+                    { headers: { Authorization: `Bearer ${token}` } }
                 );
                 if (response.data) {
                     this.fetchCartData();
@@ -216,17 +259,14 @@ export default {
                 console.error('Error increasing quantity:', error);
             }
         },
+        
         async decreaseQuantity(item) {
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.put(
                     `${config.BACKEND_URL}${config.API.user.cart}/rackets/${item.racket_id}`,
-                    {
-                        quantity: -1 
-                    },
-                    {
-                        headers: { Authorization: `Bearer ${token}` }
-                    }
+                    { quantity: -1 },
+                    { headers: { Authorization: `Bearer ${token}` } }
                 );
 
                 if (response.data) {
@@ -236,6 +276,7 @@ export default {
                 console.error('Error decreasing quantity:', error);
             }
         },
+        
         async removeItem() {
             try {
                 const token = localStorage.getItem('token');
@@ -245,36 +286,36 @@ export default {
                 );
                 if (response.data) {
                     this.fetchCartData();
+                    this.closeDeleteModal();
                 }
             } catch (error) {
                 console.error('Error removing item:', error);
             }
         },
+        
         async confirmOrder() {
             try {
-                
                 const token = localStorage.getItem('token');
                 const response = await axios.post(
                     `${config.BACKEND_URL}${config.API.orders}`,
                     {
                         address: this.address,
-                        // delivery_date: this.delivery_date,
-                        delivery_date: "00:00:00",
+                        delivery_date: this.delivery_date || "00:00:00",
                         recipient_name: this.recipient_name
                     },
-                    {
-                        headers: { Authorization: `Bearer ${token}` }
-                    }
+                    { headers: { Authorization: `Bearer ${token}` } }
                 );
                 
                 if (response.data) {
                     this.showModal = false;
-                    this.$router.push(this.config.VIEWS.user.cart);
+                    this.$router.push(this.config.VIEWS.orders);
                 }
             } catch (error) {
                 console.error('Error confirming order:', error);
+                alert('Ошибка при оформлении заказа: ' + (error.response?.data?.message || error.message));
             }
         },
+        
         openDeleteModal(racketId) {
             this.selectedRacketId = racketId;
             this.isDeleteModalOpen = true;

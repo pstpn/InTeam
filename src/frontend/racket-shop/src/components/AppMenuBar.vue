@@ -85,10 +85,11 @@ export default {
             if (!token) {
                 return false;
             }
-
-
+            
             const decoded = this.parseJwt(token);
-            console.log(decoded)
+
+            console.log(decoded.Role)
+
             if (decoded && decoded.Role) {
                 this.role = decoded.Role;
                 return true;
@@ -106,7 +107,7 @@ export default {
     },
     mounted() {
         this.activeLink = this.$route.path;
-        this.hasToken(); // Проверяем роль при загрузке компонента
+        this.hasToken();
     },
     watch: {
         '$route.path'(newPath) {

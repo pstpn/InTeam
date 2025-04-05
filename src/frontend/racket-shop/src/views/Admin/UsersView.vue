@@ -28,7 +28,7 @@
                         }">
                             {{ getRoleName(user.role) }}
                         </button>
-                        <a class="container-icon-tool">
+                        <a class="container-icon-tool" @click.stop="openRoleModal(user)">
                             <img src="../../assets/tool.png" alt="Tool" class="icon-tool"/>
                         </a>
                     </div>
@@ -60,6 +60,33 @@
             </div>
         </div>
     </div>
+
+    <div v-if="showRoleModal" class="modal-overlay" @click.self="closeRoleModal">
+        <div class="modal-content">
+            <p class="font-form-header">Изменение роли пользователя</p>
+            <div class="form-in-row">
+                <p class="font-form-body-bold">{{ selectedUser.name }} {{ selectedUser.surname }}</p>
+            </div>
+            <div class="form-input">
+                <select v-model="selectedRole">
+                    <option value="User">Покупатель</option>
+                    <option value="Admin">Админ</option>
+                </select>
+            </div>
+            <div class="form-in-row">
+                <button 
+                    class="submit-button-orange"
+                    @click="closeRoleModal">
+                    Отмена
+                </button>
+                <button
+                    class="submit-button-green"
+                    @click="updateUserRole">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -73,10 +100,56 @@ export default {
             filteredUsers: [],
             searchQuery: '',
             config: config,
-            loading: true
+            loading: true,
+            showRoleModal: false,
+            selectedRole: '',
+            selectedUser: null
         };
     },
     methods: {
+        openRoleModal(user) {
+            this.selectedUser = user;
+            this.selectedRole = user.role;
+            this.showRoleModal = true;
+        },
+        
+        closeRoleModal() {
+            this.showRoleModal = false;
+            this.selectedUser = null;
+            this.selectedRole = '';
+        },
+        
+        async updateUserRole() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    this.$router.push(this.config.VIEWS.auth.login);
+                    return;
+                }
+                
+                const response = await axios.patch(
+                    `${config.BACKEND_URL}${config.API.admin.users}/${this.selectedUser.user.id}`,
+                    {
+                        role: this.selectedRole
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+                
+                if (response.status === 200) {
+                    this.closeRoleModal();
+                    this.fetchUsers(); // Обновляем список пользователей
+                    alert('Роль пользователя успешно обновлена!');
+                }
+            } catch (error) {
+                console.error('Ошибка при обновлении роли:', error);
+                alert('Не удалось обновить роль: ' + 
+                    (error.response?.data?.message || error.message));
+            }
+        },
         async fetchUsers() {
             try {
                 this.loading = true;

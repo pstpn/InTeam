@@ -15,7 +15,6 @@
                     </div>
                 </div>
 
-                <!-- Фильтр по дате -->
                 <div class="filter-dropdown">
                     <button class="submit-button-filter" @click="toggleDropdown('creation_date')">
                         Создание
@@ -65,7 +64,6 @@
                     </div>
                 </div>
 
-                <!-- Кнопка сброса фильтров -->
                 <button class="submit-button-orange" @click="resetFilters">
                     Сбросить
                 </button>
@@ -86,7 +84,7 @@
                         }">
                             {{ getStatusText(order.status) }}
                         </button>
-                        <a class="container-icon-tool">
+                        <a class="container-icon-tool" @click.stop="openStatusModal(order)">
                             <img src="../../assets/tool.png" alt="Tool" class="icon-tool"/>
                         </a>
                     </div>
@@ -137,6 +135,31 @@
             </div>
         </div>
     </div>
+   
+    <div v-if="showStatusModal" class="modal-overlay" @click.self="closeStatusModal">
+        <div class="modal-content">
+            <p class="font-form-header">Изменение статуса заказа №{{ selectedOrderId }}</p>
+            <div class="form-input">
+                <select v-model="selectedStatus">
+                    <option value="InProgress">В процессе</option>
+                    <option value="Done">Выполнен</option>
+                    <option value="Canceled">Отменен</option>
+                </select>
+            </div>
+            <div class="form-in-row">
+                <button 
+                    class="submit-button-orange"
+                    @click="closeStatusModal">
+                    Отмена
+                </button>
+                <button 
+                    class="submit-button-green"
+                    @click="updateOrderStatus">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -146,6 +169,9 @@ import config from "../../../config.js";
 export default {
     data() {
         return {
+            showStatusModal: false,
+            selectedStatus: '',
+            selectedOrderId: null,
             orders: [],
             config: config,
             loading: true,
@@ -203,6 +229,49 @@ export default {
         }
     },
     methods: {
+        openStatusModal(order) {
+            this.selectedOrderId = order.id;
+            this.selectedStatus = order.status;
+            this.showStatusModal = true;
+        },
+        
+        closeStatusModal() {
+            this.showStatusModal = false;
+            this.selectedOrderId = null;
+            this.selectedStatus = '';
+        },
+        
+        async updateOrderStatus() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    this.$router.push(this.config.VIEWS.auth.login);
+                    return;
+                }
+
+                const response = await axios.patch(
+                    `${config.BACKEND_URL}${config.API.orders}/${this.selectedOrderId}`,
+                    {
+                        status: this.selectedStatus
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+                
+                if (response.status === 200) {
+                    this.closeStatusModal();
+                    this.fetchOrders(); // Обновляем список заказов
+                    alert('Статус заказа успешно обновлен!');
+                }
+            } catch (error) {
+                console.error('Ошибка при обновлении статуса:', error);
+                alert('Не удалось обновить статус: ' + 
+                    (error.response?.data?.message || error.message));
+            }
+        },
         async fetchOrders() {
             try {
                 this.loading = true;

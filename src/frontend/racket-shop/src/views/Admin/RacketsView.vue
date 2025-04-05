@@ -16,8 +16,7 @@
                 <div class="form-input">
                     <input
                         type="text"
-                        id="email"
-                        v-model="email"
+                        v-model="newRacket.balance"
                         placeholder="Баланс"
                         required
                     />
@@ -26,9 +25,8 @@
                 <div class="form-input">
                     <input
                         type="text"
-                        id="email"
-                        v-model="email"
-                        placeholder="Вес"
+                        v-model="newRacket.weight"
+                        placeholder="Вес (г)"
                         required
                     />
                 </div>
@@ -36,9 +34,8 @@
                 <div class="form-input">
                     <input
                         type="text"
-                        id="email"
-                        v-model="email"
-                        placeholder="Размер головы"
+                        v-model="newRacket.head_size"
+                        placeholder="Размер головы (кв.см)"
                         required
                     />
                 </div>
@@ -46,8 +43,7 @@
                 <div class="form-input">
                     <input
                         type="text"
-                        id="email"
-                        v-model="email"
+                        v-model="newRacket.brand"
                         placeholder="Бренд"
                         required
                     />
@@ -56,8 +52,7 @@
                 <div class="form-input">
                     <input
                         type="text"
-                        id="email"
-                        v-model="email"
+                        v-model="newRacket.price"
                         placeholder="Цена"
                         required
                     />
@@ -66,20 +61,38 @@
                 <div class="form-input">
                     <input
                         type="text"
-                        id="email"
-                        v-model="email"
+                        v-model="newRacket.quantity"
                         placeholder="Количество"
                         required
                     />
                 </div>
 
                 <div class="form-in-row">
-                    <p class="font-form-body">
-                        Изображение 
-                    </p>
+                    <input
+                        type="file"
+                        ref="fileInput"
+                        accept="image/*"
+                        style="display: none"
+                        @change="handleImageUpload"
+                    >
+                    <button
+                        class="submit-button-grey"
+                        :class="{ 'image-selected': selectedImage }"
+                        @click="triggerFileInput"
+                        >
+                        {{ selectedImage ? 'Изменить изображение' : 'Добавить изображение' }}
+                    </button>
+                    <button
+                        v-if="selectedImage"
+                        class="submit-button-orange"
+                        @click="resetImage"
+                        >
+                        Сбросить
+                    </button>
                     <button 
-                        class="submit-button-green">
-                        Добавить
+                        class="submit-button-green"
+                        @click="addRacket">
+                            Добавить
                     </button>
                 </div>
             </div>
@@ -171,7 +184,7 @@
                         <button class="submit-button-green" :class="{ 'submit-button-orange': !racket.available }">
                             {{ racket.available ? 'Доступна' : 'Недоступна' }}
                         </button>
-                        <a class="container-icon-tool">
+                        <a class="container-icon-tool" @click.stop="openUpdateModal(racket)">
                             <img src="../../assets/tool.png" alt="Tool" class="icon-tool"/>
                         </a>
                     </div>
@@ -205,12 +218,39 @@
                 </div>
                 <div class="form-in-row">
                     <p class="font-form-body">
-                        Голова
+                        Размер головы
                     </p>
                     <p class="font-form-body-bold">
                         {{ racket.head_size }} мм
                     </p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="showUpdateModal" class="modal-overlay" @click.self="closeUpdateModal">
+        <div class="modal-content">
+            <p class="font-form-header">Обновление количества</p>
+            <div class="form-input">
+                <input
+                    type="number"
+                    v-model="updatedQuantity"
+                    placeholder="Новое количество"
+                    min="0"
+                    required
+                />
+            </div>
+            <div class="form-in-row">
+                <button 
+                    class="submit-button-green"
+                    @click="updateRacketQuantity">
+                    Обновить
+                </button>
+                <button 
+                    class="submit-button-orange"
+                    @click="closeUpdateModal">
+                    Отмена
+                </button>
             </div>
         </div>
     </div>
@@ -223,14 +263,19 @@ import config from "../../../config.js";
 export default {
     data() {
         return {
+            showUpdateModal: false,
+            updatedQuantity: 0,
+            selectedRacketId: null,
+            selectedImage: null,
+            selectedImagePreview: null,
             showAddRacketModal: false,
             newRacket: {
-                name: '',
-                price: 0,
+                price: '',
                 brand: '',
-                balance: 0,
-                head_size: 0,
-                weight: 0
+                balance: '',
+                head_size: '',
+                weight: '',
+                quantity: ''
             },
             rackets: [],
             config: config,
@@ -284,6 +329,78 @@ export default {
         }
     },
     methods: {
+        openUpdateModal(racket) {
+            this.selectedRacketId = racket.id;
+            this.updatedQuantity = racket.quantity;
+            this.showUpdateModal = true;
+        },
+        
+        closeUpdateModal() {
+            this.showUpdateModal = false;
+            this.selectedRacketId = null;
+            this.updatedQuantity = 0;
+        },
+        
+        async updateRacketQuantity() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    this.$router.push(this.config.VIEWS.auth.login);
+                    return;
+                }
+
+                const response = await axios.patch(
+                    `${config.BACKEND_URL}${config.API.rackets}/${this.selectedRacketId}`,
+                    {
+                        quantity: this.updatedQuantity
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+                
+                if (response.status === 200) {
+                    this.closeUpdateModal();
+                    this.fetchRackets();
+                    alert('Количество успешно обновлено!');
+                }
+            } catch (error) {
+                console.error('Ошибка при обновлении количества:', error);
+                alert('Не удалось обновить количество: ' + 
+                    (error.response?.data?.message || error.message));
+            }
+        },
+        resetImage() {
+            this.selectedImage = null;
+            this.selectedImagePreview = null;
+            this.$refs.fileInput.value = ''; // Сбрасываем input file
+            // Можно добавить emit для уведомления родительского компонента
+            this.$emit('image-reset');
+        },
+        triggerFileInput() {
+            this.$refs.fileInput.click()
+        },
+
+        handleImageUpload(event) {
+            const file = event.target.files[0]
+            if (file) {
+                this.selectedImage = file
+                
+                // Создаем превью изображения
+                const reader = new FileReader()
+                reader.onload = (e) => {
+                this.selectedImagePreview = e.target.result
+                }
+                reader.readAsDataURL(file)
+            }
+        },
+        removeImage() {
+            this.selectedImage = null
+            this.selectedImagePreview = null
+            this.$refs.fileInput.value = '' // Сбрасываем input file
+        },
         openAddRacketModal() {
             this.showAddRacketModal = true;
         },
@@ -300,6 +417,47 @@ export default {
                 head_size: 0,
                 weight: 0
             };
+        },
+        async addRacket() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    this.$router.push(this.config.VIEWS.auth.login);
+                    return;
+                }
+
+                // Формируем данные для отправки
+                const racketData = {
+                    price: this.newRacket.price,
+                    brand: this.newRacket.brand,
+                    balance: this.newRacket.balance,
+                    head_size: this.newRacket.head_size,
+                    weight: this.newRacket.weight,
+                    quantity: this.newRacket.quantity,
+                    image: this.selectedImage // Добавляем изображение в base64
+                };
+
+                const response = await axios.post(
+                    `${config.BACKEND_URL}${config.API.rackets}`,
+                        racketData,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                );
+                
+                if (response.status === 200) {
+                    this.closeAddRacketModal();
+                    this.fetchRackets();
+                    alert('Ракетка успешно добавлена!');
+                }
+            } catch (error) {
+                console.error('Ошибка при добавлении ракетки:', error);
+                alert('Не удалось добавить ракетку: ' + 
+                    (error.response?.data?.message || error.message));
+            }
         },
         async fetchRackets() {
             try {
