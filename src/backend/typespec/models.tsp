@@ -78,7 +78,7 @@ model Cart {
 }
 
 model Feedback {
-  date: plainTime,
+  date: utcDateTime,
   feedback: string,
   racket_id: integer,
   rating: integer
@@ -99,8 +99,8 @@ model OrderLine {
 model Order {
   id: integer,
   user_id: integer,
-  creation_date: plainTime,
-  delivery_date: plainTime,
+  creation_date: utcDateTime,
+  delivery_date: utcDateTime,
   address: string,
   recipient_name: string,
   status: string,

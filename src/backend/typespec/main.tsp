@@ -70,7 +70,7 @@ model CreateOrderRequest {
   @body
   createOrderBody: {
     address: string,
-    delivery_date: plainTime,
+    delivery_date: utcDateTime,
     recipient_name: string
   }
 }
