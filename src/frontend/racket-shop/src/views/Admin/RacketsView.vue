@@ -3,13 +3,88 @@
         <h1 class="font-container-header">Ракетки</h1>
         <div class="grid-order-column">
             <div class="form-in-row">
-                <button class="submit-button-green">
+                <button 
+                    class="submit-button-green"
+                    @click="showAddRacketModal = true">
                     Добавить ракетку
                 </button>
             </div>
         </div>
+        <div v-if="showAddRacketModal" class="modal-overlay" @click.self="closeAddRacketModal">
+            <div class="modal-content">
+                <p class="font-form-header">Добавление ракетки</p>
+                <div class="form-input">
+                    <input
+                        type="text"
+                        id="email"
+                        v-model="email"
+                        placeholder="Баланс"
+                        required
+                    />
+                </div>
+
+                <div class="form-input">
+                    <input
+                        type="text"
+                        id="email"
+                        v-model="email"
+                        placeholder="Вес"
+                        required
+                    />
+                </div>
+
+                <div class="form-input">
+                    <input
+                        type="text"
+                        id="email"
+                        v-model="email"
+                        placeholder="Размер головы"
+                        required
+                    />
+                </div>
+
+                <div class="form-input">
+                    <input
+                        type="text"
+                        id="email"
+                        v-model="email"
+                        placeholder="Бренд"
+                        required
+                    />
+                </div>
+
+                <div class="form-input">
+                    <input
+                        type="text"
+                        id="email"
+                        v-model="email"
+                        placeholder="Цена"
+                        required
+                    />
+                </div>
+
+                <div class="form-input">
+                    <input
+                        type="text"
+                        id="email"
+                        v-model="email"
+                        placeholder="Количество"
+                        required
+                    />
+                </div>
+
+                <div class="form-in-row">
+                    <p class="font-form-body">
+                        Изображение 
+                    </p>
+                    <button 
+                        class="submit-button-green">
+                        Добавить
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="grid-order-column">
-        
             <div class="form-in-row">
                 <div class="filter-dropdown">
                     <button class="submit-button-filter" @click="toggleDropdown('weight')">
@@ -148,6 +223,15 @@ import config from "../../../config.js";
 export default {
     data() {
         return {
+            showAddRacketModal: false,
+            newRacket: {
+                name: '',
+                price: 0,
+                brand: '',
+                balance: 0,
+                head_size: 0,
+                weight: 0
+            },
             rackets: [],
             config: config,
             loading: true,
@@ -200,6 +284,23 @@ export default {
         }
     },
     methods: {
+        openAddRacketModal() {
+            this.showAddRacketModal = true;
+        },
+        closeAddRacketModal() {
+            this.showAddRacketModal = false;
+            this.resetNewRacketForm();
+        },
+        resetNewRacketForm() {
+            this.newRacket = {
+                name: '',
+                price: 0,
+                brand: '',
+                balance: 0,
+                head_size: 0,
+                weight: 0
+            };
+        },
         async fetchRackets() {
             try {
                 this.loading = true;
