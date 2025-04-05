@@ -266,7 +266,7 @@ func (h *Handler) OrdersGetOrders(ctx context.Context, params api.OrdersGetOrder
 		orders, err = h.OrderService.GetAllOrders(ctx, &dto.ListOrdersReq{Pagination: p})
 	case model.RoleUser:
 		orders, err = h.OrderService.GetMyOrders(ctx, &dto.ListOrdersReq{
-			UserID:     common.MustUserIDFromCtx(ctx),
+			UserID:     user.ID,
 			Pagination: p,
 		})
 	default:
