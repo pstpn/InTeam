@@ -1187,7 +1187,7 @@ func (s *Feedback) Encode(e *jx.Encoder) {
 func (s *Feedback) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("date")
-		json.EncodeTime(e, s.Date)
+		json.EncodeDateTime(e, s.Date)
 	}
 	{
 		e.FieldStart("feedback")
@@ -1222,7 +1222,7 @@ func (s *Feedback) Decode(d *jx.Decoder) error {
 		case "date":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := json.DecodeTime(d)
+				v, err := json.DecodeDateTime(d)
 				s.Date = v
 				if err != nil {
 					return err
@@ -2638,11 +2638,11 @@ func (s *Order) encodeFields(e *jx.Encoder) {
 	}
 	{
 		e.FieldStart("creation_date")
-		json.EncodeTime(e, s.CreationDate)
+		json.EncodeDateTime(e, s.CreationDate)
 	}
 	{
 		e.FieldStart("delivery_date")
-		json.EncodeTime(e, s.DeliveryDate)
+		json.EncodeDateTime(e, s.DeliveryDate)
 	}
 	{
 		e.FieldStart("address")
@@ -2718,7 +2718,7 @@ func (s *Order) Decode(d *jx.Decoder) error {
 		case "creation_date":
 			requiredBitSet[0] |= 1 << 2
 			if err := func() error {
-				v, err := json.DecodeTime(d)
+				v, err := json.DecodeDateTime(d)
 				s.CreationDate = v
 				if err != nil {
 					return err
@@ -2730,7 +2730,7 @@ func (s *Order) Decode(d *jx.Decoder) error {
 		case "delivery_date":
 			requiredBitSet[0] |= 1 << 3
 			if err := func() error {
-				v, err := json.DecodeTime(d)
+				v, err := json.DecodeDateTime(d)
 				s.DeliveryDate = v
 				if err != nil {
 					return err
@@ -2990,7 +2990,7 @@ func (s *OrdersCreateOrderReq) encodeFields(e *jx.Encoder) {
 	}
 	{
 		e.FieldStart("delivery_date")
-		json.EncodeTime(e, s.DeliveryDate)
+		json.EncodeDateTime(e, s.DeliveryDate)
 	}
 	{
 		e.FieldStart("recipient_name")
@@ -3028,7 +3028,7 @@ func (s *OrdersCreateOrderReq) Decode(d *jx.Decoder) error {
 		case "delivery_date":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
-				v, err := json.DecodeTime(d)
+				v, err := json.DecodeDateTime(d)
 				s.DeliveryDate = v
 				if err != nil {
 					return err

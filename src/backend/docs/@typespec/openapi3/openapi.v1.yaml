@@ -323,7 +323,7 @@ paths:
                   type: string
                 delivery_date:
                   type: string
-                  format: time
+                  format: date-time
                 recipient_name:
                   type: string
               required:
@@ -767,7 +767,7 @@ components:
               type: string
             delivery_date:
               type: string
-              format: time
+              format: date-time
             recipient_name:
               type: string
           required:
@@ -853,7 +853,7 @@ components:
       properties:
         date:
           type: string
-          format: time
+          format: date-time
         feedback:
           type: string
         racket_id:
@@ -984,10 +984,10 @@ components:
           type: integer
         creation_date:
           type: string
-          format: time
+          format: date-time
         delivery_date:
           type: string
-          format: time
+          format: date-time
         address:
           type: string
         recipient_name:
