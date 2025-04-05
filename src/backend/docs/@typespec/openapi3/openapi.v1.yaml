@@ -323,7 +323,7 @@ paths:
                   type: string
                 delivery_date:
                   type: string
-                  format: time
+                  format: date-time
                 recipient_name:
                   type: string
               required:
@@ -409,7 +409,7 @@ paths:
   /api/profile:
     get:
       operationId: Profile_getProfile
-      summary: get user profile
+      summary: get profile
       parameters: []
       responses:
         '200':
@@ -425,7 +425,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       tags:
-        - user
+        - authorized users
       security:
         - BearerAuth: []
   /api/rackets:
@@ -767,7 +767,7 @@ components:
               type: string
             delivery_date:
               type: string
-              format: time
+              format: date-time
             recipient_name:
               type: string
           required:
@@ -853,13 +853,36 @@ components:
       properties:
         date:
           type: string
-          format: time
+          format: date-time
         feedback:
           type: string
         racket_id:
           type: integer
         rating:
           type: integer
+    FeedbackWithUsername:
+      type: object
+      required:
+        - date
+        - feedback
+        - racket_id
+        - rating
+        - user_id
+        - username
+      properties:
+        date:
+          type: string
+          format: date-time
+        feedback:
+          type: string
+        racket_id:
+          type: integer
+        rating:
+          type: integer
+        user_id:
+          type: integer
+        username:
+          type: string
     GetCartResponse:
       type: object
       allOf:
@@ -906,7 +929,7 @@ components:
     GetRacketFeedbacksResponse:
       type: object
       allOf:
-        - $ref: '#/components/schemas/ResponseWithFeedbacks'
+        - $ref: '#/components/schemas/ResponseWithUsernameFeedbacks'
     GetRacketRequest:
       type: object
       required:
@@ -984,10 +1007,10 @@ components:
           type: integer
         creation_date:
           type: string
-          format: time
+          format: date-time
         delivery_date:
           type: string
-          format: time
+          format: date-time
         address:
           type: string
         recipient_name:
@@ -1143,6 +1166,15 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
+    ResponseWithUsernameFeedbacks:
+      type: object
+      required:
+        - feedbacks
+      properties:
+        feedbacks:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedbackWithUsername'
     ResponseWithUsers:
       type: object
       required:

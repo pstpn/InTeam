@@ -878,7 +878,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					switch method {
 					case "GET":
 						r.name = ProfileGetProfileOperation
-						r.summary = "get user profile"
+						r.summary = "get profile"
 						r.operationID = "Profile_getProfile"
 						r.pathPattern = "/api/profile"
 						r.args = args

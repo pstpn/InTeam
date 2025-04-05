@@ -76,7 +76,7 @@ type Handler interface {
 	OrdersUpdateOrderStatus(ctx context.Context, req *OrdersUpdateOrderStatusReq, params OrdersUpdateOrderStatusParams) error
 	// ProfileGetProfile implements Profile_getProfile operation.
 	//
-	// Get user profile.
+	// Get profile.
 	//
 	// GET /api/profile
 	ProfileGetProfile(ctx context.Context) (*GetProfileResponse, error)

@@ -17,7 +17,7 @@ type IFeedbackService interface {
 	RemoveFeedback(ctx context.Context, req *dto.RemoveFeedbackReq) error
 	UpdateFeedback(ctx context.Context, req *dto.UpdateFeedbackReq) error
 	GetFeedbacksByUserID(ctx context.Context, userID int) ([]*model.Feedback, error)
-	GetFeedbacksByRacketID(ctx context.Context, racketID int) ([]*model.Feedback, error)
+	GetFeedbacksByRacketID(ctx context.Context, racketID int) ([]*model.FeedbackWithUsername, error)
 }
 
 type FeedbackService struct {
@@ -91,7 +91,7 @@ func (s *FeedbackService) UpdateFeedback(ctx context.Context, req *dto.UpdateFee
 	return nil
 }
 
-func (s *FeedbackService) GetFeedbacksByRacketID(ctx context.Context, racketID int) ([]*model.Feedback, error) {
+func (s *FeedbackService) GetFeedbacksByRacketID(ctx context.Context, racketID int) ([]*model.FeedbackWithUsername, error) {
 	feedbacks, err := s.repo.GetFeedbacksByRacketID(ctx, racketID)
 	if err != nil {
 		s.l.Errorf("get feedback by racket id fail, error %s", err.Error())

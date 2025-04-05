@@ -70,7 +70,7 @@ model CreateOrderRequest {
   @body
   createOrderBody: {
     address: string,
-    delivery_date: plainTime,
+    delivery_date: utcDateTime,
     recipient_name: string
   }
 }
@@ -147,7 +147,7 @@ model CreateRacketResponse extends ResponseWithRacket {};
 model GetUsersResponse extends ResponseWithUsers {};
 model GetUserResponse extends ResponseWithUser {};
 model GetOrdersResponse extends ResponseWithOrders {};
-model GetRacketFeedbacksResponse extends ResponseWithFeedbacks {};
+model GetRacketFeedbacksResponse extends ResponseWithUsernameFeedbacks {};
 model GetRacketsResponse extends ResponseWithRackets {};
 model GetRacketResponse extends ResponseWithRacket {};
 
@@ -206,12 +206,6 @@ namespace Api {
       @summary("create order")
       @post op createOrder(...CreateOrderRequest): OkResponse | ErrorResponse;
     }
-
-    @route("/profile")
-    namespace Profile {
-      @summary("get user profile")
-      @get op getProfile(): GetProfileResponse | ErrorResponse;
-    }
   }
 
   @tag("admin")
@@ -255,6 +249,12 @@ namespace Api {
     namespace Orders {
       @summary("get orders")
       @get op getOrders(...GetOrdersRequest): GetOrdersResponse | ErrorResponse;
+    }
+
+    @route("/profile")
+    namespace Profile {
+      @summary("get profile")
+      @get op getProfile(): GetProfileResponse | ErrorResponse;
     }
   }
 

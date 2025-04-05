@@ -37,6 +37,10 @@ model ResponseWithFeedbacks {
   feedbacks: Array<Feedback>
 }
 
+model ResponseWithUsernameFeedbacks {
+  feedbacks: Array<FeedbackWithUsername>
+}
+
 model ResponseWithFeedback {
   feedback: Feedback
 }
@@ -78,10 +82,19 @@ model Cart {
 }
 
 model Feedback {
-  date: plainTime,
+  date: utcDateTime,
   feedback: string,
   racket_id: integer,
   rating: integer
+}
+
+model FeedbackWithUsername {
+  date: utcDateTime,
+  feedback: string,
+  racket_id: integer,
+  rating: integer,
+  user_id: integer,
+  username: string
 }
 
 model User {
@@ -99,8 +112,8 @@ model OrderLine {
 model Order {
   id: integer,
   user_id: integer,
-  creation_date: plainTime,
-  delivery_date: plainTime,
+  creation_date: utcDateTime,
+  delivery_date: utcDateTime,
   address: string,
   recipient_name: string,
   status: string,

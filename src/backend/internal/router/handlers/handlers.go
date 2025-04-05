@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/ogen-go/ogen/ogenerrors"
+
 	"backend/internal/dto"
 	"backend/internal/model"
 	api "backend/internal/router/ogen"
@@ -110,7 +112,7 @@ func (h *Handler) FeedbacksCreateFeedback(ctx context.Context, req *api.Feedback
 	return &api.CreateFeedbackResponse{
 		Feedback: api.Feedback{
 			Date:     feedback.Date,
-			Feedback: feedback.Feedback,
+			Feedback: feedback.Text,
 			RacketID: feedback.RacketID,
 			Rating:   feedback.Rating,
 		},
@@ -311,7 +313,7 @@ func (h *Handler) RacketsGetRacketFeedbacks(ctx context.Context, params api.Rack
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetRacketFeedbacksResponse{Feedbacks: modelToAPIFeedbacks(feedbacks)}, nil
+	return &api.GetRacketFeedbacksResponse{Feedbacks: modelToAPIFeedbacksWithUsername(feedbacks)}, nil
 }
 
 func (h *Handler) RacketsGetRackets(ctx context.Context, params api.RacketsGetRacketsParams) (*api.GetRacketsResponse, error) {
@@ -380,11 +382,13 @@ func (h *Handler) UsersGetUsers(ctx context.Context) (*api.GetUsersResponse, err
 }
 
 func (h *Handler) NewError(_ context.Context, err error) *api.ErrorResponseStatusCode {
-	h.Logger.Errorf("unknown error: %s", err.Error())
+	h.Logger.Errorf("failed to process request: %s", err.Error())
 
 	apiErr := api.ErrorResponseStatusCode{}
 	if errors.Is(err, &apiErr) {
 		return &apiErr
+	} else if errors.Is(err, ErrUnauthorized) || errors.Is(err, ogenerrors.ErrSecurityRequirementIsNotSatisfied) {
+		return ErrUnauthorized
 	}
 
 	return ErrInternal

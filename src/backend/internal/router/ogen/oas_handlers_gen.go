@@ -2078,7 +2078,7 @@ func (s *Server) handleOrdersUpdateOrderStatusRequest(args [1]string, argsEscape
 
 // handleProfileGetProfileRequest handles Profile_getProfile operation.
 //
-// Get user profile.
+// Get profile.
 //
 // GET /api/profile
 func (s *Server) handleProfileGetProfileRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
@@ -2202,7 +2202,7 @@ func (s *Server) handleProfileGetProfileRequest(args [0]string, argsEscaped bool
 		mreq := middleware.Request{
 			Context:          ctx,
 			OperationName:    ProfileGetProfileOperation,
-			OperationSummary: "get user profile",
+			OperationSummary: "get profile",
 			OperationID:      "Profile_getProfile",
 			Body:             nil,
 			Params:           middleware.Parameters{},

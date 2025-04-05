@@ -32,7 +32,7 @@ func (r *FeedbackStorage) Create(ctx context.Context, feedback *model.Feedback) 
 		Values(
 			feedback.RacketID,
 			feedback.UserID,
-			feedback.Feedback,
+			feedback.Text,
 			feedback.Rating,
 			feedback.Date).
 		Suffix("returning feedback")
@@ -44,7 +44,7 @@ func (r *FeedbackStorage) Create(ctx context.Context, feedback *model.Feedback) 
 
 	row := r.Pool.QueryRow(ctx, sql, ars...)
 	err = row.Scan(
-		&feedback.Feedback,
+		&feedback.Text,
 	)
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (r *FeedbackStorage) Create(ctx context.Context, feedback *model.Feedback) 
 func (r *FeedbackStorage) Update(ctx context.Context, feedback *model.Feedback) error {
 	query := r.Builder.
 		Update(feedbackTable).
-		Set(feedbackField, feedback.Feedback).
+		Set(feedbackField, feedback.Text).
 		Set(ratingField, feedback.Rating).
 		Set(dateField, feedback.Date).
 		Where(squirrel.And{
@@ -111,7 +111,7 @@ func (r *FeedbackStorage) GetFeedback(ctx context.Context, req *dto.GetFeedbackR
 
 	row := r.Pool.QueryRow(ctx, sql, args...)
 
-	return r.rowToModel(row)
+	return r.rowToFeedbackModel(row)
 }
 
 func (r *FeedbackStorage) GetFeedbacksByUserID(ctx context.Context, id int) ([]*model.Feedback, error) {
@@ -134,7 +134,7 @@ func (r *FeedbackStorage) GetFeedbacksByUserID(ctx context.Context, id int) ([]*
 	var feedbacks []*model.Feedback
 
 	for rows.Next() {
-		feedback, err := r.rowToModel(rows)
+		feedback, err := r.rowToFeedbackModel(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -145,10 +145,19 @@ func (r *FeedbackStorage) GetFeedbacksByUserID(ctx context.Context, id int) ([]*
 	return feedbacks, nil
 }
 
-func (r *FeedbackStorage) GetFeedbacksByRacketID(ctx context.Context, id int) ([]*model.Feedback, error) {
+func (r *FeedbackStorage) GetFeedbacksByRacketID(ctx context.Context, id int) ([]*model.FeedbackWithUsername, error) {
 	query := r.Builder.
-		Select("*").
+		Select(
+			nameField,
+			surnameField,
+			racketIDField,
+			userIDField,
+			feedbackField,
+			ratingField,
+			dateField,
+		).
 		From(feedbackTable).
+		Join(on(feedbackTable, userTable, userIDField, idField)).
 		Where(squirrel.Eq{racketIDField: id})
 
 	sql, args, err := query.ToSql()
@@ -162,10 +171,10 @@ func (r *FeedbackStorage) GetFeedbacksByRacketID(ctx context.Context, id int) ([
 	}
 	defer rows.Close()
 
-	var feedbacks []*model.Feedback
+	var feedbacks []*model.FeedbackWithUsername
 
 	for rows.Next() {
-		feedback, err := r.rowToModel(rows)
+		feedback, err := r.rowToFeedbackWithUsernameModel(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -176,19 +185,41 @@ func (r *FeedbackStorage) GetFeedbacksByRacketID(ctx context.Context, id int) ([
 	return feedbacks, nil
 }
 
-func (r *FeedbackStorage) rowToModel(row pgx.Row) (*model.Feedback, error) {
+func (r *FeedbackStorage) rowToFeedbackModel(row pgx.Row) (*model.Feedback, error) {
 	var feedback model.Feedback
 
 	err := row.Scan(
 		&feedback.RacketID,
 		&feedback.UserID,
-		&feedback.Feedback,
+		&feedback.Text,
 		&feedback.Rating,
 		&feedback.Date,
 	)
 	if err != nil {
 		return nil, err
 	}
+
+	return &feedback, nil
+}
+
+func (r *FeedbackStorage) rowToFeedbackWithUsernameModel(row pgx.Row) (*model.FeedbackWithUsername, error) {
+	var feedback model.FeedbackWithUsername
+	var name, surname string
+
+	err := row.Scan(
+		&name,
+		&surname,
+		&feedback.RacketID,
+		&feedback.UserID,
+		&feedback.Text,
+		&feedback.Rating,
+		&feedback.Date,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	feedback.Username = name + " " + surname
 
 	return &feedback, nil
 }
