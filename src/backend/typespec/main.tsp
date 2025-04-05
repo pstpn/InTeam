@@ -206,12 +206,6 @@ namespace Api {
       @summary("create order")
       @post op createOrder(...CreateOrderRequest): OkResponse | ErrorResponse;
     }
-
-    @route("/profile")
-    namespace Profile {
-      @summary("get user profile")
-      @get op getProfile(): GetProfileResponse | ErrorResponse;
-    }
   }
 
   @tag("admin")
@@ -255,6 +249,12 @@ namespace Api {
     namespace Orders {
       @summary("get orders")
       @get op getOrders(...GetOrdersRequest): GetOrdersResponse | ErrorResponse;
+    }
+
+    @route("/profile")
+    namespace Profile {
+      @summary("get profile")
+      @get op getProfile(): GetProfileResponse | ErrorResponse;
     }
   }
 

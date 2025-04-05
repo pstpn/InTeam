@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/ogen-go/ogen/ogenerrors"
+
 	"backend/internal/dto"
 	"backend/internal/model"
 	api "backend/internal/router/ogen"
@@ -380,11 +382,13 @@ func (h *Handler) UsersGetUsers(ctx context.Context) (*api.GetUsersResponse, err
 }
 
 func (h *Handler) NewError(_ context.Context, err error) *api.ErrorResponseStatusCode {
-	h.Logger.Errorf("unknown error: %s", err.Error())
+	h.Logger.Errorf("failed to process request: %s", err.Error())
 
 	apiErr := api.ErrorResponseStatusCode{}
 	if errors.Is(err, &apiErr) {
 		return &apiErr
+	} else if errors.Is(err, ErrUnauthorized) || errors.Is(err, ogenerrors.ErrSecurityRequirementIsNotSatisfied) {
+		return ErrUnauthorized
 	}
 
 	return ErrInternal
