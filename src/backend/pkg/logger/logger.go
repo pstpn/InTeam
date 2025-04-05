@@ -9,12 +9,12 @@ import (
 )
 
 type Interface interface {
-	Debugf(message string, args ...interface{})
-	Infof(message string, args ...interface{})
-	Warnf(message string, args ...interface{})
-	Errorf(message string, args ...interface{})
-	Fatalf(message string, args ...interface{})
-	Printf(s string, i2 ...interface{})
+	Debugf(message string, args ...any)
+	Infof(message string, args ...any)
+	Warnf(message string, args ...any)
+	Errorf(message string, args ...any)
+	Fatalf(message string, args ...any)
+	Printf(s string, i2 ...any)
 }
 
 type Logger struct {
@@ -47,27 +47,27 @@ func New(level string, w io.Writer) *Logger {
 	}
 }
 
-func (l *Logger) Printf(s string, i2 ...interface{}) {
+func (l *Logger) Printf(s string, i2 ...any) {
 	l.logger.Printf(s, i2...)
 }
 
-func (l *Logger) Debugf(message string, args ...interface{}) {
+func (l *Logger) Debugf(message string, args ...any) {
 	l.logger.Debug().Msgf(message, args...)
 }
 
-func (l *Logger) Infof(message string, args ...interface{}) {
+func (l *Logger) Infof(message string, args ...any) {
 	l.logger.Info().Msgf(message, args...)
 }
 
-func (l *Logger) Warnf(message string, args ...interface{}) {
+func (l *Logger) Warnf(message string, args ...any) {
 	l.logger.Warn().Msgf(message, args...)
 }
 
-func (l *Logger) Errorf(message string, args ...interface{}) {
+func (l *Logger) Errorf(message string, args ...any) {
 	l.logger.Error().Msgf(message, args...)
 }
 
-func (l *Logger) Fatalf(message string, args ...interface{}) {
+func (l *Logger) Fatalf(message string, args ...any) {
 	l.logger.Fatal().Msgf(message, args...)
 	os.Exit(1)
 }

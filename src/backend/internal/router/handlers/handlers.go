@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"context"
+	"errors"
+
 	"backend/internal/dto"
 	"backend/internal/model"
 	api "backend/internal/router/ogen"
@@ -8,8 +11,6 @@ import (
 	"backend/pkg/common"
 	"backend/pkg/logger"
 	"backend/pkg/storage/postgres"
-	"context"
-	"errors"
 )
 
 var _ api.Handler = (*Handler)(nil)
@@ -86,7 +87,7 @@ func (h *Handler) CartAddRacket(ctx context.Context, req *api.CartAddRacketReq) 
 
 	return &api.AddRacketResponse{
 		Cart: api.Cart{
-			Lines:      modelToApiCartLines(cart.Lines),
+			Lines:      modelToAPICartLines(cart.Lines),
 			Quantity:   cart.Quantity,
 			TotalPrice: cart.TotalPrice,
 		},
@@ -157,7 +158,7 @@ func (h *Handler) RacketsDeleteRacket(ctx context.Context, params api.RacketsDel
 
 	return &api.DeleteRacketResponse{
 		Cart: api.Cart{
-			Lines:      modelToApiCartLines(cart.Lines),
+			Lines:      modelToAPICartLines(cart.Lines),
 			Quantity:   cart.Quantity,
 			TotalPrice: cart.TotalPrice,
 		},
@@ -174,7 +175,7 @@ func (h *Handler) CartGetCart(ctx context.Context) (*api.GetCartResponse, error)
 
 	return &api.GetCartResponse{
 		Cart: api.Cart{
-			Lines:      modelToApiCartLines(cart.Lines),
+			Lines:      modelToAPICartLines(cart.Lines),
 			Quantity:   cart.Quantity,
 			TotalPrice: cart.TotalPrice,
 		},
@@ -189,14 +190,18 @@ func (h *Handler) FeedbacksGetFeedbacks(ctx context.Context) (*api.GetFeedbacksR
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetFeedbacksResponse{Feedbacks: modelToApiFeedbacks(feedbacks)}, nil
+	return &api.GetFeedbacksResponse{Feedbacks: modelToAPIFeedbacks(feedbacks)}, nil
 }
 
 func (h *Handler) ProfileGetProfile(ctx context.Context) (*api.GetProfileResponse, error) {
-	return &api.GetProfileResponse{User: modelToApiUser(MustUserFromCtx(ctx))}, nil
+	return &api.GetProfileResponse{User: modelToAPIUser(MustUserFromCtx(ctx))}, nil
 }
 
-func (h *Handler) RacketsUpdateRacketsCount(ctx context.Context, req *api.RacketsUpdateRacketsCountReq, params api.RacketsUpdateRacketsCountParams) (*api.UpdateRacketsCountResponse, error) {
+func (h *Handler) RacketsUpdateRacketsCount(
+	ctx context.Context,
+	req *api.RacketsUpdateRacketsCountReq,
+	params api.RacketsUpdateRacketsCountParams,
+) (*api.UpdateRacketsCountResponse, error) {
 	userID := common.MustUserIDFromCtx(ctx)
 
 	cart, err := h.CartService.UpdateRacket(ctx, &dto.UpdateRacketCartReq{
@@ -210,7 +215,7 @@ func (h *Handler) RacketsUpdateRacketsCount(ctx context.Context, req *api.Racket
 
 	return &api.UpdateRacketsCountResponse{
 		Cart: api.Cart{
-			Lines:      modelToApiCartLines(cart.Lines),
+			Lines:      modelToAPICartLines(cart.Lines),
 			Quantity:   cart.Quantity,
 			TotalPrice: cart.TotalPrice,
 		},
@@ -237,7 +242,7 @@ func (h *Handler) RacketsCreateRacket(ctx context.Context, req *api.RacketsCreat
 		return nil, ErrBadRequest
 	}
 
-	return &api.CreateRacketResponse{Racket: modelToApiRacket(racket)}, nil
+	return &api.CreateRacketResponse{Racket: modelToAPIRacket(racket)}, nil
 }
 
 func (h *Handler) OrdersGetOrder(ctx context.Context, params api.OrdersGetOrderParams) (*api.GetOrderResponse, error) {
@@ -246,7 +251,7 @@ func (h *Handler) OrdersGetOrder(ctx context.Context, params api.OrdersGetOrderP
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetOrderResponse{Order: modelToApiOrder(order)}, nil
+	return &api.GetOrderResponse{Order: modelToAPIOrder(order)}, nil
 }
 
 func (h *Handler) OrdersGetOrders(ctx context.Context, params api.OrdersGetOrdersParams) (*api.GetOrdersResponse, error) {
@@ -256,21 +261,23 @@ func (h *Handler) OrdersGetOrders(ctx context.Context, params api.OrdersGetOrder
 	p := pagination(params.Pattern, params.Field, params.Sort)
 
 	user := MustUserFromCtx(ctx)
-	if user.Role == model.RoleAdmin {
+	switch user.Role {
+	case model.RoleAdmin:
 		orders, err = h.OrderService.GetAllOrders(ctx, &dto.ListOrdersReq{Pagination: p})
-	} else if user.Role == model.RoleUser {
+	case model.RoleUser:
 		orders, err = h.OrderService.GetMyOrders(ctx, &dto.ListOrdersReq{
 			UserID:     common.MustUserIDFromCtx(ctx),
 			Pagination: p,
 		})
-	} else {
+	default:
 		return nil, ErrInternal
 	}
+
 	if err != nil {
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetOrdersResponse{Orders: modelToApiOrders(orders)}, nil
+	return &api.GetOrdersResponse{Orders: modelToAPIOrders(orders)}, nil
 }
 
 func (h *Handler) OrdersUpdateOrderStatus(ctx context.Context, req *api.OrdersUpdateOrderStatusReq, params api.OrdersUpdateOrderStatusParams) error {
@@ -295,7 +302,7 @@ func (h *Handler) RacketsGetRacket(ctx context.Context, params api.RacketsGetRac
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetRacketResponse{Racket: modelToApiRacket(racket)}, nil
+	return &api.GetRacketResponse{Racket: modelToAPIRacket(racket)}, nil
 }
 
 func (h *Handler) RacketsGetRacketFeedbacks(ctx context.Context, params api.RacketsGetRacketFeedbacksParams) (*api.GetRacketFeedbacksResponse, error) {
@@ -304,7 +311,7 @@ func (h *Handler) RacketsGetRacketFeedbacks(ctx context.Context, params api.Rack
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetRacketFeedbacksResponse{Feedbacks: modelToApiFeedbacks(feedbacks)}, nil
+	return &api.GetRacketFeedbacksResponse{Feedbacks: modelToAPIFeedbacks(feedbacks)}, nil
 }
 
 func (h *Handler) RacketsGetRackets(ctx context.Context, params api.RacketsGetRacketsParams) (*api.GetRacketsResponse, error) {
@@ -315,10 +322,14 @@ func (h *Handler) RacketsGetRackets(ctx context.Context, params api.RacketsGetRa
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetRacketsResponse{Rackets: modelToApiRackets(rackets)}, nil
+	return &api.GetRacketsResponse{Rackets: modelToAPIRackets(rackets)}, nil
 }
 
-func (h *Handler) RacketsUpdateRacketQuantity(ctx context.Context, req *api.RacketsUpdateRacketQuantityReq, params api.RacketsUpdateRacketQuantityParams) error {
+func (h *Handler) RacketsUpdateRacketQuantity(
+	ctx context.Context,
+	req *api.RacketsUpdateRacketQuantityReq,
+	params api.RacketsUpdateRacketQuantityParams,
+) error {
 	if !req.GetQuantity().IsSet() {
 		return ErrNotModified
 	}
@@ -356,7 +367,7 @@ func (h *Handler) UsersGetUser(ctx context.Context, params api.UsersGetUserParam
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetUserResponse{User: modelToApiUser(user)}, nil
+	return &api.GetUserResponse{User: modelToAPIUser(user)}, nil
 }
 
 func (h *Handler) UsersGetUsers(ctx context.Context) (*api.GetUsersResponse, error) {
@@ -365,7 +376,7 @@ func (h *Handler) UsersGetUsers(ctx context.Context) (*api.GetUsersResponse, err
 		return nil, ErrBadRequest
 	}
 
-	return &api.GetUsersResponse{Users: modelToApiUsers(users)}, nil
+	return &api.GetUsersResponse{Users: modelToAPIUsers(users)}, nil
 }
 
 func (h *Handler) NewError(_ context.Context, err error) *api.ErrorResponseStatusCode {

@@ -1,17 +1,18 @@
 package service
 
 import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/go-faster/errors"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
+
 	"backend/internal/dto"
 	"backend/internal/model"
 	"backend/internal/storage"
 	"backend/pkg/logger"
-	"context"
-	"fmt"
-	"github.com/go-faster/errors"
-	"time"
-
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type IAuthService interface {
@@ -28,13 +29,13 @@ type AuthService struct {
 }
 
 func NewAuthService(
-	logger logger.Interface,
+	l logger.Interface,
 	repo storage.IUserStorage,
 	signingKey string,
 	accessTokenTTL time.Duration,
 ) *AuthService {
 	return &AuthService{
-		Logger:         logger,
+		Logger:         l,
 		UserRepo:       repo,
 		signingKey:     signingKey,
 		accessTokenTTL: accessTokenTTL,
@@ -42,10 +43,10 @@ func NewAuthService(
 }
 
 func (s *AuthService) Register(ctx context.Context, req *dto.RegisterReq) (string, error) {
-	user, err := s.UserRepo.GetUserByEmail(ctx, req.Email)
+	_, err := s.UserRepo.GetUserByEmail(ctx, req.Email)
 	if !errors.Is(err, storage.ErrNotFound) {
 		s.Logger.Errorf("get user by email")
-		return "", fmt.Errorf("get user by email")
+		return "", errors.New("get user by email")
 	}
 
 	hashed, err := hashAndSalt([]byte(req.Password))
@@ -53,7 +54,7 @@ func (s *AuthService) Register(ctx context.Context, req *dto.RegisterReq) (strin
 		s.Logger.Errorf("hash pasword: %s", err.Error())
 		return "", fmt.Errorf("hash password: %w", err)
 	}
-	user = &model.User{
+	user := &model.User{
 		Name:     req.Name,
 		Surname:  req.Surname,
 		Email:    req.Email,
@@ -82,7 +83,7 @@ func (s *AuthService) Login(ctx context.Context, req *dto.LoginReq) (string, err
 		[]byte(req.Password))
 	if err != nil {
 		s.Logger.Errorf("wrong password")
-		return "", fmt.Errorf("wrong password")
+		return "", errors.New("wrong password")
 	}
 
 	return generateToken(user.ID, string(user.Role), s.signingKey, s.accessTokenTTL)

@@ -52,8 +52,7 @@ type Pagination struct {
 }
 
 func (p *Pagination) ToSQL(s squirrel.SelectBuilder) squirrel.SelectBuilder {
-
-	if len(p.Sort.Columns[0]) == 0 {
+	if p.Sort.Columns[0] == "" {
 		return s
 	}
 

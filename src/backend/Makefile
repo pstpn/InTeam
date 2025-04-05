@@ -12,13 +12,13 @@ rm: stop
 	@docker image rm racket-rave:latest
 
 run-local:
-	go run ./...
+	go run cmd/main.go
 
 logs:
-	docker exec racket-container cat out.log
+	docker logs racket-container
 
 lint:
-	golangci-lint run
+	golangci-lint run --timeout=5m
 
 tsp-install:
 	cd typespec && tsp install

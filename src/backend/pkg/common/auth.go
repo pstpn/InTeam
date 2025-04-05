@@ -30,7 +30,7 @@ func CtxContainUserID(ctx context.Context) bool {
 }
 
 func AdminIDToCtx(ctx context.Context, adminID int) context.Context {
-	return context.WithValue(ctx, adminID, adminID)
+	return context.WithValue(ctx, adminIDKey, adminID)
 }
 
 func MustAdminIDFromCtx(ctx context.Context) int {

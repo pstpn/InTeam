@@ -1,18 +1,24 @@
 package main
 
 import (
-	"backend/internal/router/handlers"
-	api "backend/internal/router/ogen"
-	mypostgres2 "backend/internal/storage/postgres"
-	"backend/pkg/http"
-	"backend/pkg/logger"
 	"fmt"
 	"log"
+	"net"
+	net_http "net/http"
 	"os"
+	"strconv"
+	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"backend/config"
-
+	"backend/internal/router/handlers"
+	api "backend/internal/router/ogen"
 	"backend/internal/service"
+	mypostgres2 "backend/internal/storage/postgres"
+	"backend/pkg/common"
+	"backend/pkg/http"
+	"backend/pkg/logger"
 	"backend/pkg/storage/postgres"
 )
 
@@ -22,21 +28,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	loggerFile, err := os.OpenFile(
-		cfg.Logger.File,
-		os.O_APPEND|os.O_CREATE|os.O_WRONLY,
-		0664,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-	l := logger.New(cfg.Logger.Level, loggerFile)
+	l := logger.New(cfg.Logger.Level, os.Stdout)
 
-	db, err := postgres.New(fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+	db, err := postgres.New(fmt.Sprintf("postgres://%s:%s@%s/%s",
 		cfg.Database.Postgres.User,
 		cfg.Database.Postgres.Password,
-		cfg.Database.Postgres.Host,
-		cfg.Database.Postgres.Port,
+		net.JoinHostPort(cfg.Database.Postgres.Host, strconv.Itoa(cfg.Database.Postgres.Port)),
 		cfg.Database.Postgres.Database,
 	))
 	if err != nil {
@@ -70,12 +67,27 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	srv := http.NewServer(l)
 
+	go func() {
+		metricsMux := net_http.NewServeMux()
+		metricsMux.Handle("/metrics", promhttp.Handler())
+		metricsServer := net_http.Server{
+			Addr:        fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.MetricsPort),
+			Handler:     metricsMux,
+			ReadTimeout: time.Second,
+		}
+		if err := metricsServer.ListenAndServe(); err != nil {
+			log.Fatalf("Error starting metrics server: %v", err)
+		}
+	}()
+
+	srv := http.NewServer(l)
+	metrics := common.NewMetrics()
 	err = srv.Run(
 		fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
 		http.Wrap(
 			oas,
+			http.MetricsMiddleware(metrics),
 			http.CORSMiddleware(l),
 			http.HeartbeatMiddleware("/healthcheck"),
 		),

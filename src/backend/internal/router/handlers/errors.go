@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	api "backend/internal/router/ogen"
 	"net/http"
+
+	api "backend/internal/router/ogen"
 )
 
 var (

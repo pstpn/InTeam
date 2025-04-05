@@ -11,9 +11,7 @@ const (
 	deliveryTable    = "delivery"
 	cartRacketTable  = "cart_racket"
 	orderRacketTable = "order_racket"
-)
 
-const (
 	idField            = "id"
 	userIDField        = "user_id"
 	orderIDField       = "order_id"
@@ -34,19 +32,19 @@ const (
 	balanceField       = "balance"
 	headSizeField      = "head_size"
 	addressField       = "address"
-	recepientNameField = "recepient_name"
+	recipientNameField = "recipient_name"
 	creationDateField  = "creation_date"
 	deliveryDateField  = "delivery_date"
 	ratingField        = "rating"
 	dateField          = "date"
 	townField          = "town"
 	phoneField         = "phone"
-	substruptionField  = "subscription"
+	subscriptionField  = "subscription"
 	availableField     = "available"
 	imageField         = "image"
 )
 
-func on(baseTable, targetTable, baseColumn, targetColumn string) string {
+func on(baseTable string, targetTable string, baseColumn string, targetColumn string) string {
 	return fmt.Sprintf("%s on %s.%s=%s.%s",
 		targetTable,
 		baseTable,

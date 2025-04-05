@@ -1,13 +1,15 @@
 package handlers
 
 import (
+	"context"
+	"errors"
+
+	"github.com/golang-jwt/jwt/v5"
+
 	"backend/internal/model"
 	api "backend/internal/router/ogen"
 	"backend/internal/service"
 	"backend/pkg/common"
-	"context"
-	"fmt"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 var _ api.SecurityHandler = (*SecurityHandler)(nil)
@@ -27,24 +29,26 @@ func NewSecurityHandler(u service.IUserService, signingKey []byte) *SecurityHand
 func (s *SecurityHandler) HandleBearerAuth(ctx context.Context, operationName api.OperationName, t api.BearerAuth) (context.Context, error) {
 	id, err := s.parseToken(t.GetToken())
 	if err != nil {
-		return ctx, ErrUnauthorized
+		return nil, ErrUnauthorized
 	}
 
 	res, err := s.userService.GetUserByID(ctx, id)
 	if err != nil {
-		return ctx, ErrUnauthorized
+		return nil, ErrUnauthorized
 	}
 	ctx = UserToCtx(ctx, res)
 
 	if isAllAuthorizedUserMethod(operationName) {
 		return ctx, nil
-	} else if res.Role == model.RoleUser && isUserMethod(operationName) {
+	}
+
+	if res.Role == model.RoleUser && isUserMethod(operationName) {
 		return common.UserIDToCtx(ctx, id), nil
 	} else if res.Role == model.RoleAdmin && isAdminMethod(operationName) {
 		return common.AdminIDToCtx(ctx, id), nil
 	}
 
-	return ctx, ErrUnauthorized
+	return nil, ErrUnauthorized
 }
 
 type tokenClaims struct {
@@ -55,9 +59,9 @@ type tokenClaims struct {
 
 func (s *SecurityHandler) parseToken(accessToken string) (int, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (any, error) {
-		_, err := token.Method.(*jwt.SigningMethodHMAC)
-		if !err {
-			return 0, fmt.Errorf("invalid signing method")
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
+			return nil, errors.New("invalid signing method")
 		}
 
 		return s.signingKey, nil
@@ -66,9 +70,9 @@ func (s *SecurityHandler) parseToken(accessToken string) (int, error) {
 		return 0, err
 	}
 
-	claims := token.Claims.(*tokenClaims)
-	if claims == nil {
-		return 0, fmt.Errorf("token claims are not of type *tokenClaims")
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return 0, errors.New("token claims are not of type *tokenClaims")
 	}
 
 	return claims.UserID, nil

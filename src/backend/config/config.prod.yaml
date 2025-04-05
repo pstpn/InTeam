@@ -1,0 +1,17 @@
+logger:
+  level: 'info'
+
+auth:
+  signingKey: 'masha'
+  accessTokenTTL: 12h
+
+http:
+  port: 8081
+  metricsPort: 9092
+
+database:
+  postgres:
+    host: 158.160.175.99
+    port: 6432
+    user: racket_shop
+    database: shop

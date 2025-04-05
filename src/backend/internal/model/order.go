@@ -20,7 +20,7 @@ type Order struct {
 	CreationDate  time.Time    `json:"creation_date" format:"2006-01-02T15:07:00Z"`
 	DeliveryDate  time.Time    `json:"delivery_date" format:"2006-01-02T15:07:00Z"`
 	Address       string       `json:"address"`
-	RecepientName string       `json:"recepient_name"`
+	RecipientName string       `json:"recipient_name"`
 	Status        OrderStatus  `json:"status"`
 	Lines         []*OrderLine `json:"lines"`
 	TotalPrice    float32      `json:"total_price"`

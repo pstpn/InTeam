@@ -1,14 +1,15 @@
 package mypostgres
 
 import (
+	"context"
+	"errors"
+
+	"github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx/v5"
+
 	"backend/internal/model"
 	"backend/internal/storage"
 	"backend/pkg/storage/postgres"
-	"context"
-	"errors"
-	"github.com/jackc/pgx/v5"
-
-	"github.com/Masterminds/squirrel"
 )
 
 type UserStorage struct {
@@ -80,6 +81,7 @@ func (r *UserStorage) GetAllUsers(ctx context.Context) ([]*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var users []*model.User
 	for rows.Next() {
