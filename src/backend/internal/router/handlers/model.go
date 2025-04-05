@@ -102,6 +102,7 @@ func modelToAPIRackets(rackets []*model.Racket) []api.Racket {
 
 func modelToAPIUser(user *model.User) api.User {
 	return api.User{
+		UserID:  user.ID,
 		Email:   user.Email,
 		Name:    user.Name,
 		Role:    string(user.Role),

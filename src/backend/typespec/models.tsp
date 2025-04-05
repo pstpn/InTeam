@@ -98,6 +98,7 @@ model FeedbackWithUsername {
 }
 
 model User {
+  user_id: integer,
   email: string,
   name: string,
   role: string,
