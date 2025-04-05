@@ -147,7 +147,7 @@ model CreateRacketResponse extends ResponseWithRacket {};
 model GetUsersResponse extends ResponseWithUsers {};
 model GetUserResponse extends ResponseWithUser {};
 model GetOrdersResponse extends ResponseWithOrders {};
-model GetRacketFeedbacksResponse extends ResponseWithFeedbacks {};
+model GetRacketFeedbacksResponse extends ResponseWithUsernameFeedbacks {};
 model GetRacketsResponse extends ResponseWithRackets {};
 model GetRacketResponse extends ResponseWithRacket {};
 

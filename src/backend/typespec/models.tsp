@@ -37,6 +37,10 @@ model ResponseWithFeedbacks {
   feedbacks: Array<Feedback>
 }
 
+model ResponseWithUsernameFeedbacks {
+  feedbacks: Array<FeedbackWithUsername>
+}
+
 model ResponseWithFeedback {
   feedback: Feedback
 }
@@ -82,6 +86,15 @@ model Feedback {
   feedback: string,
   racket_id: integer,
   rating: integer
+}
+
+model FeedbackWithUsername {
+  date: utcDateTime,
+  feedback: string,
+  racket_id: integer,
+  rating: integer,
+  user_id: integer,
+  username: string
 }
 
 model User {

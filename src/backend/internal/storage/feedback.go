@@ -13,5 +13,5 @@ type IFeedbackStorage interface {
 	Remove(ctx context.Context, req *dto.RemoveFeedbackReq) error
 	GetFeedback(ctx context.Context, req *dto.GetFeedbackReq) (*model.Feedback, error)
 	GetFeedbacksByUserID(ctx context.Context, id int) ([]*model.Feedback, error)
-	GetFeedbacksByRacketID(ctx context.Context, id int) ([]*model.Feedback, error)
+	GetFeedbacksByRacketID(ctx context.Context, id int) ([]*model.FeedbackWithUsername, error)
 }
