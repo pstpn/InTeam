@@ -1236,11 +1236,14 @@ components:
     User:
       type: object
       required:
+        - user_id
         - email
         - name
         - role
         - surname
       properties:
+        user_id:
+          type: integer
         email:
           type: string
         name:

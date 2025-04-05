@@ -1223,10 +1223,16 @@ func (s *UpdateRacketsCountResponse) SetCart(val Cart) {
 
 // Ref: #/components/schemas/User
 type User struct {
+	UserID  int    `json:"user_id"`
 	Email   string `json:"email"`
 	Name    string `json:"name"`
 	Role    string `json:"role"`
 	Surname string `json:"surname"`
+}
+
+// GetUserID returns the value of UserID.
+func (s *User) GetUserID() int {
+	return s.UserID
 }
 
 // GetEmail returns the value of Email.
@@ -1247,6 +1253,11 @@ func (s *User) GetRole() string {
 // GetSurname returns the value of Surname.
 func (s *User) GetSurname() string {
 	return s.Surname
+}
+
+// SetUserID sets the value of UserID.
+func (s *User) SetUserID(val int) {
+	s.UserID = val
 }
 
 // SetEmail sets the value of Email.
