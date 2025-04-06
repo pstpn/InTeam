@@ -53,6 +53,7 @@ export default {
     },
     methods: {
         async fetchUserData() {
+            
             try {
                 const token = localStorage.getItem('token');
 

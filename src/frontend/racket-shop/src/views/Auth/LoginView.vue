@@ -96,12 +96,12 @@ export default {
                     
                     this.error = false;
                     if (decodedToken?.Role === 'Admin') {
-                        this.$router.push(config.VIEWS.admin.profile);
-                        this.$router.push(config.VIEWS.admin.profile);
+                        this.$router.push(config.VIEWS.admin.profile).then(() => {
+                            window.location.reload()
+                        });
                     } else {
                         this.$router.push(config.VIEWS.user.profile);
                     }
-                    // window.location.reload();
                 } else {
                     throw new Error('No access token in response');
                 }
