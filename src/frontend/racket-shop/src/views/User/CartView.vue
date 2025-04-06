@@ -319,7 +319,7 @@ export default {
                 
                 if (response.status == 200) {
                     this.showModal = false;
-                    this.$router.push(this.config.VIEWS.orders);
+                    this.$router.push(this.config.VIEWS.user.orders);
                 }
             } catch (error) {
                 alert('Ошибка при оформлении заказа: ' + (error.response?.data?.message || error.message));
