@@ -5,65 +5,41 @@
         <div class="grid-order-column">    
             <div class="form-in-row-add-feedback">
                 <div class="form-in-row-left">
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('total_price')">
-                            Сумма
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'total_price'">
-                            <button @click="sortBy('total_price', 'asc')">По возрастанию</button>
-                            <button @click="sortBy('total_price', 'desc')">По убыванию</button>
-                        </div>
-                    </div>
+            
+                    <select class="submit-button-filter" @change="sortBy('total_price', $event.target.value)">
+                        <option value="">Сумма</option>
+                        <option value="asc">По возрастанию</option>
+                        <option value="desc">По убыванию</option>
+                    </select>
 
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('creation_date')">
-                            Создание
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'creation_date'">
-                            <button @click="sortBy('creation_date', 'desc')">Сначала новые</button>
-                            <button @click="sortBy('creation_date', 'asc')">Сначала старые</button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="sortBy('creation_date', $event.target.value)">
+                        <option value="">Создание</option>
+                        <option value="desc">Сначала новые</option>
+                        <option value="asc">Сначала старые</option>
+                    </select>
+                
+                    <select class="submit-button-filter" @change="sortBy('delivery_date', $event.target.value)">
+                        <option value="">Доставка</option>
+                        <option value="desc">Сначала новые</option>
+                        <option value="asc">Сначала старые</option>
+                    </select>
 
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('delivery_date')">
-                            Доставка
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'delivery_date'">
-                            <button @click="sortBy('delivery_date', 'desc')">Сначала новые</button>
-                            <button @click="sortBy('delivery_date', 'asc')">Сначала старые</button>
-                        </div>
-                    </div>
-
-                    <!-- Фильтр по получателю -->
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('recipient')">
-                            Получатель
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'recipient'">
-                            <button v-for="recipient in uniqueRecipients" :key="recipient" 
-                                    @click="filterByRecipient(recipient)">
-                                {{ recipient }}
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Фильтр по статусу -->
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('status')">
-                            Статус заказа
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'status'">
-                            <button @click="filterByStatus('Done')">Выполнены</button>
-                            <button @click="filterByStatus('InProgress')">В процессе</button>
-                            <button @click="filterByStatus('Canceled')">Отменен</button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="filterByRecipient($event.target.value)">
+                        <option value="">Получатель</option>
+                        <option v-for="recipient in uniqueRecipients" 
+                                :key="recipient" 
+                                :value="recipient">
+                            {{ recipient }}
+                        </option>
+                    </select>
+                
+                    <select class="submit-button-filter" @change="filterByStatus($event.target.value)">
+                        <option value="">Статус заказа</option>
+                        <option value="Done">Выполнены</option>
+                        <option value="InProgress">В процессе</option>
+                        <option value="Canceled">Отменен</option>
+                    </select>
+                    
                 </div>
                 <button class="submit-button-orange" @click="resetFilters">
                     Сбросить
@@ -199,17 +175,14 @@ export default {
         filteredOrders() {
             let result = [...this.orders];
             
-            // Фильтр по получателю
             if (this.recipientFilter) {
                 result = result.filter(order => order.recipient_name === this.recipientFilter);
             }
             
-            // Фильтр по статусу
             if (this.statusFilter) {
                 result = result.filter(order => order.status === this.statusFilter);
             }
             
-            // Сортировка
             if (this.currentSort.field) {
                 result.sort((a, b) => {
                     let valueA = a[this.currentSort.field];
@@ -264,7 +237,7 @@ export default {
                 
                 if (response.status === 200) {
                     this.closeStatusModal();
-                    this.fetchOrders(); // Обновляем список заказов
+                    this.fetchOrders();
                     alert('Статус заказа успешно обновлен!');
                 }
             } catch (error) {
@@ -341,15 +314,12 @@ export default {
         formatDate(dateString) {
             const date = new Date(dateString);
             
-            // Форматируем дату
             const day = date.getDate().toString().padStart(2, '0');
             const year = date.getFullYear();
             
-            // Форматируем время
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             
-            // Названия месяцев на русском
             const monthNames = [
                 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
                 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
@@ -373,6 +343,4 @@ export default {
 @import "../../css/Fonts.css";
 @import "../../css/Grid.css";
 @import "../../css/Forms.css";
-@import "../../css/Icons.css";
-@import "../../css/Menu.css";
 </style>

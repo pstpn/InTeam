@@ -165,6 +165,7 @@
     border-radius: 30px;
     transition: all 0.3s ease-in-out;
 }
+
 .grid-card-feedback-2 {
     display: flex;
     flex-direction: column;
@@ -194,6 +195,7 @@
 .grid-racket-card {
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
 .grid-racket {
@@ -201,4 +203,29 @@
     grid-template-columns: 30% 70%;
     width: 90%;
     gap: 30px;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    transition: filter 0.3s ease;
+}
+
+.icon-tool {
+    width: 25px;
+    height: 25px;
+    transition: filter 0.3s ease;
+}
+
+.icon-logo {
+    width: 80px;
+}
+
+a.active .icon {
+    filter: brightness(1.2) invert(0.5);
+}
+
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
 }

@@ -4,7 +4,7 @@
             <img src="../assets/logo.png" alt="Rackets" class="icon-logo"/>
         </router-link>
         <nav class="container-menu-items">
-            <!-- Меню для пользователей и гостей (по умолчанию) -->
+
             <template v-if="!isAdmin">
                 <a @click="navigateTo(config.VIEWS.user.orders)" :class="{ 'active': activeLink === config.VIEWS.user.orders }" class="container-icon">
                     <img src="../assets/order.png" alt="Order" class="icon"/>
@@ -27,7 +27,6 @@
                 </a>
             </template>
 
-            <!-- Меню только для администратора -->
             <template v-else>
                 <a @click="navigateTo(config.VIEWS.admin.rackets)" :class="{ 'active': activeLink === config.VIEWS.admin.rackets }" class="container-icon">
                     <img src="../assets/rackets.png" alt="Rackets" class="icon"/>

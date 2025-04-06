@@ -16,28 +16,18 @@
         <div v-else class="grid-order-column">
             <div class="form-in-row-add-feedback">
                 <div class="form-in-row-left">
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('rating')">
-                            Рейтинг
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'rating'">
-                            <button v-for="n in 5" :key="n" @click="filterByRating(n)">
-                                {{ n }} звезд{{ n === 1 ? 'а' : n < 5 ? 'ы' : '' }}
-                            </button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="filterByRating($event.target.value)">
+                        <option value="">Рейтинг</option>
+                        <option v-for="n in 5" :key="n" :value="n">
+                            {{ n }} звезд{{ n === 1 ? 'а' : n < 5 ? 'ы' : '' }}
+                        </option>
+                    </select>
 
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('date')">
-                            Дата
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'date'">
-                            <button @click="sortBy('date', 'desc')">Сначала новые</button>
-                            <button @click="sortBy('date', 'asc')">Сначала старые</button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="sortBy('date', $event.target.value)">
+                        <option value="">Дата</option>
+                        <option value="desc">Сначала новые</option>
+                        <option value="asc">Сначала старые</option>
+                    </select>
                     <button 
                         class="submit-button-orange" 
                         @click="resetFilters"
@@ -94,11 +84,8 @@
             
             <div class="form-in-row">
                 <select 
-                    v-model="newFeedback.racket_id" 
-                    class="feedback-select"
-                    required
-                    @change="onRacketSelect"
-                >
+                    v-model="newFeedback.racket_id"
+                    required>
                     <option value="" disabled selected>Выберите ракетку</option>
                     <option 
                         v-for="racket in userRackets" 
@@ -246,7 +233,6 @@ export default {
         },
         
         async submitFeedback() {
-
             try {
                 const token = localStorage.getItem('token');
                 const response = await axios.post(
@@ -273,7 +259,7 @@ export default {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    this.$router.push(this.config.API.auth.login);
+                    this.$router.push(this.config.VIEWS.auth.login);
                     return;
                 }
 
@@ -406,10 +392,6 @@ export default {
 
         hasFeedbackForRacket(racketId) {
             return this.feedbacks.some(f => f.racket_id === racketId);
-        },
-
-        onRacketSelect() {
-            console.log('Выбрана ракетка:', this.newFeedback.racket_id);
         },
 
         openAddFeedbackModal() {

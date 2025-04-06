@@ -2,7 +2,7 @@
     <div class="container-page">
         <h1 class="font-container-header">Моя корзина</h1>
         
-        <div v-if="cartData.lines.length === 0" class="font-form-body">
+        <div v-if="cartData.lines.length === 0">
             <p class="font-form-body">
                 Ваша корзина пуста <router-link :to="config.VIEWS.rackets" class="submit-button-font">  За покупками</router-link> 
             </p>
@@ -26,7 +26,7 @@
                         <div class="form-in-row">
                             <router-link 
                                 :to="`${config.VIEWS.rackets}/${item.racket_id}`" 
-                                class="submit-button-font-18">
+                                class="submit-button-font">
                                 {{ racketNames[item.racket_id] }}
                             </router-link> 
                             <div class="grid-button">
@@ -60,7 +60,6 @@
                 </div>
             </div>
 
-            <!-- Модальное окно удаления -->
             <div v-if="isDeleteModalOpen" class="modal-overlay">
                 <div class="modal-content">
                     <p class="font-form-header">Подтверждение удаления</p>
@@ -107,7 +106,6 @@
             </div>
         </div>
 
-        <!-- Модальное окно оформления заказа -->
         <div v-if="showModal" class="modal-overlay">
             <div class="modal-content">
                 <h2 class="font-form-header">Оформление заказа</h2>
@@ -175,9 +173,9 @@ export default {
             recipient_name: '',
             isDeleteModalOpen: false,
             selectedRacketId: 0,
-            racketImages: {}, // Хранит изображения ракеток по ID
-            racketNames: {},  // Хранит названия ракеток по ID
-            loadingRackets: {} // Отслеживает загрузку данных по ракеткам
+            racketImages: {}, 
+            racketNames: {},  
+            loadingRackets: {} 
         };
     },
     methods: {
@@ -202,7 +200,6 @@ export default {
                         quantity: cart.quantity
                     };
                     
-                    // Загружаем данные по каждой ракетке в корзине
                     this.cartData.lines.forEach(item => {
                         this.fetchRacketData(item.racket_id);
                     });
@@ -215,7 +212,6 @@ export default {
         async fetchRacketData(racketId) {
             if (this.loadingRackets[racketId]) return;
             
-            // Исправляем: просто присваиваем значение вместо this.$set
             this.loadingRackets = {...this.loadingRackets, [racketId]: true};
             
             try {
@@ -223,12 +219,9 @@ export default {
                 
                 if (response.data) {
                     const racket = response.data.racket;
-                    console.log(racket)
-                    
-                    // Исправляем: обычное присваивание для объектов
+                
                     this.racketNames = {...this.racketNames, [racketId]: `${racket.brand} ${racket.id}`};
                     
-                    // Обрабатываем изображение
                     if (racket.image) {
                         this.racketImages = {...this.racketImages, [racketId]: `data:image/jpeg;base64,${racket.image}`};
                     }
@@ -296,23 +289,39 @@ export default {
         
         async confirmOrder() {
             try {
+                if (!this.address.trim() || !this.delivery_date || !this.recipient_name.trim()) {
+                    alert('Пожалуйста, заполните все поля');
+                    return;
+                }
+
                 const token = localStorage.getItem('token');
+                
+                const formatDate = (dateString) => {
+                    const date = new Date(dateString);
+                    const timezoneOffset = -date.getTimezoneOffset();
+                    const offsetHours = Math.abs(Math.floor(timezoneOffset / 60));
+                    const offsetMinutes = Math.abs(timezoneOffset % 60);
+                    const offsetSign = timezoneOffset >= 0 ? '+' : '-';
+                    const offset = `${offsetSign}${offsetHours.toString().padStart(2, '0')}:${offsetMinutes.toString().padStart(2, '0')}`;
+                    
+                    return `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}T${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:00${offset}`;
+                };
+
                 const response = await axios.post(
                     `${config.BACKEND_URL}${config.API.orders}`,
                     {
-                        address: this.address,
-                        delivery_date: this.delivery_date || "00:00:00",
-                        recipient_name: this.recipient_name
+                        address: this.address.trim(),
+                        delivery_date: formatDate(this.delivery_date),
+                        recipient_name: this.recipient_name.trim()
                     },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
                 
-                if (response.data) {
+                if (response.status == 200) {
                     this.showModal = false;
                     this.$router.push(this.config.VIEWS.orders);
                 }
             } catch (error) {
-                console.error('Error confirming order:', error);
                 alert('Ошибка при оформлении заказа: ' + (error.response?.data?.message || error.message));
             }
         },
