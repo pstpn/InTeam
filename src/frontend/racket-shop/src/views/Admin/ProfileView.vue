@@ -17,18 +17,18 @@
             <div></div>
             <div></div>
             <div class="grid-card-icon">
-                <a @click="navigateTo(config.VIEWS.user.cart)">
-                    <h1 class="font-grid-1">Моя корзина</h1>
+                <a @click="navigateTo(config.VIEWS.admin.rackets)">
+                    <h1 class="font-grid-1">Ракетки</h1>
                 </a>
             </div>
             <div class="grid-card-icon">
-                <a @click="navigateTo(config.VIEWS.user.orders)">
-                    <h1 class="font-grid-1">Мои заказы</h1>
+                <a @click="navigateTo(config.VIEWS.admin.orders)">
+                    <h1 class="font-grid-1">Заказы</h1>
                 </a>
             </div>
             <div class="grid-card-icon">
-                <a @click="navigateTo(config.VIEWS.user.feedbacks)">
-                    <h1 class="font-grid-1">Мои отзывы</h1>
+                <a @click="navigateTo(config.VIEWS.admin.users)">
+                    <h1 class="font-grid-1">Пользователи</h1>
                 </a>
             </div>
         </div>
@@ -53,6 +53,7 @@ export default {
     },
     methods: {
         async fetchUserData() {
+            
             try {
                 const token = localStorage.getItem('token');
 
@@ -61,14 +62,12 @@ export default {
                     return;
                 }
 
-                const response = await axios.get(`${config.BACKEND_URL}${config.API.user.profile}`,
+                const response = await axios.get(`${config.BACKEND_URL}${config.API.user.profile}`, 
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-
-                console.log(response.data);
                 
                 if (response.data) {
                     const user = response.data.user
@@ -78,7 +77,10 @@ export default {
                         email: user.email
                     };
                 }
+                this.AppMenuBar
+        
             } catch (error) {
+                console.error('Error fetching user data:', error);
                 this.$router.push(this.config.VIEWS.auth.login);
             }
         },
@@ -88,6 +90,7 @@ export default {
         logout() {
             localStorage.removeItem('token');
             this.$router.push(this.config.VIEWS.auth.login);
+            window.location.reload();
         }
     },
     mounted() {

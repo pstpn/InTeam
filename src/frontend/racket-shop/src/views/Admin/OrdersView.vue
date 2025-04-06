@@ -2,7 +2,7 @@
     <div class="container-page">
         <h1 class="font-container-header">Заказы</h1>
 
-        <div class="grid-order-column">  
+        <div class="grid-order-column">    
             <div class="form-in-row-add-feedback">
                 <div class="form-in-row-left">
                     <div class="filter-dropdown">
@@ -64,12 +64,11 @@
                             <button @click="filterByStatus('Canceled')">Отменен</button>
                         </div>
                     </div>
-
-                    <button class="submit-button-orange" @click="resetFilters">
-                        Сбросить
-                    </button>
                 </div>
-            </div>  
+                <button class="submit-button-orange" @click="resetFilters">
+                    Сбросить
+                </button>
+            </div>
         </div>
 
         <div class="grid-order-column">
@@ -86,6 +85,9 @@
                         }">
                             {{ getStatusText(order.status) }}
                         </button>
+                        <a class="container-icon-tool" @click.stop="openStatusModal(order)">
+                            <img src="../../assets/tool.png" alt="Tool" class="icon-tool"/>
+                        </a>
                     </div>
                     <p class="font-form-body-bold">
                         Сумма: {{ order.total_price }} ₽
@@ -134,6 +136,31 @@
             </div>
         </div>
     </div>
+   
+    <div v-if="showStatusModal" class="modal-overlay" @click.self="closeStatusModal">
+        <div class="modal-content">
+            <p class="font-form-header">Изменение статуса заказа №{{ selectedOrderId }}</p>
+            <div class="form-input">
+                <select v-model="selectedStatus">
+                    <option value="InProgress">В процессе</option>
+                    <option value="Done">Выполнен</option>
+                    <option value="Canceled">Отменен</option>
+                </select>
+            </div>
+            <div class="form-in-row">
+                <button 
+                    class="submit-button-orange"
+                    @click="closeStatusModal">
+                    Отмена
+                </button>
+                <button 
+                    class="submit-button-green"
+                    @click="updateOrderStatus">
+                    Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -143,8 +170,11 @@ import config from "../../../config.js";
 export default {
     data() {
         return {
-            config: config,
+            showStatusModal: false,
+            selectedStatus: '',
+            selectedOrderId: null,
             orders: [],
+            config: config,
             loading: true,
             activeDropdown: null,
             currentSort: {
@@ -200,6 +230,49 @@ export default {
         }
     },
     methods: {
+        openStatusModal(order) {
+            this.selectedOrderId = order.id;
+            this.selectedStatus = order.status;
+            this.showStatusModal = true;
+        },
+        
+        closeStatusModal() {
+            this.showStatusModal = false;
+            this.selectedOrderId = null;
+            this.selectedStatus = '';
+        },
+        
+        async updateOrderStatus() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    this.$router.push(this.config.VIEWS.auth.login);
+                    return;
+                }
+
+                const response = await axios.patch(
+                    `${config.BACKEND_URL}${config.API.orders}/${this.selectedOrderId}`,
+                    {
+                        status: this.selectedStatus
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+                
+                if (response.status === 200) {
+                    this.closeStatusModal();
+                    this.fetchOrders(); // Обновляем список заказов
+                    alert('Статус заказа успешно обновлен!');
+                }
+            } catch (error) {
+                console.error('Ошибка при обновлении статуса:', error);
+                alert('Не удалось обновить статус: ' + 
+                    (error.response?.data?.message || error.message));
+            }
+        },
         async fetchOrders() {
             try {
                 this.loading = true;
@@ -214,7 +287,6 @@ export default {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
-                // console.log(ordersResponse.data)
                 if (ordersResponse.data) {
                     this.orders = ordersResponse.data.orders || [];
                 }

@@ -5,10 +5,9 @@
 
 <script>
 import AppMenuBar from './components/AppMenuBar.vue'
-
 export default {
   components: {
-    AppMenuBar, 
+    AppMenuBar
   }
 }
 </script>
