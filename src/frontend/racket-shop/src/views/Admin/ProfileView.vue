@@ -16,20 +16,14 @@
             </div>
             <div></div>
             <div></div>
-            <div class="grid-card-icon">
-                <a @click="navigateTo(config.VIEWS.admin.rackets)">
-                    <h1 class="font-grid-1">Ракетки</h1>
-                </a>
+            <div class="grid-card-icon" @click="navigateTo(config.VIEWS.admin.rackets)">
+                <h1 class="font-grid-1">Ракетки</h1>
             </div>
-            <div class="grid-card-icon">
-                <a @click="navigateTo(config.VIEWS.admin.orders)">
-                    <h1 class="font-grid-1">Заказы</h1>
-                </a>
+            <div class="grid-card-icon" @click="navigateTo(config.VIEWS.admin.orders)">
+                <h1 class="font-grid-1">Заказы</h1>
             </div>
-            <div class="grid-card-icon">
-                <a @click="navigateTo(config.VIEWS.admin.users)">
-                    <h1 class="font-grid-1">Пользователи</h1>
-                </a>
+            <div class="grid-card-icon" @click="navigateTo(config.VIEWS.admin.users)">
+                <h1 class="font-grid-1">Пользователи</h1>
             </div>
         </div>
     </div>

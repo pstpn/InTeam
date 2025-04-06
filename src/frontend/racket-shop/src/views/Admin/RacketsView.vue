@@ -100,73 +100,43 @@
         <div class="grid-order-column">
             <div class="form-in-row-add-feedback">
                 <div class="form-in-row-left">
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('weight')">
-                            Вес
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'weight'">
-                            <button @click="sortBy('weight', 'asc')">По возрастанию</button>
-                            <button @click="sortBy('weight', 'desc')">По убыванию</button>
-                        </div>
-                    </div>
+                   
+                    <select class="submit-button-filter" @change="sortBy('weight', $event.target.value)">
+                        <option value="">Вес</option>
+                        <option value="asc">По возрастанию</option>
+                        <option value="desc">По убыванию</option>
+                    </select>
 
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('balance')">
-                            Баланс
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'balance'">
-                            <button @click="sortBy('balance', 'asc')">По возрастанию</button>
-                            <button @click="sortBy('balance', 'desc')">По убыванию</button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="sortBy('balance', $event.target.value)">
+                        <option value="">Баланс</option>
+                        <option value="asc">По возрастанию</option>
+                        <option value="desc">По убыванию</option>
+                    </select>
 
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('head_size')">
-                            Размер
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'head_size'">
-                            <button @click="sortBy('head_size', 'asc')">По возрастанию</button>
-                            <button @click="sortBy('head_size', 'desc')">По убыванию</button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="sortBy('head_size', $event.target.value)">
+                        <option value="">Размер</option>
+                        <option value="asc">По возрастанию</option>
+                        <option value="desc">По убыванию</option>
+                    </select>
 
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('brand')">
-                            Бренд
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'brand'">
-                            <button v-for="brand in uniqueBrands" :key="brand" 
-                                    @click="filterByBrand(brand)">
-                                {{ brand }}
-                            </button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="filterByBrand($event.target.value)">
+                        <option value="">Бренд</option>
+                        <option v-for="brand in uniqueBrands" :key="brand" :value="brand">
+                            {{ brand }}
+                        </option>
+                    </select>
 
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('price')">
-                            Цена
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'price'">
-                            <button @click="sortBy('price', 'asc')">По возрастанию</button>
-                            <button @click="sortBy('price', 'desc')">По убыванию</button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="sortBy('price', $event.target.value)">
+                        <option value="">Цена</option>
+                        <option value="asc">По возрастанию</option>
+                        <option value="desc">По убыванию</option>
+                    </select>
 
-                    <div class="filter-dropdown">
-                        <button class="submit-button-filter" @click="toggleDropdown('availability')">
-                            Доступность
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" v-show="activeDropdown === 'availability'">
-                            <button @click="filterByAvailability(true)">Доступные</button>
-                            <button @click="filterByAvailability(false)">Недоступные</button>
-                        </div>
-                    </div>
+                    <select class="submit-button-filter" @change="filterByAvailability($event.target.value)">
+                        <option value="">Доступность</option>
+                        <option value="true">Доступные</option>
+                        <option value="false">Недоступные</option>
+                    </select>
                 </div>
                 <button class="submit-button-orange" @click="resetFilters">
                     Сбросить
@@ -299,17 +269,14 @@ export default {
         filteredRackets() {
             let result = [...this.rackets];
             
-            // Применяем фильтр по бренду
             if (this.brandFilter) {
                 result = result.filter(racket => racket.brand === this.brandFilter);
             }
             
-            // Применяем фильтр по доступности
             if (this.availabilityFilter !== null) {
                 result = result.filter(racket => racket.available === this.availabilityFilter);
             }
             
-            // Применяем сортировку
             if (this.currentSort.field) {
                 result.sort((a, b) => {
                     let valueA = a[this.currentSort.field];
@@ -376,8 +343,7 @@ export default {
         resetImage() {
             this.selectedImage = null;
             this.selectedImagePreview = null;
-            this.$refs.fileInput.value = ''; // Сбрасываем input file
-            // Можно добавить emit для уведомления родительского компонента
+            this.$refs.fileInput.value = '';
             this.$emit('image-reset');
         },
         triggerFileInput() {
@@ -389,7 +355,6 @@ export default {
             if (file) {
                 this.selectedImage = file
                 
-                // Создаем превью изображения
                 const reader = new FileReader()
                 reader.onload = (e) => {
                 this.selectedImagePreview = e.target.result
@@ -400,7 +365,7 @@ export default {
         removeImage() {
             this.selectedImage = null
             this.selectedImagePreview = null
-            this.$refs.fileInput.value = '' // Сбрасываем input file
+            this.$refs.fileInput.value = ''
         },
         openAddRacketModal() {
             this.showAddRacketModal = true;
@@ -427,7 +392,6 @@ export default {
                     return;
                 }
 
-                // Формируем данные для отправки
                 const racketData = {
                     price: this.newRacket.price,
                     brand: this.newRacket.brand,
@@ -435,7 +399,7 @@ export default {
                     head_size: this.newRacket.head_size,
                     weight: this.newRacket.weight,
                     quantity: this.newRacket.quantity,
-                    image: this.selectedImage // Добавляем изображение в base64
+                    image: this.selectedImage
                 };
 
                 const response = await axios.post(
@@ -494,7 +458,6 @@ export default {
             this.activeDropdown = null;
         },
         filterByBrand(brand) {
-            console.log(brand)
             this.brandFilter = brand;
             this.activeDropdown = null;
         },
@@ -528,7 +491,4 @@ export default {
 @import "../../css/Fonts.css";
 @import "../../css/Grid.css";
 @import "../../css/Forms.css";
-@import "../../css/Icons.css";
-@import "../../css/Menu.css";
-
 </style>
