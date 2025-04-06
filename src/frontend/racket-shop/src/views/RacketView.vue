@@ -44,7 +44,10 @@
                         <p class="font-form-body-bold">{{ racket.weight }} г</p>
                     </div>
                     <div class="form-in-row-right">
-                        <button class="submit-button-green" @click="addToCart(racket.id)">
+                        <button
+                             class="submit-button-green" 
+                            @click="addToCart(racket.id)"
+                            :disabled="!racket.available">
                             Добавить в корзину
                         </button>
                     </div>
@@ -55,11 +58,10 @@
         <div class="grid-order-column" v-if="!loading && !error">
             <div v-if="feedbacks.length === 0" class="grid-card-name-1">
                 <hr class="line">
-                <div class="grid-card-feedback-1">
-                    <p class="font-form-header">
-                        Нет отзывов
-                    </p>
-                </div>
+                
+                <p class="font-form-body">
+                    Отзывов нет <router-link :to="config.VIEWS.user.feedbacks" class="submit-button-font"> Будьте первым</router-link> 
+                </p>
             </div>
             
             <div class="grid-card-feedback-1" v-for="feedback in feedbacks" :key="feedback.id">
@@ -126,7 +128,6 @@ export default {
 
                 this.imageData = this.racket.image;
 
-                console.log(this.racket.image)
             } catch (error) {
                 this.error = 'Ошибка при загрузке данных ракетки';
                 console.error('Ошибка загрузки ракетки:', error);
@@ -140,7 +141,6 @@ export default {
                 const response = await axios.get(`${config.BACKEND_URL}${config.API.feedbacks}/${racketId}`);
                 this.feedbacks = response.data.feedbacks;
 
-                console.log(this.feedbacks)
             } catch (error) {
                 console.error('Ошибка при загрузке отзывов:', error);
             }
@@ -195,4 +195,9 @@ export default {
 @import "../css/Containers.css";
 @import "../css/Fonts.css";
 @import "../css/Grid.css";
+
+button:disabled {
+    background-color: #d9d9d9 !important;
+    cursor: not-allowed;
+}
 </style>

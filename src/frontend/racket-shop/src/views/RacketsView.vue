@@ -3,13 +3,19 @@
         <h1 class="font-container-header">Каталог</h1>
         
         <div class="grid-rackets">
-            <div v-for="racket in rackets" :key="racket.id" class="grid-racket-card">
+            <div 
+                v-for="racket in filteredRackets" 
+                :key="racket.id" 
+                class="grid-racket-card"
+                :class="{ 'unavailable': !racket.available }"
+            >
                 <div class="grid-photo">
                     <img 
-                        v-if="racket.imageData"
-                        :src="'data:image/jpeg;base64,' + racket.imageData" 
+                        v-if="racket.image"
+                        :src="'data:image/jpeg;base64,' + racket.image" 
                         :alt="`${racket.brand} ${racket.id}`"
                         @error="handleImageError(racket)"
+                        :class="{ 'grayscale': !racket.available }"
                     />
                     <p v-else class="font-form-body">Загрузка изображения...</p>
                 </div>
@@ -18,16 +24,19 @@
                     <router-link 
                         :to="`${config.VIEWS.rackets}/${racket.id}`" 
                         class="submit-button-font-thin"
+                        :class="{ 'description-link': !racket.available }"
                     >
                         Описание
                     </router-link> 
                     <button 
                         class="submit-button-green"
                         @click="addToCart(racket.id)"
-                        :disabled="!racket.imageLoaded"
-                    >
+                        :disabled="!racket.available">
                         В корзину
                     </button>
+                </div>
+                <div v-if="!racket.available" class="font-form-body-error">
+                    Нет в наличии
                 </div>
             </div>
         </div>
@@ -47,18 +56,21 @@ export default {
             error: null
         };
     },
+    computed: {
+        filteredRackets() {
+            return this.rackets;
+        }
+    },
     methods: {
         async fetchRackets() {
             try {
                 const response = await axios.get(`${config.BACKEND_URL}${config.API.rackets}`);
+                
                 if (response.data) {
                     this.rackets = response.data.rackets.map(racket => ({
                         ...racket,
-                        imageData: null,
-                        imageLoaded: false,
-                        imageError: false
+                        available: racket.available
                     }));
-                    this.rackets.forEach(racket => this.loadRacketImage(racket));
                 }
             } catch (err) {
                 this.error = err.response?.data?.message || 'Не удалось загрузить данные';
@@ -66,36 +78,6 @@ export default {
             } finally {
                 this.loading = false;
             }
-        },
-        
-        async loadRacketImage(racket) {
-            try {
-                if (racket.image) {
-                    racket.imageData = racket.image;
-                    racket.imageLoaded = true;
-                } else {
-                    const response = await axios.get(
-                        `${config.BACKEND_URL}${config.API.rackets}/${racket.id}/image`,
-                        { responseType: 'arraybuffer' }
-                    );
-                    
-                    const base64 = btoa(
-                        new Uint8Array(response.data)
-                            .reduce((data, byte) => data + String.fromCharCode(byte), '')
-                    );
-                    
-                    racket.imageData = base64;
-                    racket.imageLoaded = true;
-                }
-            } catch (err) {
-                console.error('Ошибка загрузки изображения:', err);
-                racket.imageError = true;
-            }
-        },
-        
-        handleImageError(racket) {
-            racket.imageError = true;
-            racket.imageLoaded = false;
         },
         
         async addToCart(racketId) {
@@ -137,4 +119,31 @@ export default {
 @import "../css/Containers.css";
 @import "../css/Fonts.css";
 @import "../css/Grid.css";
+
+.description-link {
+    color: #333 !important;
+    text-decoration: underline !important;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 2;
+}
+
+.unavailable .submit-button-font-thin {
+    opacity: 1 !important;
+    color: #333 !important;
+}
+
+.unavailable::after {
+    pointer-events: none;
+}
+
+.unavailable {
+    opacity: 0.7;
+    position: relative;
+}
+
+button:disabled {
+    background-color: #d9d9d9 !important;
+    cursor: not-allowed;
+}
 </style>

@@ -2,7 +2,6 @@
     <div class="container-page">
         <h1 class="font-container-header">Пользователи</h1>
 
-        <!-- Поле поиска -->
         <div class="grid-order-column">
             <div class="form-in-row">
                 <input
@@ -141,7 +140,7 @@ export default {
                 
                 if (response.status === 200) {
                     this.closeRoleModal();
-                    this.fetchUsers(); // Обновляем список пользователей
+                    this.fetchUsers();
                     alert('Роль пользователя успешно обновлена!');
                 }
             } catch (error) {
@@ -215,6 +214,4 @@ export default {
 @import "../../css/Fonts.css";
 @import "../../css/Grid.css";
 @import "../../css/Forms.css";
-@import "../../css/Icons.css";
-@import "../../css/Menu.css";
 </style>
