@@ -36,7 +36,7 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 import config from "../../../config.js"
 
 export default {
@@ -57,30 +57,30 @@ export default {
                 const token = localStorage.getItem('token');
 
                 if (!token) {
-                    this.$router.push(this.config.API.auth.login);
+                    this.$router.push(this.config.VIEWS.auth.login);
                     return;
                 }
 
-                // const cur_url = config.BACKEND_URL + config.API.user.profile;
-                // const response = await axios.get(cur_url, {
-                //     headers: {
-                //         Authorization: `Bearer ${token}`
-                //     }
-                // });
-
-                // console.log(response.data);
+                const response = await axios.get(`${config.BACKEND_URL}${config.API.user.profile}`, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 
-                // if (response.data) {
-                //     const user = response.data.user
-                //     this.userData = {   
-                //         name: user.name,
-                //         surname: user.surname,
-                //         email: user.email
-                //     };
-                // }
+                if (response.data) {
+                    const user = response.data.user
+                    this.userData = {   
+                        name: user.name,
+                        surname: user.surname,
+                        email: user.email
+                    };
+                }
+                this.AppMenuBar
+        
             } catch (error) {
                 console.error('Error fetching user data:', error);
-                this.$router.push(this.config.API.auth.login);
+                this.$router.push(this.config.VIEWS.auth.login);
             }
         },
         navigateTo(route) {
@@ -89,6 +89,7 @@ export default {
         logout() {
             localStorage.removeItem('token');
             this.$router.push(this.config.VIEWS.auth.login);
+            window.location.reload();
         }
     },
     mounted() {

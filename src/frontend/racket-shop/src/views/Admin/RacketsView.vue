@@ -98,75 +98,76 @@
             </div>
         </div>
         <div class="grid-order-column">
-            <div class="form-in-row">
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('weight')">
-                        Вес
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'weight'">
-                        <button @click="sortBy('weight', 'asc')">По возрастанию</button>
-                        <button @click="sortBy('weight', 'desc')">По убыванию</button>
-                    </div>
-                </div>
-
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('balance')">
-                        Баланс
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'balance'">
-                        <button @click="sortBy('balance', 'asc')">По возрастанию</button>
-                        <button @click="sortBy('balance', 'desc')">По убыванию</button>
-                    </div>
-                </div>
-
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('head_size')">
-                        Размер
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'head_size'">
-                        <button @click="sortBy('head_size', 'asc')">По возрастанию</button>
-                        <button @click="sortBy('head_size', 'desc')">По убыванию</button>
-                    </div>
-                </div>
-
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('brand')">
-                        Бренд
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'brand'">
-                        <button v-for="brand in uniqueBrands" :key="brand" 
-                                @click="filterByBrand(brand)">
-                            {{ brand }}
+            <div class="form-in-row-add-feedback">
+                <div class="form-in-row-left">
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('weight')">
+                            Вес
+                            <span class="dropdown-arrow">▼</span>
                         </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'weight'">
+                            <button @click="sortBy('weight', 'asc')">По возрастанию</button>
+                            <button @click="sortBy('weight', 'desc')">По убыванию</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('balance')">
+                            Баланс
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'balance'">
+                            <button @click="sortBy('balance', 'asc')">По возрастанию</button>
+                            <button @click="sortBy('balance', 'desc')">По убыванию</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('head_size')">
+                            Размер
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'head_size'">
+                            <button @click="sortBy('head_size', 'asc')">По возрастанию</button>
+                            <button @click="sortBy('head_size', 'desc')">По убыванию</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('brand')">
+                            Бренд
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'brand'">
+                            <button v-for="brand in uniqueBrands" :key="brand" 
+                                    @click="filterByBrand(brand)">
+                                {{ brand }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('price')">
+                            Цена
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'price'">
+                            <button @click="sortBy('price', 'asc')">По возрастанию</button>
+                            <button @click="sortBy('price', 'desc')">По убыванию</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('availability')">
+                            Доступность
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'availability'">
+                            <button @click="filterByAvailability(true)">Доступные</button>
+                            <button @click="filterByAvailability(false)">Недоступные</button>
+                        </div>
                     </div>
                 </div>
-
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('price')">
-                        Цена
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'price'">
-                        <button @click="sortBy('price', 'asc')">По возрастанию</button>
-                        <button @click="sortBy('price', 'desc')">По убыванию</button>
-                    </div>
-                </div>
-
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('availability')">
-                        Доступность
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'availability'">
-                        <button @click="filterByAvailability(true)">Доступные</button>
-                        <button @click="filterByAvailability(false)">Недоступные</button>
-                    </div>
-                </div>
-
                 <button class="submit-button-orange" @click="resetFilters">
                     Сбросить
                 </button>

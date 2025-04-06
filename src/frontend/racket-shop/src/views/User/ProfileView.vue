@@ -57,12 +57,12 @@ export default {
                 const token = localStorage.getItem('token');
 
                 if (!token) {
-                    this.$router.push(this.config.API.auth.login);
+                    this.$router.push(this.config.VIEWS.auth.login);
                     return;
                 }
 
-                const cur_url = config.BACKEND_URL + config.API.user.profile;
-                const response = await axios.get(cur_url, {
+                const response = await axios.get(`${config.BACKEND_URL}${config.API.user.profile}`,
+                {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -79,8 +79,7 @@ export default {
                     };
                 }
             } catch (error) {
-                console.error('Error fetching user data:', error);
-                this.$router.push(this.config.API.auth.login);
+                this.$router.push(this.config.VIEWS.auth.login);
             }
         },
         navigateTo(route) {

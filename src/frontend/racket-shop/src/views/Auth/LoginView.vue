@@ -38,7 +38,7 @@
 
             <div class="form-in-row">
                 <p class="font-form-body">
-                    Нет аккаунт? <router-link to="/auth/register" class="submit-button-font">Зарегистрироваться</router-link> 
+                    Нет аккаунта? <router-link :to="config.VIEWS.auth.register" class="submit-button-font">Зарегистрироваться</router-link> 
                 </p>
                 <button 
                     class="submit-button-green"
@@ -57,6 +57,7 @@ import config from "../../../config.js"
 export default {
     data() {
         return {
+            config: config,
             email: '',
             password: '',
             error: false,
@@ -66,6 +67,19 @@ export default {
         };
     },
     methods: {
+        parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        },
         async login() {
             try {
                 const cur_url = config.BACKEND_URL + config.API.auth.login;
@@ -74,18 +88,30 @@ export default {
                     password: this.password
                 });
                 
-                if (response.data) {
-                    console.log('Login successful:', response.data);
+                if (response.data?.access_token) {
                     localStorage.setItem('token', response.data.access_token);
-
+                    
+                    const token = response.data.access_token;
+                    const decodedToken = this.parseJwt(token);
+                    
                     this.error = false;
-                    this.$router.push(config.VIEWS.user.profile);
+                    if (decodedToken?.Role === 'Admin') {
+                        this.$router.push(config.VIEWS.admin.profile);
+                        this.$router.push(config.VIEWS.admin.profile);
+                    } else {
+                        this.$router.push(config.VIEWS.user.profile);
+                    }
+                    // window.location.reload();
+                } else {
+                    throw new Error('No access token in response');
                 }
 
             } catch (error) {
                 console.error('Error logging in:', error);
                 this.error = true;
                 this.showError = true;
+                this.errorMessage = error.response?.data?.message || 
+                                'Ошибка входа. Проверьте email и пароль';
             }
         },
         resetError() {

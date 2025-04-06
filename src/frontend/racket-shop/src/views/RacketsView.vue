@@ -11,7 +11,7 @@
                         :alt="`${racket.brand} ${racket.id}`"
                         @error="handleImageError(racket)"
                     />
-                    <p v-else class="loading-text">Загрузка изображения...</p>
+                    <p v-else class="font-form-body">Загрузка изображения...</p>
                 </div>
                 <p class="font-form-body-bold">{{ racket.brand }} {{ racket.id }}</p>
                 <div class="form-in-row">
@@ -58,7 +58,6 @@ export default {
                         imageLoaded: false,
                         imageError: false
                     }));
-                    // Загружаем изображения для каждой ракетки
                     this.rackets.forEach(racket => this.loadRacketImage(racket));
                 }
             } catch (err) {
@@ -72,11 +71,9 @@ export default {
         async loadRacketImage(racket) {
             try {
                 if (racket.image) {
-                    // Если изображение уже в Base64
                     racket.imageData = racket.image;
                     racket.imageLoaded = true;
                 } else {
-                    // Если нужно загружать отдельно
                     const response = await axios.get(
                         `${config.BACKEND_URL}${config.API.rackets}/${racket.id}/image`,
                         { responseType: 'arraybuffer' }
@@ -105,7 +102,7 @@ export default {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    this.$router.push(`${config.API.auth.login}`);
+                    this.$router.push(`${config.VIEWS.auth.login}`);
                     return;
                 }
 
@@ -121,8 +118,8 @@ export default {
                         }
                     }
                 );
-
                 alert('Ракетка добавлена в корзину!');
+                this.$router.push(`${config.VIEWS.user.cart}`);
             } catch (err) {
                 const errorMsg = err.response?.data?.message || 'Не удалось добавить в корзину';
                 alert(errorMsg);

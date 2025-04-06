@@ -4,8 +4,8 @@
             <img src="../assets/logo.png" alt="Rackets" class="icon-logo"/>
         </router-link>
         <nav class="container-menu-items">
-            <!-- Иконки для пользователя -->
-            <template v-if="role === 'User'">
+            <!-- Меню для пользователей и гостей (по умолчанию) -->
+            <template v-if="!isAdmin">
                 <a @click="navigateTo(config.VIEWS.user.orders)" :class="{ 'active': activeLink === config.VIEWS.user.orders }" class="container-icon">
                     <img src="../assets/order.png" alt="Order" class="icon"/>
                     <span class="tooltip font-tooltip">Заказы</span>
@@ -21,14 +21,14 @@
                     <span class="tooltip font-tooltip">Корзина</span>
                 </a>
 
-                <a @click="navigateTo(config.VIEWS.user.profile)" :class="{ 'active': activeLink === config.VIEWS.auth.login || activeLink === config.VIEWS.auth.register || activeLink === config.VIEWS.user.profile}" class="container-icon">
+                <a @click="navigateTo(profileRoute)" :class="{ 'active': isProfileRoute }" class="container-icon">
                     <img src="../assets/auth.png" alt="Login" class="icon"/>
                     <span class="tooltip font-tooltip">Личный<br>кабинет</span>
                 </a>
             </template>
 
-            <!-- Иконки для администратора -->
-            <template v-else-if="role === 'Admin'">
+            <!-- Меню только для администратора -->
+            <template v-else>
                 <a @click="navigateTo(config.VIEWS.admin.rackets)" :class="{ 'active': activeLink === config.VIEWS.admin.rackets }" class="container-icon">
                     <img src="../assets/rackets.png" alt="Rackets" class="icon"/>
                     <span class="tooltip font-tooltip">Ракетки</span>
@@ -44,7 +44,7 @@
                     <span class="tooltip font-tooltip">Пользователи</span>
                 </a>
 
-                <a @click="navigateTo(config.VIEWS.admin.profile)" :class="{ 'active': activeLink === config.VIEWS.auth.login || activeLink === config.VIEWS.auth.register || activeLink === config.VIEWS.admin.profile}" class="container-icon">
+                <a @click="navigateTo(config.VIEWS.admin.profile)" :class="{ 'active': isProfileRoute }" class="container-icon">
                     <img src="../assets/auth.png" alt="Login" class="icon"/>
                     <span class="tooltip font-tooltip">Личный<br>кабинет</span>
                 </a>
@@ -65,6 +65,28 @@ export default {
             config: config, 
         };
     },
+    computed: {
+        computed: {
+            role() {
+                return this.authStore.role;
+            }
+        },
+        isAdmin() {
+            return this.role === 'Admin';
+        },
+        profileRoute() {
+            return this.isAdmin ? config.VIEWS.admin.profile : config.VIEWS.user.profile;
+        },
+        isProfileRoute() {
+            const profileRoutes = [
+                config.VIEWS.auth.login,
+                config.VIEWS.auth.register,
+                config.VIEWS.user.profile,
+                config.VIEWS.admin.profile
+            ];
+            return profileRoutes.includes(this.activeLink);
+        }
+    },
     methods: {
         parseJwt(token) {
             try {
@@ -79,25 +101,19 @@ export default {
                 return null;
             }
         },
-        hasToken() {
+        checkRole() {
             const token = localStorage.getItem('token');
-            
             if (!token) {
+                this.role = '';
                 return false;
             }
             
             const decoded = this.parseJwt(token);
-
-            console.log(decoded.Role)
-
-            if (decoded && decoded.Role) {
-                this.role = decoded.Role;
-                return true;
-            }
-            return false;
+            this.role = decoded?.Role || '';
+            return !!this.role;
         },
         navigateTo(route) {
-            if (this.hasToken()) {
+            if (this.checkRole() || route === config.VIEWS.auth.login) {
                 this.activeLink = route;
                 this.$router.push(route);
             } else {
@@ -107,7 +123,7 @@ export default {
     },
     mounted() {
         this.activeLink = this.$route.path;
-        this.hasToken();
+        this.checkRole();
     },
     watch: {
         '$route.path'(newPath) {
@@ -116,9 +132,3 @@ export default {
     },
 }
 </script>
-
-<style>
-@import "../css/Containers.css";
-@import "../css/Icons.css";
-@import "../css/Fonts.css";
-</style>

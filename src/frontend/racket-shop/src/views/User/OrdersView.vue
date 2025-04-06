@@ -2,72 +2,74 @@
     <div class="container-page">
         <h1 class="font-container-header">Заказы</h1>
 
-        <div class="grid-order-column">    
-            <div class="form-in-row">
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('total_price')">
-                        Сумма
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'total_price'">
-                        <button @click="sortBy('total_price', 'asc')">По возрастанию</button>
-                        <button @click="sortBy('total_price', 'desc')">По убыванию</button>
-                    </div>
-                </div>
-
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('creation_date')">
-                        Создание
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'creation_date'">
-                        <button @click="sortBy('creation_date', 'desc')">Сначала новые</button>
-                        <button @click="sortBy('creation_date', 'asc')">Сначала старые</button>
-                    </div>
-                </div>
-
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('delivery_date')">
-                        Доставка
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'delivery_date'">
-                        <button @click="sortBy('delivery_date', 'desc')">Сначала новые</button>
-                        <button @click="sortBy('delivery_date', 'asc')">Сначала старые</button>
-                    </div>
-                </div>
-
-                <!-- Фильтр по получателю -->
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('recipient')">
-                        Получатель
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'recipient'">
-                        <button v-for="recipient in uniqueRecipients" :key="recipient" 
-                                @click="filterByRecipient(recipient)">
-                            {{ recipient }}
+        <div class="grid-order-column">  
+            <div class="form-in-row-add-feedback">
+                <div class="form-in-row-left">
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('total_price')">
+                            Сумма
+                            <span class="dropdown-arrow">▼</span>
                         </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'total_price'">
+                            <button @click="sortBy('total_price', 'asc')">По возрастанию</button>
+                            <button @click="sortBy('total_price', 'desc')">По убыванию</button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Фильтр по статусу -->
-                <div class="filter-dropdown">
-                    <button class="submit-button-filter" @click="toggleDropdown('status')">
-                        Статус заказа
-                        <span class="dropdown-arrow">▼</span>
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('creation_date')">
+                            Создание
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'creation_date'">
+                            <button @click="sortBy('creation_date', 'desc')">Сначала новые</button>
+                            <button @click="sortBy('creation_date', 'asc')">Сначала старые</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('delivery_date')">
+                            Доставка
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'delivery_date'">
+                            <button @click="sortBy('delivery_date', 'desc')">Сначала новые</button>
+                            <button @click="sortBy('delivery_date', 'asc')">Сначала старые</button>
+                        </div>
+                    </div>
+
+                    <!-- Фильтр по получателю -->
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('recipient')">
+                            Получатель
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'recipient'">
+                            <button v-for="recipient in uniqueRecipients" :key="recipient" 
+                                    @click="filterByRecipient(recipient)">
+                                {{ recipient }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Фильтр по статусу -->
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('status')">
+                            Статус заказа
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'status'">
+                            <button @click="filterByStatus('Done')">Выполнены</button>
+                            <button @click="filterByStatus('InProgress')">В процессе</button>
+                            <button @click="filterByStatus('Canceled')">Отменен</button>
+                        </div>
+                    </div>
+
+                    <button class="submit-button-orange" @click="resetFilters">
+                        Сбросить
                     </button>
-                    <div class="dropdown-menu" v-show="activeDropdown === 'status'">
-                        <button @click="filterByStatus('Done')">Выполнены</button>
-                        <button @click="filterByStatus('InProgress')">В процессе</button>
-                        <button @click="filterByStatus('Canceled')">Отменен</button>
-                    </div>
                 </div>
-
-                <button class="submit-button-orange" @click="resetFilters">
-                    Сбросить
-                </button>
-            </div>
+            </div>  
         </div>
 
         <div class="grid-order-column">
@@ -118,7 +120,7 @@
                         Дата создания
                     </p>
                     <p class="font-form-body-bold">
-                        {{ order.creation_date }}
+                        {{ formatDate(order.creation_date) }}
                     </p>
                 </div>
                 <div class="form-in-row">
@@ -126,7 +128,7 @@
                         Дата доставки
                     </p>
                     <p class="font-form-body-bold">
-                        {{ order.delivery_date }}
+                        {{ formatDate(order.delivery_date) }}
                     </p>
                 </div>
             </div>
@@ -141,8 +143,8 @@ import config from "../../../config.js";
 export default {
     data() {
         return {
-            orders: [],
             config: config,
+            orders: [],
             loading: true,
             activeDropdown: null,
             currentSort: {
@@ -265,8 +267,23 @@ export default {
         },
         
         formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('ru-RU', options);
+            const date = new Date(dateString);
+            
+            // Форматируем дату
+            const day = date.getDate().toString().padStart(2, '0');
+            const year = date.getFullYear();
+            
+            // Форматируем время
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            
+            // Названия месяцев на русском
+            const monthNames = [
+                'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+            ];
+            
+            return `${day} ${monthNames[date.getMonth()]} ${year} г., ${hours}:${minutes}`;
         }
     },
     mounted() {

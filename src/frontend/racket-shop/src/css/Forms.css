@@ -46,8 +46,9 @@
     justify-content: space-between;
     align-items: center;
     overlay: auto;
-    padding-left: 30px;
-    padding-right: 30px;
+    /* padding-left: 5px;
+    padding-right: 5px; */
+    gap: 10px;
 }
 
 .form-in-row-1 {
@@ -66,6 +67,7 @@
     justify-content: flex-end;
     align-items: center;
     transition: all 0.3s ease-in-out;
+    gap: 10px;
 }
 
 .form-in-row-left {
@@ -94,7 +96,7 @@
 .form-in-row-racket {
     display: flex;
     flex-direction: row;
-    justify-content: right;
+    justify-content: space-around;
     align-items: center;
     transition: all 0.3s ease-in-out;
 }

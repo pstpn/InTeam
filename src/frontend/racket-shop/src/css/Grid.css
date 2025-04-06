@@ -40,23 +40,31 @@
 
 .grid-cart {
     display: grid;
-    grid-template-columns: 75% 25%;
+    grid-template-columns: 70% 25%;
     width: 100%;
+    gap:30px
+}
+
+.grid-cart-column.right {
+    /* Указываем, что правый столбец занимает одну строку */
+    grid-row: 1; /* Явно указываем, что начинается с первой строки */
 }
 
 .grid-feedback {
     display: grid;
-    grid-template-columns: 75% 25%;
+    grid-template-columns: 60% 40%;
     width: 100%;
+    height: 200%;
+    align-items: center;
     transition: all 0.3s ease-in-out;
+    /* padding-left: 30px; */
 }
 
 .grid-cart-column {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     width: 100%;
-}
+  }
 
 .grid-item {
     display: grid;
@@ -95,25 +103,16 @@
     opacity: 0.8;
 }
 
-.grid-photo-ball {
-    display: flex;
-    flex-direction: row;
-    justify-content: right;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
+.rating-ball {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.grid-photo-ball img:hover {
+.rating-ball:hover {
     transform: scale(1.2);
     opacity: 0.8;
-}
-
-.grid-photo-ball img {
-    width: 10%; 
-    height: 10%; 
-    object-fit: cover;
-    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .grid-photo-ball-feedback {
@@ -153,26 +152,39 @@
     overflow: visible !important;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 95%;
     gap: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
-.grid-card-feedback {
+.grid-card-feedback-1 {
     display: flex;
     flex-direction: column;
     padding: 30px;
     border-radius: 30px;
     transition: all 0.3s ease-in-out;
 }
+.grid-card-feedback-2 {
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px;
+    transition: all 0.3s ease-in-out;
+}
 
-.grid-card-feedback:hover {
+.grid-card-feedback-1:hover {
+    transform: scale(1.01);
+    opacity: 0.8;
+}
+
+.grid-card-feedback-2:hover {
     transform: scale(1.01);
     opacity: 0.8;
 }
 
 .grid-rackets {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 25% 25% 25%;
     grid-auto-rows: 1fr;
     gap: 100px 150px;
     justify-content: space-between;

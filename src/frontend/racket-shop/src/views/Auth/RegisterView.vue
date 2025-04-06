@@ -60,7 +60,7 @@
 
             <div class="form-in-row">
                 <p class="font-form-body">
-                    Есть аккаунт? <router-link to="/auth/login" class="submit-button-font">Войти</router-link> 
+                    Есть аккаунт? <router-link :to="config.VIEWS.auth.login" class="submit-button-font">Войти</router-link> 
                 </p>
                 <button 
                     class="submit-button-green"
@@ -79,6 +79,7 @@ import config from "../../../config.js"
 export default {
     data() {
         return {
+            config: config,
             name: '',
             surname: '',
             email: '',

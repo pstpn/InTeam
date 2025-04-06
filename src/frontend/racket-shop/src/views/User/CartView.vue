@@ -3,7 +3,9 @@
         <h1 class="font-container-header">Моя корзина</h1>
         
         <div v-if="cartData.lines.length === 0" class="font-form-body">
-            <p>Ваша корзина пуста</p>
+            <p class="font-form-body">
+                Ваша корзина пуста <router-link :to="config.VIEWS.rackets" class="submit-button-font">  За покупками</router-link> 
+            </p>
         </div>
 
         <div v-else class="grid-cart">
@@ -17,15 +19,15 @@
                                 :alt="`Ракетка ${item.racket_id}`"
                                 @error="handleImageError(item.racket_id)"
                             />
-                            <p v-else class="loading-text">Загрузка изображения...</p>
+                            <p v-else class="font-form-body">Загрузка изображения...</p>
                         </div>
                     </div>
                     <div class="grid-cart-column">
                         <div class="form-in-row">
                             <router-link 
                                 :to="`${config.VIEWS.rackets}/${item.racket_id}`" 
-                                class="submit-button-font-thin">
-                                {{ racketNames[item.racket_id] || `Ракетка ${item.racket_id}` }}
+                                class="submit-button-font-18">
+                                {{ racketNames[item.racket_id] }}
                             </router-link> 
                             <div class="grid-button">
                                 <button class="submit-button-cart" @click="decreaseQuantity(item)">
@@ -184,7 +186,7 @@ export default {
                 const token = localStorage.getItem('token');
 
                 if (!token) {
-                    this.$router.push(this.config.API.auth.login);
+                    this.$router.push(this.config.VIEWS.auth.login);
                     return;
                 }
 
@@ -206,8 +208,7 @@ export default {
                     });
                 }
             } catch (error) {
-                console.error('Error fetching cart data:', error);
-                this.$router.push(this.config.API.auth.login);
+                this.$router.push(this.config.VIEWS.auth.login);
             }
         },
         

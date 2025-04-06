@@ -2,44 +2,75 @@
     <div class="container-page">
         <h1 class="font-container-header">Мои отзывы</h1>
 
-        
-        <div v-if="feedbacks.length === 0" class="font-form-body">
-            <p>Вы не оставили еще ни один отзыв</p> 
-
-            <div class="grid-order-column">
-                <div class="form-in-row-add-feedback">
-                    <button class="submit-button-green" @click="openAddFeedbackModal">
-                        Добавить отзыв
-                    </button>
-                </div>
-            </div>
+        <div v-if="feedbacks.length === 0">
+            <p class="font-form-body">
+                Вы не оставили еще ни один отзыв
+                <button 
+                    class="submit-button-green" 
+                    @click="openAddFeedbackModal">
+                    Добавить отзыв
+                </button>
+            </p>
         </div>
 
         <div v-else class="grid-order-column">
             <div class="form-in-row-add-feedback">
-                <button class="submit-button-green" @click="openAddFeedbackModal">
+                <div class="form-in-row-left">
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('rating')">
+                            Рейтинг
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'rating'">
+                            <button v-for="n in 5" :key="n" @click="filterByRating(n)">
+                                {{ n }} звезд{{ n === 1 ? 'а' : n < 5 ? 'ы' : '' }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <button class="submit-button-filter" @click="toggleDropdown('date')">
+                            Дата
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" v-show="activeDropdown === 'date'">
+                            <button @click="sortBy('date', 'desc')">Сначала новые</button>
+                            <button @click="sortBy('date', 'asc')">Сначала старые</button>
+                        </div>
+                    </div>
+                    <button 
+                        class="submit-button-orange" 
+                        @click="resetFilters"
+                        :disabled="!isFilterActive">
+                        Сбросить
+                    </button>
+                </div>
+                <button 
+                    class="submit-button-green" 
+                    @click="openAddFeedbackModal">
                     Добавить отзыв
                 </button>
             </div>
-            <div 
-                class="grid-card-feedback" 
-                v-for="(feedback, index) in feedbacks" 
+            <div class="grid-card-feedback-2" 
+                 v-for="(feedback, index) in filteredFeedbacks" 
                 :key="index">
                 <div class="grid-feedback">
                     <p class="font-form-header" @click="goToRacket(feedback.racket_id)">
                         {{ feedback.racket_id + ' ' +  feedback.racket_brand}}
                     </p>
                     
-                    <div class="form-in-row-racket">
-                        <div class="grid-photo-ball">
-                            <p class="font-form-body">
-                                {{ feedback.date }} 
-                            </p>
+                    <div class="form-in-row-right">
+                        <p class="font-form-body feedback-date">
+                            {{ formatDate(feedback.date) }} 
+                        </p>
+                        
+                        <div class="form-in-row-right">
                             <img 
                                 v-for="(ball, ballIndex) in feedback.rating" 
-                                :key="ballIndex" 
+                                :key="ballIndex"
                                 src="../../assets/ball.png"
-                            >
+                                class="rating-ball"
+                                >
                         </div>
                     </div>
                 </div>
@@ -56,83 +87,82 @@
                 <hr class="line">
             </div>
         </div>
-
-        <div v-if="showAddFeedbackModal" class="modal-overlay" @click.self="closeAddFeedbackModal">
-            <div class="modal-content">
-                <h2 class="font-form-header">Добавить отзыв</h2>
-                
-                <div class="form-in-row">
-                    <select 
-                        v-model="newFeedback.racket_id" 
-                        class="feedback-select"
-                        required
-                        @change="onRacketSelect"
+    </div>
+    <div v-if="showAddFeedbackModal" class="modal-overlay" @click.self="closeAddFeedbackModal">
+        <div class="modal-content">
+            <h2 class="font-form-header">Добавить отзыв</h2>
+            
+            <div class="form-in-row">
+                <select 
+                    v-model="newFeedback.racket_id" 
+                    class="feedback-select"
+                    required
+                    @change="onRacketSelect"
+                >
+                    <option value="" disabled selected>Выберите ракетку</option>
+                    <option 
+                        v-for="racket in userRackets" 
+                        :key="racket.racket.id" 
+                        :value="racket.racket.id"
+                        :disabled="hasFeedbackForRacket(racket.id)"
                     >
-                        <option value="" disabled selected>Выберите ракетку</option>
-                        <option 
-                            v-for="racket in userRackets" 
-                            :key="racket.racket.id" 
-                            :value="racket.racket.id"
-                            :disabled="hasFeedbackForRacket(racket.id)"
-                        >
-                            {{ getRacketDisplayName(racket) }}
-                            <span v-if="hasFeedbackForRacket(racket.id)">(отзыв уже оставлен)</span>
-                        </option>
-                    </select>
-                </div>
-                
-                <div class="form-in-row">
-                    <p class="font-form-body">
-                        Оценка
-                    </p>
-                    <div class="grid-photo-ball-feedback">
-                        <img 
-                            v-for="n in 5" 
-                            :key="n" 
-                            src="../../assets/ball.png"
-                            :class="{ 'active': n <= newFeedback.rating }"
-                            @click="newFeedback.rating = n"
-                            :title="`Оценка ${n} из 5`"
-                        >
-                    </div>
-                </div>
-                
-                <div class="form-input">
-                    <textarea 
-                        v-model="newFeedback.text" 
-                        placeholder="Ваш отзыв" 
-                        required
-                        rows="5"
-                    ></textarea>
-                </div>
-                
-                <div class="form-in-row-left">
-                    <button 
-                        class="submit-button-green" 
-                        @click="submitFeedback"
-                        :disabled="!isFeedbackValid">
-                        Отправить
-                    </button>
+                        {{ getRacketDisplayName(racket) }}
+                        <span v-if="hasFeedbackForRacket(racket.id)">(отзыв уже оставлен)</span>
+                    </option>
+                </select>
+            </div>
+            
+            <div class="form-in-row">
+                <p class="font-form-body">
+                    Оценка
+                </p>
+                <div class="grid-photo-ball-feedback">
+                    <img 
+                        v-for="n in 5" 
+                        :key="n" 
+                        src="../../assets/ball.png"
+                        :class="{ 'active': n <= newFeedback.rating }"
+                        @click="newFeedback.rating = n"
+                        :title="`Оценка ${n} из 5`"
+                    >
                 </div>
             </div>
+            
+            <div class="form-input">
+                <textarea 
+                    v-model="newFeedback.text" 
+                    placeholder="Ваш отзыв" 
+                    required
+                    rows="5"
+                ></textarea>
+            </div>
+            
+            <div class="form-in-row-left">
+                <button 
+                    class="submit-button-green" 
+                    @click="submitFeedback"
+                    :disabled="!isFeedbackValid">
+                    Отправить
+                </button>
+            </div>
         </div>
+    </div>
 
-        <div v-if="isDeleteModalOpen" class="modal-overlay">
-            <div class="modal-content">
-                <p class="font-form-header">Подтверждение удаления</p>
-                <p class="font-form-body">Вы уверены, что хотите удалить этот отзыв?</p>
-                <div class="form-in-row-1">
-                    <button 
-                        class="submit-button-green" 
-                        @click="closeDeleteModal">
-                        Нет
-                    </button>
-                    <button 
-                        class="submit-button-orange" 
-                        @click="confirmDelete">
-                        Да
-                    </button>
-                </div>
+    <div v-if="isDeleteModalOpen" class="modal-overlay">
+        <div class="modal-content">
+            <p class="font-form-header">Подтверждение удаления</p>
+            <p class="font-form-body">Вы уверены, что хотите удалить этот отзыв?</p>
+            <div class="form-in-row-1">
+                <button 
+                    class="submit-button-green" 
+                    @click="closeDeleteModal">
+                    Нет
+                </button>
+                <button 
+                    class="submit-button-orange" 
+                    @click="confirmDelete">
+                    Да
+                </button>
             </div>
         </div>
     </div>
@@ -156,49 +186,16 @@ export default {
                 racket_id: '',
                 rating: 0,
                 text: ''
+            },
+            activeDropdown: null,
+            currentFilters: {
+                rating: null,
+                sortField: null,
+                sortDirection: null
             }
         };
     },
-    computed: {
-        isFeedbackValid() {
-            console.log(this.newFeedback.racket_id, this.newFeedback.rating, this.newFeedback.text.trim())
-            return this.newFeedback.racket_id && 
-                   this.newFeedback.rating > 0 && 
-                   this.newFeedback.text.trim().length > 0;
-        }
-    },
     methods: {
-        getRacketDisplayName(racket) {
-            console.log('here', racket.racket)
-            return `${racket.racket.brand || 'Ракетка'} ${racket.racket.name || racket.racket.id}`;
-        },
-        
-        hasFeedbackForRacket(racketId) {
-            return this.feedbacks.some(f => f.racket_id === racketId);
-        },
-        
-        onRacketSelect() {
-            // Можно добавить дополнительную логику при выборе ракетки
-            console.log('Выбрана ракетка:', this.newFeedback.racket_id);
-        },
-        openAddFeedbackModal() {
-            this.fetchUserRackets(); // Загружаем ракетки пользователя
-            this.showAddFeedbackModal = true;
-        },
-        
-        closeAddFeedbackModal() {
-            this.showAddFeedbackModal = false;
-            this.resetNewFeedbackForm();
-        },
-        
-        resetNewFeedbackForm() {
-            this.newFeedback = {
-                racket_id: '',
-                rating: 0,
-                text: ''
-            };
-        },
-        
         async fetchUserRackets() {
             try {
                 const token = localStorage.getItem('token');
@@ -207,14 +204,12 @@ export default {
                     return;
                 }
 
-                // 1. Получаем все заказы пользователя
                 const ordersResponse = await axios.get(
                     `${config.BACKEND_URL}${config.API.orders}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 
-                // 2. Собираем все уникальные racket_id из заказов
-                const uniqueRacketIds = new Set(); // Используем Set для автоматического удаления дубликатов
+                const uniqueRacketIds = new Set();
 
                 if (ordersResponse.data?.orders) {
                     ordersResponse.data.orders.forEach(order => {
@@ -228,10 +223,8 @@ export default {
                     });
                 }
 
-                // 3. Преобразуем Set обратно в массив
                 const racketIds = Array.from(uniqueRacketIds);
                
-                // 4. Получаем полные данные по каждой ракетке (опционально)
                 if (racketIds.length > 0) {
                     const racketsPromises = racketIds.map(racketId => 
                         axios.get(`${config.BACKEND_URL}${config.API.rackets}/${racketId}`, {
@@ -246,7 +239,6 @@ export default {
                     this.userRackets = [];
                 }
 
-                // console.log(this.userRackets)
             } catch (error) {
                 console.error('Ошибка при загрузке ракеток из заказов:', error);
                 this.userRackets = [];
@@ -278,64 +270,43 @@ export default {
         },
 
         async fetchFeedbacks() {
-        try {
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                this.$router.push(this.config.API.auth.login);
-                return;
-            }
-
-            // 1. Получаем отзывы
-            const response = await axios.get(
-                `${config.BACKEND_URL}${config.API.user.feedbacks}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    this.$router.push(this.config.API.auth.login);
+                    return;
                 }
-            );
 
-            if (response.data?.feedbacks) {
-                // 2. Создаем массив промисов для получения данных о ракетках
-                const racketPromises = response.data.feedbacks.map(feedback => 
-                    axios.get(`${config.BACKEND_URL}${config.API.rackets}/${feedback.racket_id}`, {
-                        headers: { Authorization: `Bearer ${token}` }
-                    }).then(res => res.data)
-                    .catch(() => null) // Игнорируем ошибки для отдельных запросов
+                const response = await axios.get(
+                    `${config.BACKEND_URL}${config.API.user.feedbacks}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
                 );
 
-                // 3. Получаем данные всех ракеток
-                const racketsData = await Promise.all(racketPromises);
+                if (response.data?.feedbacks) {
+                    const racketPromises = response.data.feedbacks.map(feedback => 
+                        axios.get(`${config.BACKEND_URL}${config.API.rackets}/${feedback.racket_id}`, {
+                            headers: { Authorization: `Bearer ${token}` }
+                        }).then(res => res.data)
+                        .catch(() => null)
+                    );
 
-                // 4. Объединяем отзывы с данными ракеток
-                this.feedbacks = response.data.feedbacks.map((feedback, index) => {
-                    const racket = racketsData[index];
-                    return {
-                        ...feedback,
-                        racket_brand: racket.racket.brand
-                    };
-                });
+                    const racketsData = await Promise.all(racketPromises);
+                    this.feedbacks = response.data.feedbacks.map((feedback, index) => {
+                        const racket = racketsData[index];
+                        
+                        return {
+                            ...feedback,
+                            racket_brand: racket.racket.brand
+                        };
+                    });
 
-                console.log(this.feedbacks)
+                    this.filteredFeedbacks = [...this.feedbacks];
+                }
+            } catch (error) {
+                console.error('Ошибка при получении отзывов:', error);
+                this.feedbacks = [];
+                this.filteredFeedbacks = [];
             }
-        } catch (error) {
-            console.error('Ошибка при получении отзывов:', error);
-            this.feedbacks = [];
-        }
-    },
-        goToRacket(racketId) {
-            this.$router.push(`${this.config.VIEWS.rackets}/${racketId}`);
-        },
-
-        openDeleteModal(racketId) {
-            this.selectedRacketId = racketId;
-            this.isDeleteModalOpen = true;
-        },
-
-        closeDeleteModal() {
-            this.isDeleteModalOpen = false;
-            this.selectedRacketId = null;
         },
 
         async confirmDelete() {
@@ -365,9 +336,123 @@ export default {
             }
         },
 
+        toggleDropdown(dropdownName) {
+            this.activeDropdown = this.activeDropdown === dropdownName ? null : dropdownName;
+        },
+
+        filterByRating(rating) {
+            this.currentFilters.rating = rating;
+            this.activeDropdown = null;
+            this.applyFilters();
+        },
+
+        sortBy(field, direction) {
+            this.currentFilters.sortField = field;
+            this.currentFilters.sortDirection = direction;
+            this.activeDropdown = null;
+            this.applyFilters();
+        },
+
+        resetFilters() {
+            this.currentFilters = {
+                rating: null,
+                sortField: null,
+                sortDirection: null
+            };
+            this.filteredFeedbacks = [...this.feedbacks];
+        },
+
+        applyFilters() {
+            let result = [...this.feedbacks];
+
+            if (this.currentFilters.rating !== null) {
+                result = result.filter(f => f.rating === this.currentFilters.rating);
+            }
+
+            if (this.currentFilters.sortField) {
+                result.sort((a, b) => {
+                    const field = this.currentFilters.sortField;
+                    const valueA = new Date(a[field]);
+                    const valueB = new Date(b[field]);
+
+                    if (this.currentFilters.sortDirection === 'asc') {
+                        return valueA - valueB;
+                    } else {
+                        return valueB - valueA;
+                    }
+                });
+            }
+
+            this.filteredFeedbacks = result;
+        },
+
+        goToRacket(racketId) {
+            this.$router.push(`${this.config.VIEWS.rackets}/${racketId}`);
+        },
+
+        openDeleteModal(racketId) {
+            this.selectedRacketId = racketId;
+            this.isDeleteModalOpen = true;
+        },
+
+        closeDeleteModal() {
+            this.isDeleteModalOpen = false;
+            this.selectedRacketId = null;
+        },
+
+        getRacketDisplayName(racket) {
+            return `${racket.racket.brand || 'Ракетка'} ${racket.racket.name || racket.racket.id}`;
+        },
+
+        hasFeedbackForRacket(racketId) {
+            return this.feedbacks.some(f => f.racket_id === racketId);
+        },
+
+        onRacketSelect() {
+            console.log('Выбрана ракетка:', this.newFeedback.racket_id);
+        },
+
+        openAddFeedbackModal() {
+            this.fetchUserRackets();
+            this.showAddFeedbackModal = true;
+        },
+
+        closeAddFeedbackModal() {
+            this.showAddFeedbackModal = false;
+            this.resetNewFeedbackForm();
+        },
+
+        resetNewFeedbackForm() {
+            this.newFeedback = {
+                racket_id: '',
+                rating: 0,
+                text: ''
+            };
+        },
+
         formatDate(dateString) {
             const date = new Date(dateString);
-            return date.toLocaleDateString('ru-RU'); 
+            
+            const day = date.getDate().toString().padStart(2, '0');
+            const year = date.getFullYear();
+         
+            const monthNames = [
+                'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+            ];
+            
+            return `${day} ${monthNames[date.getMonth()]} ${year} г.`;
+        }
+    },
+    computed: {
+        isFeedbackValid() {
+            return this.newFeedback.racket_id && 
+                   this.newFeedback.rating > 0 && 
+                   this.newFeedback.text.trim().length > 0;
+        },
+        isFilterActive() {
+            return this.currentFilters.rating !== null || 
+                   this.currentFilters.sortField !== null;
         }
     },
     mounted() {

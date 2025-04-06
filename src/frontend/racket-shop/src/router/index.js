@@ -36,6 +36,10 @@ const router = createRouter({
         component: RacketsView,
       },
       {
+        path: '/',
+        component: RacketsView,
+      },
+      {
         path: config.VIEWS.rackets+'/:id',
         component: RacketView,
       },

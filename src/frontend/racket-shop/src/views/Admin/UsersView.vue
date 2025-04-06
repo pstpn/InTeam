@@ -16,11 +16,11 @@
         </div>
 
         <div class="grid-order-column">
-            <div class="grid-card-name" v-for="(user, index) in filteredUsers" :key="user.id">
+            <div class="grid-card-name" v-for="(user) in filteredUsers" :key="user.id">
                 <div class="form-in-row">
                     <div class="form-in-row-left">
                         <p class="font-form-body-bold">
-                            Пользователь {{ index + 1 }}
+                            Пользователь {{ user.user_id }}
                         </p>
                         <button :class="{
                             'submit-button-orange': user.role === 'Admin',
@@ -128,7 +128,7 @@ export default {
                 }
                 
                 const response = await axios.patch(
-                    `${config.BACKEND_URL}${config.API.admin.users}/${this.selectedUser.user.id}`,
+                    `${config.BACKEND_URL}${config.API.admin.users}/${this.selectedUser.user_id}`,
                     {
                         role: this.selectedRole
                     },

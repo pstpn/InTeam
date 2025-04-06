@@ -56,6 +56,16 @@
     font-size: 15px;
 }
 
+.submit-button-font-18 {  
+    color: black; 
+    cursor: pointer;
+
+    text-align: center;
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 700;
+    font-size: 18px;
+}
+
 .submit-button-font-thin {  
     color: black; 
     cursor: pointer; 

@@ -50,3 +50,9 @@
     font-weight: 400;
     font-size: 25px;
 }
+
+.feedback-date {
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-right: 10px;
+}
