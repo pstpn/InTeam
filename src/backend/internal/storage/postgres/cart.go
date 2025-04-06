@@ -233,20 +233,6 @@ func (r *CartStorage) Remove(ctx context.Context, userID int) error {
 		return err
 	}
 
-	query = r.Builder.
-		Delete(cartRacketTable).
-		Where(squirrel.Eq{cartIDField: userID})
-
-	sql, args, err = query.ToSql()
-	if err != nil {
-		return err
-	}
-
-	_, err = r.Pool.Exec(ctx, sql, args...)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
