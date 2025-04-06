@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"sync"
 	"time"
@@ -39,12 +40,17 @@ func (s *Server) Run(listen string, handler http.Handler) error {
 	}
 	s.lock.Unlock()
 
-	return s.httpServer.ListenAndServe()
+	if err := s.httpServer.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+		return err
+	}
+	return nil
 }
 
 func (s *Server) Shutdown() {
 	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
+
+	s.l.Warnf("shutdown http server")
 
 	s.lock.Lock()
 	if s.httpServer != nil {

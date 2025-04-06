@@ -1,15 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log"
 	"net"
 	net_http "net/http"
 	"os"
+	"os/signal"
 	"strconv"
-	"time"
+	"syscall"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/rs/zerolog"
+	"golang.org/x/sync/errgroup"
 
 	"backend/config"
 	"backend/internal/router/handlers"
@@ -23,11 +26,16 @@ import (
 )
 
 func main() {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT)
+	defer stop()
+
+	gr, ctx := errgroup.WithContext(ctx)
+
 	cfg, err := config.NewConfig()
 	if err != nil {
-		log.Fatal(err)
+		logger.New(zerolog.ErrorLevel.String(), os.Stdout).Errorf("new config: %s", err.Error())
+		return
 	}
-
 	l := logger.New(cfg.Logger.Level, os.Stdout)
 
 	db, err := postgres.New(fmt.Sprintf("postgres://%s:%s@%s/%s",
@@ -37,7 +45,8 @@ func main() {
 		cfg.Database.Postgres.Database,
 	))
 	if err != nil {
-		log.Fatal(err)
+		l.Errorf("new postgres: %s", err.Error())
+		return
 	}
 
 	userStorage := mypostgres2.NewUserStorage(db)
@@ -65,34 +74,41 @@ func main() {
 	securityHandler := handlers.NewSecurityHandler(userService, []byte(cfg.Auth.SigningKey))
 	oas, err := api.NewServer(h, securityHandler)
 	if err != nil {
-		log.Fatal(err)
+		l.Errorf("new oas server: %s", err.Error())
+		return
 	}
 
-	go func() {
+	srv := http.NewServer(l)
+	metricsServer := http.NewServer(l)
+
+	gr.Go(func() error {
 		metricsMux := net_http.NewServeMux()
 		metricsMux.Handle("/metrics", promhttp.Handler())
-		metricsServer := net_http.Server{
-			Addr:        fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.MetricsPort),
-			Handler:     metricsMux,
-			ReadTimeout: time.Second,
-		}
-		if err := metricsServer.ListenAndServe(); err != nil {
-			log.Fatalf("Error starting metrics server: %v", err)
-		}
-	}()
+		return metricsServer.Run(
+			fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.MetricsPort),
+			metricsMux,
+		)
+	})
 
-	srv := http.NewServer(l)
-	metrics := common.NewMetrics()
-	err = srv.Run(
-		fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
-		http.Wrap(
-			oas,
-			http.MetricsMiddleware(metrics),
-			http.CORSMiddleware(l),
-			http.HeartbeatMiddleware("/healthcheck"),
-		),
-	)
-	if err != nil {
-		log.Fatal(err)
+	gr.Go(func() error {
+		<-ctx.Done()
+		metricsServer.Shutdown()
+		srv.Shutdown()
+		return nil
+	})
+
+	gr.Go(func() error {
+		return srv.Run(
+			fmt.Sprintf("0.0.0.0:%d", cfg.HTTP.Port),
+			http.Wrap(
+				oas,
+				http.MetricsMiddleware(common.NewMetrics()),
+				http.CORSMiddleware(l),
+				http.HeartbeatMiddleware("/healthcheck"),
+			),
+		)
+	})
+	if err := gr.Wait(); err != nil {
+		l.Errorf("err group wait: %s", err.Error())
 	}
 }
