@@ -16,14 +16,22 @@
         <div v-else class="grid-order-column">
             <div class="form-in-row-add-feedback">
                 <div class="form-in-row-left">
-                    <select class="submit-button-filter" @change="filterByRating($event.target.value)">
+                    <select 
+                        class="submit-button-filter" 
+                        @change="filterByRating($event.target.value)"
+                        :value="currentFilters.rating"
+                    >
                         <option value="">Рейтинг</option>
                         <option v-for="n in 5" :key="n" :value="n">
                             {{ n }} звезд{{ n === 1 ? 'а' : n < 5 ? 'ы' : '' }}
                         </option>
                     </select>
 
-                    <select class="submit-button-filter" @change="sortBy('date', $event.target.value)">
+                    <select 
+                        class="submit-button-filter" 
+                        @change="sortBy('date', $event.target.value)"
+                        :value="currentFilters.sortDirection"
+                    >
                         <option value="">Дата</option>
                         <option value="desc">Сначала новые</option>
                         <option value="asc">Сначала старые</option>
@@ -46,7 +54,7 @@
                 :key="index">
                 <div class="grid-feedback">
                     <p class="font-form-header" @click="goToRacket(feedback.racket_id)">
-                        {{ feedback.racket_id + ' ' +  feedback.racket_brand}}
+                        {{ feedback.racket_brand + ' ' +  feedback.racket_id }}
                     </p>
                     
                     <div class="form-in-row-right">
@@ -258,6 +266,7 @@ export default {
         async fetchFeedbacks() {
             try {
                 const token = localStorage.getItem('token');
+
                 if (!token) {
                     this.$router.push(this.config.VIEWS.auth.login);
                     return;
@@ -265,7 +274,12 @@ export default {
 
                 const response = await axios.get(
                     `${config.BACKEND_URL}${config.API.user.feedbacks}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    { 
+                        headers: 
+                        { 
+                            Authorization: `Bearer ${token}` 
+                        } 
+                    }
                 );
 
                 if (response.data?.feedbacks) {
@@ -327,25 +341,14 @@ export default {
         },
 
         filterByRating(rating) {
-            this.currentFilters.rating = rating;
-            this.activeDropdown = null;
+            this.currentFilters.rating = rating ? parseInt(rating) : null;
             this.applyFilters();
         },
 
         sortBy(field, direction) {
-            this.currentFilters.sortField = field;
-            this.currentFilters.sortDirection = direction;
-            this.activeDropdown = null;
+            this.currentFilters.sortField = direction ? field : null;
+            this.currentFilters.sortDirection = direction || null;
             this.applyFilters();
-        },
-
-        resetFilters() {
-            this.currentFilters = {
-                rating: null,
-                sortField: null,
-                sortDirection: null
-            };
-            this.filteredFeedbacks = [...this.feedbacks];
         },
 
         applyFilters() {
@@ -355,21 +358,28 @@ export default {
                 result = result.filter(f => f.rating === this.currentFilters.rating);
             }
 
-            if (this.currentFilters.sortField) {
+            if (this.currentFilters.sortField && this.currentFilters.sortDirection) {
                 result.sort((a, b) => {
                     const field = this.currentFilters.sortField;
-                    const valueA = new Date(a[field]);
-                    const valueB = new Date(b[field]);
+                    const valueA = new Date(a[field]).getTime();
+                    const valueB = new Date(b[field]).getTime();
 
-                    if (this.currentFilters.sortDirection === 'asc') {
-                        return valueA - valueB;
-                    } else {
-                        return valueB - valueA;
-                    }
+                    return this.currentFilters.sortDirection === 'asc' 
+                        ? valueA - valueB 
+                        : valueB - valueA;
                 });
             }
 
             this.filteredFeedbacks = result;
+        },
+
+        resetFilters() {
+            this.currentFilters = {
+                rating: null,
+                sortField: null,
+                sortDirection: null
+            };
+            this.filteredFeedbacks = [...this.feedbacks];
         },
 
         goToRacket(racketId) {
