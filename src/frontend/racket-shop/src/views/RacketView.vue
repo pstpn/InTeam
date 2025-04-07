@@ -60,7 +60,13 @@
                 <hr class="line">
                 
                 <p class="font-form-body">
-                    Отзывов нет <router-link :to="config.VIEWS.user.feedbacks" class="submit-button-font"> Будьте первым</router-link> 
+                    Отзывов нет 
+                    <a 
+                        href="#" 
+                        class="submit-button-font" 
+                        @click.prevent="handleFirstFeedbackClick">
+                        Будьте первым
+                    </a>
                 </p>
             </div>
             
@@ -120,6 +126,28 @@ export default {
         this.fetchFeedbacks();
     },
     methods: {
+        async handleFirstFeedbackClick() {
+            if (await this.isAdmin()) {
+                alert('Администраторы не могут оставлять отзывы');
+            } else {
+                this.$router.push(this.config.VIEWS.user.feedbacks);
+            }
+        },
+        
+        async isAdmin() {
+            const token = localStorage.getItem('token');
+            if (!token) return false;
+            
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.Role === 'Admin';
+
+            } catch (error) {
+                console.error('Ошибка проверки роли:', error);
+                return false;
+            }
+        },
+
         async fetchRacketData() {
             try {
                 const racketId = this.$route.params.id;
@@ -158,11 +186,18 @@ export default {
             
             return `${day} ${monthNames[date.getMonth()]} ${year} г.`;
         },
+
         async addToCart(racketId) {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
                     this.$router.push(`${config.VIEWS.auth.login}`);
+                    return;
+                }
+
+                const isAdmin = await this.isAdmin();
+                if (isAdmin) {
+                    alert('Администраторы не могут добавлять товары в корзину');
                     return;
                 }
 
@@ -179,13 +214,11 @@ export default {
                     }
                 );
                 
-                alert('Ракетка добавлена в корзину!');
                 this.$router.push(`${config.VIEWS.user.cart}`);
             } catch (error) {
                 console.error('Ошибка при добавлении в корзину:', error);
-                alert('Не удалось добавить ракетку в корзину');
             }
-        }
+        },
     }
 };
 </script>

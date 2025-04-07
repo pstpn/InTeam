@@ -88,6 +88,12 @@ export default {
                     return;
                 }
 
+                const isAdmin = await this.isAdmin();
+                if (isAdmin) {
+                    alert('Администраторы не могут добавлять товары в корзину');
+                    return;
+                }
+
                 await axios.post(
                     `${config.BACKEND_URL}${config.API.user.cart}`,
                     { 
@@ -100,13 +106,26 @@ export default {
                         }
                     }
                 );
-                alert('Ракетка добавлена в корзину!');
+                
                 this.$router.push(`${config.VIEWS.user.cart}`);
-            } catch (err) {
-                const errorMsg = err.response?.data?.message || 'Не удалось добавить в корзину';
-                alert(errorMsg);
+            } catch (error) {
+                console.error('Ошибка при добавлении в корзину:', error);
             }
-        }
+        },
+
+        async isAdmin() {
+            const token = localStorage.getItem('token');
+            if (!token) return false;
+            
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.Role === 'Admin';
+
+            } catch (error) {
+                console.error('Ошибка проверки роли:', error);
+                return false;
+            }
+        },
     },
     mounted() {
         this.fetchRackets();
